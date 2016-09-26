@@ -1,0 +1,4 @@
+CorePlugin/bin/
+CorePlugin/obj/
+EditorPlugin/
+CorePlugin/TestUI.cs
