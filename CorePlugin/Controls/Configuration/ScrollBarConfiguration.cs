@@ -20,12 +20,12 @@ namespace SnowyPeak.DualityUI.Controls.Configuration
 
 		public ScrollBarConfiguration()
 		{
-			this.ButtonsSize = new Size(20);
-			this.CursorSize = new Size(20);
+			this.ButtonsSize = new Size(10);
+			this.CursorSize = new Size(10);
 
-			this.ButtonIncreaseAppearance = new ContentRef<Appearance>(SnowyPeak.DualityUI.Appearance.DEFAULT);
-			this.ButtonDecreaseAppearance = new ContentRef<Appearance>(SnowyPeak.DualityUI.Appearance.DEFAULT);
-			this.CursorAppearance = new ContentRef<Appearance>(SnowyPeak.DualityUI.Appearance.DEFAULT);
+			this.ButtonIncreaseAppearance = Appearance.DEFAULT;
+			this.ButtonDecreaseAppearance = Appearance.DEFAULT;
+			this.CursorAppearance = Appearance.DEFAULT;
 		}
 	}
 }

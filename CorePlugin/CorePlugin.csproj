@@ -18,8 +18,8 @@
     <ProjectGuid>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SnowyPeak.DualityUI</RootNamespace>
-    <AssemblyName>SnowyPeak.DualityUI.core</AssemblyName>
+    <RootNamespace>DualityUI</RootNamespace>
+    <AssemblyName>GamePlugin.core</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
@@ -59,22 +59,6 @@
   <ItemGroup>
     <Compile Include="Appearance.cs" />
     <Compile Include="Border.cs" />
-    <Compile Include="Controls\ILayout.cs" />
-    <Compile Include="Controls\ProgressBar.cs" />
-    <Compile Include="Templates\GlyphTemplate.cs" />
-    <Compile Include="Templates\ListBoxTemplate.cs" />
-    <Compile Include="Templates\TextTemplate.cs" />
-    <Compile Include="Templates\ScrollBarTemplate.cs" />
-    <Compile Include="Templates\ControlTemplate.cs" />
-    <Compile Include="Controls\ToggleButton.cs" />
-    <Compile Include="Controls\Configuration\ListBoxConfiguration.cs" />
-    <Compile Include="Controls\Configuration\ScrollBarConfiguration.cs" />
-    <Compile Include="Controls\Configuration\GlyphConfiguration.cs" />
-    <Compile Include="Controls\Configuration\TextConfiguration.cs" />
-    <Compile Include="Controls\CompositeControl.cs" />
-    <Compile Include="Controls\RadioButton.cs" />
-    <Compile Include="Controls\ScrollBar.cs" />
-    <Compile Include="Controls\ListBox.cs" />
     <Compile Include="Controls\Separator.cs" />
     <Compile Include="Controls\CheckButton.cs" />
     <Compile Include="Controls\CanvasPanel.cs" />
@@ -86,30 +70,10 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\DockPanel.cs" />
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="DefaultSkins\Light.cs" />
-    <Compile Include="Orientation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\ResNames.cs" />
     <Compile Include="Size.cs" />
-    <Compile Include="Skin.cs" />
     <Compile Include="TestUI.cs" />
     <Compile Include="UI.cs" />
-    <Compile Include="UIHelper.cs" />
-    <Compile Include="ResourceHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\iconResAppearance.png" />
-    <EmbeddedResource Include="EmbeddedResources\iconResUI.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DefaultSkins\OpenSans.Font.res" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DefaultSkins\transparent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DefaultSkins\round.png" />
-    <EmbeddedResource Include="DefaultSkins\square.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>

@@ -17,7 +17,7 @@ namespace SnowyPeak.DualityUI.Controls.Configuration
 		public ListBoxConfiguration()
 		{
 			this.ItemsSize = new Size(20);
-			this.ItemAppearance = new ContentRef<Appearance>(SnowyPeak.DualityUI.Appearance.DEFAULT);
+			this.ItemAppearance = Appearance.DEFAULT;
 		}
 	}
 }

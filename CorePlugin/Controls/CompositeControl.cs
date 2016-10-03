@@ -1,4 +1,5 @@
 ﻿using Duality;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.DualityUI.Controls
 {
-	public abstract class CompositeControl : Control
+	public abstract class CompositeControl : Control, ILayout 
 	{
+		public Border Margin { get; set; }
+
 		protected ControlsContainer _container;
 
 		public CompositeControl()
@@ -20,6 +23,8 @@ namespace SnowyPeak.DualityUI.Controls
 
 		public override void Draw(Duality.Drawing.Canvas canvas, float zOffset)
 		{
+			base.Draw(canvas, zOffset);
+
 			if (_container != null) 
 			{ _container.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
 		}
@@ -31,18 +36,21 @@ namespace SnowyPeak.DualityUI.Controls
 			_container.OnUpdate(msFrame);
 		}
 
-		internal virtual void LayoutControls()
+		public void LayoutControls()
 		{
 			if(_container != null)
 			{
-				_container.ActualSize = this.ActualSize;
-				_container.ActualPosition = this.ActualPosition;
+				_container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
+				_container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
+
+				_container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
+				_container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
 
 				_container.LayoutControls();
 			}
 		}
 
-        internal Control FindHoveredControl(Vector2 position)
+        public Control FindHoveredControl(Vector2 position)
         {
             return _container.FindHoveredControl(position);
         }

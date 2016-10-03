@@ -1,6 +1,7 @@
 ﻿using Duality;
 using Duality.Drawing;
 using SnowyPeak.DualityUI.Controls.Configuration;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,15 @@ namespace SnowyPeak.DualityUI.Controls
 {
 	public sealed class ListBox : CompositeControl
 	{
+		public static readonly string SCROLLBAR_TEMPLATE = ".ScrollBar";
+		public static readonly string PANEL_TEMPLATE = ".Panel";
+
 		private StackPanel _stackPanel;
 		private ScrollBar _scrollBar;
 
 		private List<ToggleButton> _toggleButtons;
 		private int _itemsInView;
+        private Skin _skin;
 
 		public IEnumerable<object> SelectedItems
 		{
@@ -24,11 +29,12 @@ namespace SnowyPeak.DualityUI.Controls
 
 		public ScrollBarConfiguration ScrollBarConfiguration
 		{
-			set 
-			{ 
+			private get { return _scrollBar.ScrollBarConfiguration; }
+			set
+			{
 				_scrollBar.ScrollBarConfiguration = value;
 				_scrollBar.Size = new Size(
-					MathF.Max(value.ButtonsSize.X, value.CursorSize.X), 
+					MathF.Max(value.ButtonsSize.X, value.CursorSize.X),
 					MathF.Max(value.ButtonsSize.Y, value.CursorSize.Y));
 			}
 		}
@@ -53,14 +59,40 @@ namespace SnowyPeak.DualityUI.Controls
 			.Add(_scrollBar = new ScrollBar()
 			{
 				Docking = DockPanel.Dock.Right,
-				Orientation = Orientation.Vertical
+				Orientation = Orientation.Vertical,
+                TemplateName = this.TemplateName + SCROLLBAR_TEMPLATE
 			})
 			.Add(_stackPanel = new StackPanel()
 			{
 				Docking = DockPanel.Dock.Center,
-				Orientation = Orientation.Vertical
+				Orientation = Orientation.Vertical,
+                TemplateName = this.TemplateName + PANEL_TEMPLATE
 			});
 		}
+
+        public override void ApplySkin(Skin skin)
+		{
+            if (skin == null) return;
+            base.ApplySkin(skin);
+
+            _scrollBar.ApplySkin(skin);
+
+            ListBoxTemplate template = skin.GetTemplate<ListBoxTemplate>(this);
+
+			if (this.ListBoxConfiguration == ListBoxConfiguration.DEFAULT)
+			{ this.ListBoxConfiguration = template.ListBoxConfiguration; }
+
+			if (this.TextConfiguration == TextConfiguration.DEFAULT)
+            this.TextConfiguration = template.TextConfiguration;
+
+            foreach(ToggleButton tb in _toggleButtons)
+            {
+                tb.ApplySkin(skin);
+                tb.TextConfiguration = this.TextConfiguration;
+            }
+
+            _skin = skin;
+        }
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
@@ -104,7 +136,6 @@ namespace SnowyPeak.DualityUI.Controls
 					Visibility = ControlVisibility.Collapsed,
 					Toggled = selectedItems.Contains(obj),
 					Size = this.ListBoxConfiguration.ItemsSize,
-					Appearance = this.ListBoxConfiguration.ItemAppearance,
 					TextConfiguration = this.TextConfiguration,
 					ToggleChangeEventHandler = (button, isToggled) =>
 					{
@@ -117,6 +148,8 @@ namespace SnowyPeak.DualityUI.Controls
 						}
 					}
 				};
+
+                toggle.ApplySkin(_skin);
 
 				_toggleButtons.Add(toggle);
 				_stackPanel.Add(toggle);

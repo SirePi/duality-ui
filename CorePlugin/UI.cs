@@ -33,6 +33,8 @@ namespace SnowyPeak.DualityUI
 
         public bool IsFullScreen { get; set; }
         public int Offset { get; set; }
+		[EditorHintFlags(MemberFlags.Invisible | MemberFlags.ReadOnly)]
+		protected abstract Skin Skin { get; }
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Control HoveredControl
@@ -124,8 +126,8 @@ namespace SnowyPeak.DualityUI
 
                 _rootContainer.LayoutControls();
 
-                Canvas c = new Canvas(device);
-				_rootContainer.Draw(c, Offset * GLOBAL_ZOFFSET);
+				Canvas c = new Canvas(device);
+				_rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
 			}
 		}
 
@@ -152,6 +154,8 @@ namespace SnowyPeak.DualityUI
 			if(context == InitContext.Activate)
 			{
 				_rootContainer = CreateUI();
+                _rootContainer.ApplySkin(this.Skin);
+
 				OnUpdate();
 
 				DualityApp.Mouse.ButtonDown += Mouse_ButtonDown;

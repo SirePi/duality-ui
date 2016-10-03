@@ -22,6 +22,20 @@ namespace SnowyPeak.DualityUI
             this.Y = y;
         }
 
+        public void Swap()
+        {
+            float tmp = this.X;
+
+            this.X = this.Y;
+            this.Y = tmp;
+        }
+
+		public void AtLeast(Size minSize)
+		{
+			this.X = MathF.Max(minSize.X, this.X);
+			this.Y = MathF.Max(minSize.Y, this.Y);
+		}
+
         public override string ToString()
         {
             return String.Format("({0:0.00}, {1:0.00})", this.X, this.Y);
