@@ -2,6 +2,7 @@
 using Duality.Drawing;
 using Duality.Resources;
 using SnowyPeak.DualityUI.Controls.Configuration;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.DualityUI.Controls
 {
-	public class TextBox : SimpleControl
+	public class TextBox : Control
 	{
         private float _seconds;
         private bool _caretVisible;
@@ -68,6 +69,16 @@ namespace SnowyPeak.DualityUI.Controls
                 }
 			}
 		}
+
+        public override void ApplySkin(Skin skin)
+        {
+            if (skin == null) return;
+
+            base.ApplySkin(skin);
+
+            if (this.TextConfiguration == TextConfiguration.DEFAULT)
+            { this.TextConfiguration = skin.GetTemplate<TextTemplate>(this).TextConfiguration; }
+        }
 
 		public override void Draw(Canvas canvas, float zOffset)
         {

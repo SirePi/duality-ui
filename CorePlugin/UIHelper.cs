@@ -1,4 +1,5 @@
 ﻿using SnowyPeak.DualityUI.Controls;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;

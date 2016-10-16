@@ -2,6 +2,7 @@
 using Duality.Drawing;
 using Duality.Resources;
 using SnowyPeak.DualityUI.Controls.Configuration;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,11 @@ namespace SnowyPeak.DualityUI.Controls
 		public CheckChangeEventDelegate CheckChangeEventHandler { get; set; }
 
         public bool Checked { get; set; }
-		public GlyphConfiguration GlyphConfiguration { get; set; }
+		public GlyphConfiguration GlyphConfiguration { private get; set; }
 
         private VertexC1P3T2[] _glyphVertices;
 
-        public CheckButton()
+		public CheckButton()
         {
             _glyphVertices = new VertexC1P3T2[4];
 
@@ -35,6 +36,16 @@ namespace SnowyPeak.DualityUI.Controls
                 }
             };
         }
+
+		public override void ApplySkin(Skin skin)
+		{
+            if (skin == null) return;
+
+			base.ApplySkin(skin);
+
+			if (this.GlyphConfiguration == GlyphConfiguration.DEFAULT)
+			{ this.GlyphConfiguration = skin.GetTemplate<GlyphTemplate>(this).GlyphConfiguration; }
+		}
 
 		public override void Draw(Canvas canvas, float zOffset)
         {

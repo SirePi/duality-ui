@@ -1,6 +1,7 @@
 ﻿using Duality;
 using Duality.Drawing;
 using SnowyPeak.DualityUI.Controls.Configuration;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,10 @@ namespace SnowyPeak.DualityUI.Controls
 {
 	public sealed class ScrollBar : CompositeControl
 	{
+		public static readonly string INCREASE_TEMPLATE = ".Increase";
+		public static readonly string DECREASE_TEMPLATE = ".Decrease";
+		public static readonly string CURSOR_TEMPLATE = ".Cursor";
+
 		public delegate void ValueChangedEventDelegate(ScrollBar scrollBar, int value);
 		public ValueChangedEventDelegate ValueChangedEventHandler { get; set; }
 
@@ -88,13 +93,17 @@ namespace SnowyPeak.DualityUI.Controls
 		private ScrollBarConfiguration _scrollBarConfiguration;
 		public ScrollBarConfiguration ScrollBarConfiguration
 		{
-			private get { return _scrollBarConfiguration; }
+			get { return _scrollBarConfiguration; }
 			set
 			{
 				_scrollBarConfiguration = value;
-				_btnDecrease.Size = _scrollBarConfiguration.ButtonsSize;
-				_btnIncrease.Size = _scrollBarConfiguration.ButtonsSize;
-				_btnCursor.Size = _scrollBarConfiguration.CursorSize;
+
+				_btnDecrease.Size.AtLeast(_scrollBarConfiguration.ButtonsSize);
+				_btnIncrease.Size.AtLeast(_scrollBarConfiguration.ButtonsSize);
+				_btnCursor.Size.AtLeast(_scrollBarConfiguration.CursorSize);
+
+                if (_orientation == DualityUI.Orientation.Horizontal)
+                { _btnCursor.Size.Swap(); }
 
 				_btnIncrease.Appearance = _scrollBarConfiguration.ButtonIncreaseAppearance;
 				_btnDecrease.Appearance = _scrollBarConfiguration.ButtonDecreaseAppearance;
@@ -108,6 +117,8 @@ namespace SnowyPeak.DualityUI.Controls
             this.MinValue = 0;
             this.Value = 0;
             this.MaxValue = 100;
+
+			this.ScrollBarConfiguration = ScrollBarConfiguration.DEFAULT;
         }
 
 		public override ControlsContainer BuildControl()
@@ -115,19 +126,33 @@ namespace SnowyPeak.DualityUI.Controls
 			DockPanel scrollBar = new DockPanel();
             scrollBar.Add(_btnDecrease = new Button()
             {
+                TemplateName = this.TemplateName + DECREASE_TEMPLATE,
+				StretchToFill = false,
                 MouseButtonEventHandler = (button, args) => 
                 {
 					if (args.Button == Duality.Input.MouseButton.Left)
 					{ _isDecreasing = args.IsPressed; }
-                }
+                },
+				FocusChangeHandler = (button, isFocused) =>
+				{
+					if (!isFocused)
+					{ _isDecreasing = false; }
+				}
             });
             scrollBar.Add(_btnIncrease = new Button()
             {
+                TemplateName = this.TemplateName + INCREASE_TEMPLATE,
+				StretchToFill = false,
                 MouseButtonEventHandler = (button, args) => 
                 {
 					if (args.Button == Duality.Input.MouseButton.Left)
 					{ _isIncreasing = args.IsPressed; }
-                }
+                },
+				FocusChangeHandler = (button, isFocused) =>
+				{
+					if (!isFocused)
+					{ _isIncreasing = false; }
+				}
             });
             scrollBar.Add(_canvas = new CanvasPanel()
             {
@@ -136,8 +161,9 @@ namespace SnowyPeak.DualityUI.Controls
 
             _canvas.Add(_btnCursor = new Button()
             {
+                TemplateName = this.TemplateName + CURSOR_TEMPLATE,
                 StretchToFill = false,
-                Grid = new GridPanel.GridInfo() { Row = 1, Column = 1 },
+				Cell = new GridPanel.Cell() { Row = 1, Column = 1 },
                 MouseButtonEventHandler = (button, args) =>
                 {
                     if(args.Button == Duality.Input.MouseButton.Left)
@@ -159,6 +185,21 @@ namespace SnowyPeak.DualityUI.Controls
 
 			return scrollBar;
 		}
+
+        public override void ApplySkin(Skin skin)
+        {
+            if (skin == null) return;
+
+            base.ApplySkin(skin);
+
+            if (this.ScrollBarConfiguration == ScrollBarConfiguration.DEFAULT)
+            {
+                ScrollBarTemplate template = skin.GetTemplate<ScrollBarTemplate>(this);
+
+                this.ScrollBarConfiguration = template.ScrollBarConfiguration;
+                this.Margin = template.ScrollBarMargin;
+            }
+        }
 
         public override void OnUpdate(float msFrame)
         {
@@ -211,11 +252,13 @@ namespace SnowyPeak.DualityUI.Controls
             {
                 float delta = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / _valueDelta;
                 _btnCursor.Position.X = (delta * this.Value);
+				_btnCursor.Position.Y = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / 2;
             }
             else
             {
                 float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
                 _btnCursor.Position.Y = (delta * this.Value);
+				_btnCursor.Position.X = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / 2;
             }
         }
 	}

@@ -10,7 +10,7 @@ namespace SnowyPeak.DualityUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
-		public struct GridInfo
+		new public struct Cell
 		{
 			public int Row;
 			public int Column;
@@ -35,10 +35,10 @@ namespace SnowyPeak.DualityUI.Controls
 
 			foreach (Control c in this.Children)
             {
-				int row = c.Grid.Row < this.Rows.Length ? c.Grid.Row : this.Rows.Length - 1;
-				int col = c.Grid.Column < this.Columns.Length ? c.Grid.Column : this.Columns.Length - 1;
-                int rspan = c.Grid.RowSpan != 0 ? c.Grid.RowSpan : 1;
-                int cspan = c.Grid.ColSpan != 0 ? c.Grid.ColSpan : 1;
+				int row = c.Cell.Row < this.Rows.Length ? c.Cell.Row : this.Rows.Length - 1;
+				int col = c.Cell.Column < this.Columns.Length ? c.Cell.Column : this.Columns.Length - 1;
+				int rspan = c.Cell.RowSpan != 0 ? c.Cell.RowSpan : 1;
+				int cspan = c.Cell.ColSpan != 0 ? c.Cell.ColSpan : 1;
 
                 int cellX = columnsSize.Take(col).Sum();
                 int cellY = rowsSize.Take(row).Sum();

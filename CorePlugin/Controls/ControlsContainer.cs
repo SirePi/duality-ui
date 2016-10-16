@@ -1,5 +1,6 @@
 ﻿using Duality;
 using Duality.Drawing;
+using SnowyPeak.DualityUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.DualityUI.Controls
 {
-	public abstract class ControlsContainer : SimpleControl
+	public abstract class ControlsContainer : Control, ILayout
 	{
 		public Border Margin { get; set; }
 		protected List<Control> Children { get; private set; }
+
+        protected Skin _skin;
 
 		public Rect ChildrenArea
 		{
@@ -25,21 +28,20 @@ namespace SnowyPeak.DualityUI.Controls
 			}
 		}
 
-
 		protected ControlsContainer()
 		{
 			this.Margin = Border.Zero;
 			this.Children = new List<Control>();
 		}
 
-		public ControlsContainer Add(Control child)
+        public ControlsContainer Add(Control child)
 		{
 			if (this.Children.Contains(child))
 			{ throw new Exception(String.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
 				// check that I am not introducing a circular ancestry
-				ControlsContainer cc = this.Parent;
+                ControlsContainer cc = this.Parent;
 				while (cc != null)
 				{
 					if (cc == child)
@@ -54,8 +56,10 @@ namespace SnowyPeak.DualityUI.Controls
 					child.Parent.Remove(child);
 				}
 
-				this.Children.Add(child);
 				child.Parent = this;
+                child.ApplySkin(_skin);
+
+                this.Children.Add(child);
 
 				return this;
 			}
@@ -64,7 +68,7 @@ namespace SnowyPeak.DualityUI.Controls
 		public ControlsContainer Remove(Control child)
 		{
 			this.Children.Remove(child);
-            return this;
+			return this;
 		}
 
 		public void Clear()
@@ -72,12 +76,12 @@ namespace SnowyPeak.DualityUI.Controls
 			this.Children.Clear();
 		}
 
-		internal void LayoutControls()
+		public void LayoutControls()
 		{
 			foreach (Control c in this.Children)
-            {
+			{
 				c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size;
-            }
+			}
 
 			_LayoutControls();
 
@@ -86,31 +90,37 @@ namespace SnowyPeak.DualityUI.Controls
 				c.ActualPosition += this.ActualPosition;
 			}
 
-			foreach (ControlsContainer c in this.Children.Where(c => c is ControlsContainer))
-			{
-				c.LayoutControls();
-			}
-			foreach (CompositeControl c in this.Children.Where(c => c is CompositeControl))
+			foreach (ILayout c in this.Children.Where(c => c is ILayout))
 			{
 				c.LayoutControls();
 			}
 		}
 
-        internal Control FindHoveredControl(Vector2 position)
+        public override void ApplySkin(Skin skin)
         {
-			Control result = this.Children.FirstOrDefault(c => 
-                (c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
-                c.Visibility == Control.ControlVisibility.Visible &&
-                c.ControlArea.Contains(position));
+            if (skin == null) return;
 
-			if (result is CompositeControl)
-			{ result = (result as CompositeControl).FindHoveredControl(position); }
+            base.ApplySkin(skin);
+            foreach(Control c in this.Children)
+            {
+                c.ApplySkin(skin);
+            }
 
-			if (result is ControlsContainer) 
-			{ result = (result as ControlsContainer).FindHoveredControl(position); }
-
-            return result;
+            _skin = skin;
         }
+
+		public Control FindHoveredControl(Vector2 position)
+		{
+			Control result = this.Children.FirstOrDefault(c =>
+				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
+				c.Visibility == Control.ControlVisibility.Visible &&
+				c.ControlArea.Contains(position));
+
+			while (result is ILayout)
+			{ result = (result as ILayout).FindHoveredControl(position); }
+
+			return result;
+		}
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
@@ -118,7 +128,7 @@ namespace SnowyPeak.DualityUI.Controls
 
 			foreach (Control c in this.Children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
 			{
-                c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
+				c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
 			}
 		}
 
