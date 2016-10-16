@@ -100,22 +100,15 @@ namespace SnowyPeak.DualityUI.Controls
 
                 if (material != null && material.MainTexture.IsAvailable)
                 {
-                    Vector2 innerTopLeft = new Vector2(
-                        this.ActualPosition.X + appearance.Border.Left,
-                        this.ActualPosition.Y + appearance.Border.Top
-                        );
-
-                    Vector2 innerBottomRight = new Vector2(
-                        this.ActualPosition.X + this.ActualSize.X - appearance.Border.Right,
-                        this.ActualPosition.Y + this.ActualSize.Y - appearance.Border.Bottom
-                        );
+                    Vector2 innerTopLeft = this.ActualPosition + appearance.Border.TopLeft;
+                    Vector2 innerBottomRight = this.ActualPosition + this.ActualSize - appearance.Border.BottomRight;
 
                     Texture tx = material.MainTexture.Res;
                     if (tx != null)
                     {
                         Vector2 uvSize = tx.UVRatio / tx.Size;
-                        Vector2 uvTopLeft = uvSize * new Vector2(appearance.Border.Left, appearance.Border.Top);
-                        Vector2 uvBottomRight = tx.UVRatio - (uvSize * new Vector2(appearance.Border.Right, appearance.Border.Bottom));
+						Vector2 uvTopLeft = uvSize * appearance.Border.TopLeft;
+                        Vector2 uvBottomRight = tx.UVRatio - (uvSize * appearance.Border.BottomRight);
 
                         SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, material.MainColor);
                         SetupVertex(1, topLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, material.MainColor);

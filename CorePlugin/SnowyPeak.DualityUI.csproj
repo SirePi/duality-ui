@@ -59,10 +59,12 @@
   <ItemGroup>
     <Compile Include="Appearance.cs" />
     <Compile Include="Border.cs" />
+    <Compile Include="Controls\Configuration\ProgressConfiguration.cs" />
     <Compile Include="Controls\ILayout.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
     <Compile Include="Templates\GlyphTemplate.cs" />
     <Compile Include="Templates\ListBoxTemplate.cs" />
+    <Compile Include="Templates\ProgressTemplate.cs" />
     <Compile Include="Templates\TextTemplate.cs" />
     <Compile Include="Templates\ScrollBarTemplate.cs" />
     <Compile Include="Templates\ControlTemplate.cs" />
