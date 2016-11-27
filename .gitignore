@@ -1,4 +1,3 @@
-CorePlugin/bin/
-CorePlugin/obj/
-EditorPlugin/
-CorePlugin/TestUI.cs
+SnowyPeak.Duality.Plugins.YAUI/bin/
+SnowyPeak.Duality.Plugins.YAUI/obj/
+*.suo

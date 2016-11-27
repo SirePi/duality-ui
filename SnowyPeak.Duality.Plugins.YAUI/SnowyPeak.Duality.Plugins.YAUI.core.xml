@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SnowyPeak.Duality.Plugins.YAUI.core</name>
+    </assembly>
+    <members>
+        <member name="T:SnowyPeak.Duality.Plugins.YAUI.YAUICorePlugin">
+            <summary>
+            Defines a Duality core plugin.
+            </summary>
+        </member>
+    </members>
+</doc>
