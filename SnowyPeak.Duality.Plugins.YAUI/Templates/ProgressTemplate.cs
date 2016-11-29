@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
-	public class ProgressTemplate : TextTemplate
-	{
+    public class ProgressTemplate : TextTemplate
+    {
         public ProgressConfiguration ProgressConfiguration { get; set; }
 
         public ProgressTemplate()
@@ -17,5 +17,5 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
         {
             this.ProgressConfiguration = ProgressConfiguration.DEFAULT;
         }
-	}
+    }
 }

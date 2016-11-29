@@ -10,13 +10,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
     public class ScrollBarTemplate : ControlTemplate
     {
-		public Border ScrollBarMargin { get; set; }
+        public Border ScrollBarMargin { get; set; }
+
         public ScrollBarConfiguration ScrollBarConfiguration { get; set; }
 
         public ScrollBarTemplate()
             : base()
         {
-			this.ScrollBarMargin = Border.Zero;
+            this.ScrollBarMargin = Border.Zero;
             this.ScrollBarConfiguration = ScrollBarConfiguration.DEFAULT;
         }
     }

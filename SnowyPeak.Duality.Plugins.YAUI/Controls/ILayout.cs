@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public interface ILayout
-	{
-		void LayoutControls();
-		Control FindHoveredControl(Vector2 position);
-	}
+    public interface ILayout
+    {
+        void LayoutControls();
+
+        Control FindHoveredControl(Vector2 position);
+    }
 }

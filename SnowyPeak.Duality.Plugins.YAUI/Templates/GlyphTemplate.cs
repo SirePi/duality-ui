@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
-	public class GlyphTemplate : TextTemplate
-	{
-		public GlyphConfiguration GlyphConfiguration { get; set; }
+    public class GlyphTemplate : TextTemplate
+    {
+        public GlyphConfiguration GlyphConfiguration { get; set; }
 
-		public GlyphTemplate()
+        public GlyphTemplate()
             : base()
         {
-			this.GlyphConfiguration = GlyphConfiguration.DEFAULT;
+            this.GlyphConfiguration = GlyphConfiguration.DEFAULT;
         }
-	}
+    }
 }

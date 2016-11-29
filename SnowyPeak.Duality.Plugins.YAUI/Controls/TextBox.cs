@@ -12,38 +12,42 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class TextBox : Control
-	{
+    public class TextBox : Control
+    {
         private static readonly string ELLIPSIS = "...";
         private static readonly string WQ = "Wq";
 
         private float _seconds;
         private bool _caretVisible;
         private int _caretPosition;
-		private Vector2 _caretTopLeft;
+        private Vector2 _caretTopLeft;
 
-		public string Text { get; set; }
-		public float CaretSpeed { get; set; }
+        public string Text { get; set; }
+
+        public float CaretSpeed { get; set; }
+
         public bool IsPassword { get; set; }
-        public int MaxLength { get; set; }
-		public TextConfiguration TextConfiguration { get; set; }
 
-		public TextBox(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
+        public int MaxLength { get; set; }
+
+        public TextConfiguration TextConfiguration { get; set; }
+
+        public TextBox(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
         {
-			this.Text = String.Empty;
-			this.CaretSpeed = .5f;
+            this.Text = String.Empty;
+            this.CaretSpeed = .5f;
             this.MaxLength = int.MaxValue;
 
-			ApplySkin(_baseSkin);
+            ApplySkin(_baseSkin);
         }
 
-		public override void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
-		{
-			base.OnKeyboardKeyEvent(args);
+        public override void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
+        {
+            base.OnKeyboardKeyEvent(args);
 
-			if((this.Status & ControlStatus.Active) != ControlStatus.None && args.IsPressed)
-			{
+            if ((this.Status & ControlStatus.Active) != ControlStatus.None && args.IsPressed)
+            {
                 if (this.Text.Length < MaxLength)
                 {
                     if (DualityApp.Keyboard.CharInput.Length > 0)
@@ -56,36 +60,36 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
                         this.Text = this.Text.Remove(_caretPosition - 1, 1);
                         _caretPosition--;
                     }
-                    if(args.Key == Key.Delete && _caretPosition < this.Text.Length)
+                    if (args.Key == Key.Delete && _caretPosition < this.Text.Length)
                     { this.Text = this.Text.Remove(_caretPosition, 1); }
-                    
+
                     if (args.Key == Key.Enter || args.Key == Key.KeypadEnter)
                     { this.OnBlur(); }
 
-                    if(args.Key == Key.Left)
+                    if (args.Key == Key.Left)
                     { _caretPosition--; }
                     if (args.Key == Key.Right)
                     { _caretPosition++; }
-                    if(args.Key == Key.Home)
+                    if (args.Key == Key.Home)
                     { _caretPosition = 0; }
-                    if(args.Key == Key.End)
+                    if (args.Key == Key.End)
                     { _caretPosition = this.Text.Length; }
                 }
 
                 _caretPosition = Math.Min(Math.Max(0, _caretPosition), this.Text.Length);
-			}
-		}
+            }
+        }
 
         public override void OnMouseButtonEvent(MouseButtonEventArgs args)
         {
             base.OnMouseButtonEvent(args);
 
-			if (args.Button == MouseButton.Left && args.IsPressed)
-			{
+            if (args.Button == MouseButton.Left && args.IsPressed)
+            {
                 if ((this.Status & Control.ControlStatus.Active) == Control.ControlStatus.None)
                 { _caretPosition = this.Text.Length; }
 
-                this.Status |= Control.ControlStatus.Active; 
+                this.Status |= Control.ControlStatus.Active;
             }
         }
 
@@ -94,23 +98,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             this.Status &= ~Control.ControlStatus.Active;
         }
 
-		public override void OnUpdate(float msFrame)
-		{
+        public override void OnUpdate(float msFrame)
+        {
             base.OnUpdate(msFrame);
 
-			if((this.Status & ControlStatus.Active) != ControlStatus.None)
-			{
+            if ((this.Status & ControlStatus.Active) != ControlStatus.None)
+            {
                 _seconds += (msFrame / 1000);
 
-				if (_seconds > CaretSpeed)
+                if (_seconds > CaretSpeed)
                 {
                     _caretVisible = !_caretVisible;
-					_seconds -= CaretSpeed;
+                    _seconds -= CaretSpeed;
                 }
-			}
+            }
             else
             { _caretVisible = false; }
-		}
+        }
 
         public override void ApplySkin(Skin skin)
         {
@@ -118,7 +122,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             this.TextConfiguration = _baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
         }
 
-		public override void Draw(Canvas canvas, float zOffset)
+        public override void Draw(Canvas canvas, float zOffset)
         {
             base.Draw(canvas, zOffset);
 
@@ -134,12 +138,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             if (!String.IsNullOrWhiteSpace(this.Text))
             {
                 float availableWidth = this.ActualSize.X - this.TextConfiguration.Margin.Left - this.TextConfiguration.Margin.Right;
-                if(textSize.X > availableWidth)
+                if (textSize.X > availableWidth)
                 {
                     Vector2 ellipsisSize = canvas.MeasureText(ELLIPSIS);
                     int subLength = textToDraw.Length - 1;
 
-                    while (canvas.MeasureText(textToDraw.Substring(0, subLength)).X + ellipsisSize.X > availableWidth) 
+                    while (canvas.MeasureText(textToDraw.Substring(0, subLength)).X + ellipsisSize.X > availableWidth)
                         subLength--;
 
                     textToDraw = textToDraw.Substring(0, subLength) + ELLIPSIS;
@@ -153,63 +157,63 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
                     this.TextConfiguration.Alignment);
             }
 
-            if(_caretVisible)
+            if (_caretVisible)
             {
                 Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, _caretPosition));
 
-				if (textSize.Y == 0)
-				{ textSize.Y = canvas.MeasureText(WQ).Y; }
+                if (textSize.Y == 0)
+                { textSize.Y = canvas.MeasureText(WQ).Y; }
 
-				_caretTopLeft = textPosition;
+                _caretTopLeft = textPosition;
 
-                switch(this.TextConfiguration.Alignment)
-				{
-					case Alignment.TopLeft:
+                switch (this.TextConfiguration.Alignment)
+                {
+                    case Alignment.TopLeft:
                         _caretTopLeft.X += preCaretSize.X;
-						break;
+                        break;
 
-					case Alignment.Left:
+                    case Alignment.Left:
                         _caretTopLeft.X += preCaretSize.X;
-						_caretTopLeft.Y -= (textSize.Y / 2);
-						break;
+                        _caretTopLeft.Y -= (textSize.Y / 2);
+                        break;
 
-					case Alignment.BottomLeft:
+                    case Alignment.BottomLeft:
                         _caretTopLeft.X += preCaretSize.X;
-						_caretTopLeft.Y -= textSize.Y;
-						break;
+                        _caretTopLeft.Y -= textSize.Y;
+                        break;
 
-					case Alignment.Top:
+                    case Alignment.Top:
                         _caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
-						break;
+                        break;
 
-					case Alignment.Center:
+                    case Alignment.Center:
                         _caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
-						_caretTopLeft.Y -= (textSize.Y / 2);
-						break;
+                        _caretTopLeft.Y -= (textSize.Y / 2);
+                        break;
 
-					case Alignment.Bottom:
+                    case Alignment.Bottom:
                         _caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
-						_caretTopLeft.Y -= textSize.Y;
-						break;
+                        _caretTopLeft.Y -= textSize.Y;
+                        break;
 
-					case Alignment.TopRight:
+                    case Alignment.TopRight:
                         _caretTopLeft.X += preCaretSize.X - textSize.X;
-						break;
+                        break;
 
-					case Alignment.Right:
+                    case Alignment.Right:
                         _caretTopLeft.X += preCaretSize.X - textSize.X;
-						_caretTopLeft.Y -= (textSize.Y / 2);
-						break;
+                        _caretTopLeft.Y -= (textSize.Y / 2);
+                        break;
 
-					case Alignment.BottomRight:
+                    case Alignment.BottomRight:
                         _caretTopLeft.X += preCaretSize.X - textSize.X;
-						_caretTopLeft.Y -= textSize.Y;
-						break;
-				}
+                        _caretTopLeft.Y -= textSize.Y;
+                        break;
+                }
 
-				canvas.DrawLine(_caretTopLeft.X, _caretTopLeft.Y, zOffset + INNER_ZOFFSET,
-					_caretTopLeft.X, _caretTopLeft.Y + textSize.Y, zOffset + INNER_ZOFFSET);
+                canvas.DrawLine(_caretTopLeft.X, _caretTopLeft.Y, zOffset + INNER_ZOFFSET,
+                    _caretTopLeft.X, _caretTopLeft.Y + textSize.Y, zOffset + INNER_ZOFFSET);
             }
         }
-	}
+    }
 }

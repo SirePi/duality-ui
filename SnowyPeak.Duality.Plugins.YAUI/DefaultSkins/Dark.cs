@@ -108,7 +108,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
                 Active = matRightActive,
                 Disabled = matRightDull
             };
-            
+
             Appearance scrollBarUpAppearance = new Appearance()
             {
                 Border = new Border(3),
@@ -126,7 +126,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
                 Active = matDownActive,
                 Disabled = matDownDull
             };
-            
+
             Appearance backgroundAppearance = new Appearance()
              {
                  Border = Border.Zero,
@@ -182,7 +182,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             TextTemplate buttonTemplate = new TextTemplate()
             {
                 Appearance = buttonAppearance,
-				MinSize = new Size(20),
+                MinSize = new Size(20),
                 TextConfiguration = new TextConfiguration()
                 {
                     Alignment = Alignment.Left,
@@ -193,22 +193,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             };
             AddDefaultTemplate(typeof(Button), buttonTemplate);
             AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
-			AddDefaultTemplate(typeof(TextBox), buttonTemplate);
+            AddDefaultTemplate(typeof(TextBox), buttonTemplate);
 
-			GlyphTemplate glyphTemplate = new GlyphTemplate()
-			{
-				Appearance = buttonAppearance,
-				MinSize = new Size(20),
-				GlyphConfiguration = new GlyphConfiguration()
-				{
+            GlyphTemplate glyphTemplate = new GlyphTemplate()
+            {
+                Appearance = buttonAppearance,
+                MinSize = new Size(20),
+                GlyphConfiguration = new GlyphConfiguration()
+                {
                     Glyph = matGlyph,
-					Margin = new Border(5),
-					Alignment = Alignment.Right
-				},
-				TextConfiguration = buttonTemplate.TextConfiguration
-			};
-			AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
-			AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
+                    Margin = new Border(5),
+                    Alignment = Alignment.Right
+                },
+                TextConfiguration = buttonTemplate.TextConfiguration
+            };
+            AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
+            AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
 
             ScrollBarTemplate vScrollBarTemplate = new ScrollBarTemplate()
             {
@@ -245,7 +245,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             ListBoxTemplate listBoxTemplate = new ListBoxTemplate()
             {
                 Appearance = backgroundAppearance,
-				MinSize = new Size(4),
+                MinSize = new Size(4),
                 ListBoxConfiguration = new ListBoxConfiguration()
                 {
                     ItemAppearance = buttonAppearance,
@@ -256,20 +256,20 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             };
             AddDefaultTemplate(typeof(ListBox), listBoxTemplate);
 
-			ProgressTemplate progressTemplate = new ProgressTemplate()
-			{
+            ProgressTemplate progressTemplate = new ProgressTemplate()
+            {
                 Appearance = backgroundAppearance,
-				MinSize = new Size(15),
-				ProgressConfiguration = new ProgressConfiguration()
-				{
-					BarAppearance = buttonAppearance,
-					BarStyle = ProgressBar.BarStyle.Cutoff,
-					Direction = ProgressBar.Direction.LeftToRight,
-					Margin = new Border(5)
-				},
+                MinSize = new Size(15),
+                ProgressConfiguration = new ProgressConfiguration()
+                {
+                    BarAppearance = buttonAppearance,
+                    BarStyle = ProgressBar.BarStyle.Cutoff,
+                    Direction = ProgressBar.Direction.LeftToRight,
+                    Margin = new Border(5)
+                },
                 TextConfiguration = buttonTemplate.TextConfiguration
-			};
-			AddDefaultTemplate(typeof(ProgressBar), progressTemplate);
+            };
+            AddDefaultTemplate(typeof(ProgressBar), progressTemplate);
         }
     }
 }

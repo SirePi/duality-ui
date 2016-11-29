@@ -10,38 +10,39 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public sealed class ListBox : CompositeControl
-	{
-		public static readonly string SCROLLBAR_TEMPLATE = ".ScrollBar";
-		public static readonly string PANEL_TEMPLATE = ".Panel";
+    public sealed class ListBox : CompositeControl
+    {
+        public static readonly string SCROLLBAR_TEMPLATE = ".ScrollBar";
+        public static readonly string PANEL_TEMPLATE = ".Panel";
 
-		private StackPanel _stackPanel;
-		private VerticalScrollBar _scrollBar;
+        private StackPanel _stackPanel;
+        private VerticalScrollBar _scrollBar;
 
-		private List<ToggleButton> _toggleButtons;
-		private int _itemsInView;
+        private List<ToggleButton> _toggleButtons;
+        private int _itemsInView;
 
-		public IEnumerable<object> SelectedItems
-		{
-			get { return _toggleButtons.Where(tb => tb.Toggled).Select(tb => tb.Tag); }
-		}
+        public IEnumerable<object> SelectedItems
+        {
+            get { return _toggleButtons.Where(tb => tb.Toggled).Select(tb => tb.Tag); }
+        }
 
-		public ScrollBarConfiguration ScrollBarConfiguration
-		{
-			private get { return _scrollBar.ScrollBarConfiguration; }
-			set
-			{
-				_scrollBar.ScrollBarConfiguration = value;
-				_scrollBar.Size = new Size(
-					MathF.Max(value.ButtonsSize.X, value.CursorSize.X),
-					MathF.Max(value.ButtonsSize.Y, value.CursorSize.Y));
-			}
-		}
+        public ScrollBarConfiguration ScrollBarConfiguration
+        {
+            private get { return _scrollBar.ScrollBarConfiguration; }
+            set
+            {
+                _scrollBar.ScrollBarConfiguration = value;
+                _scrollBar.Size = new Size(
+                    MathF.Max(value.ButtonsSize.X, value.CursorSize.X),
+                    MathF.Max(value.ButtonsSize.Y, value.CursorSize.Y));
+            }
+        }
 
-		public ListBoxConfiguration ListBoxConfiguration { get; set; }
+        public ListBoxConfiguration ListBoxConfiguration { get; set; }
 
         private TextConfiguration _textConfiguration;
-		public TextConfiguration TextConfiguration
+
+        public TextConfiguration TextConfiguration
         {
             get { return _textConfiguration; }
             set
@@ -55,106 +56,106 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             }
         }
 
-		public bool MultiSelection { get; set; }
+        public bool MultiSelection { get; set; }
 
-		public ListBox(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
-		{
-			_toggleButtons = new List<ToggleButton>();
-			ApplySkin(_baseSkin);
-		}
+        public ListBox(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
+        {
+            _toggleButtons = new List<ToggleButton>();
+            ApplySkin(_baseSkin);
+        }
 
-		public override ControlsContainer BuildControl()
-		{
-			return new DockPanel()
-			.Add(_scrollBar = new VerticalScrollBar(_baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE)
-			{
-				Docking = DockPanel.Dock.Right
-			})
-			.Add(_stackPanel = new StackPanel(_baseSkin, this.TemplateName + PANEL_TEMPLATE)
-			{
-				Docking = DockPanel.Dock.Center,
-				Orientation = Orientation.Vertical
-			});
-		}
+        public override ControlsContainer BuildControl()
+        {
+            return new DockPanel()
+            .Add(_scrollBar = new VerticalScrollBar(_baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE)
+            {
+                Docking = DockPanel.Dock.Right
+            })
+            .Add(_stackPanel = new StackPanel(_baseSkin, this.TemplateName + PANEL_TEMPLATE)
+            {
+                Docking = DockPanel.Dock.Center,
+                Orientation = Orientation.Vertical
+            });
+        }
 
         public override void ApplySkin(Skin skin)
-		{
+        {
             base.ApplySkin(skin);
 
-			if (_scrollBar != null)
-			{
-				_scrollBar.ApplySkin(_baseSkin);
+            if (_scrollBar != null)
+            {
+                _scrollBar.ApplySkin(_baseSkin);
 
-				ListBoxTemplate template = _baseSkin.GetTemplate<ListBoxTemplate>(this);
+                ListBoxTemplate template = _baseSkin.GetTemplate<ListBoxTemplate>(this);
 
                 this.ListBoxConfiguration = template.ListBoxConfiguration.Clone();
                 this.TextConfiguration = template.TextConfiguration.Clone();
-			}
+            }
         }
 
-		public override void Draw(Canvas canvas, float zOffset)
-		{
-			_itemsInView = (int)MathF.Floor(_stackPanel.ChildrenArea.H / this.ListBoxConfiguration.ItemsSize.Y);
+        public override void Draw(Canvas canvas, float zOffset)
+        {
+            _itemsInView = (int)MathF.Floor(_stackPanel.ChildrenArea.H / this.ListBoxConfiguration.ItemsSize.Y);
 
-			_scrollBar.MinValue = 0;
-			_scrollBar.MaxValue = Math.Max(0, _toggleButtons.Count - _itemsInView);
+            _scrollBar.MinValue = 0;
+            _scrollBar.MaxValue = Math.Max(0, _toggleButtons.Count - _itemsInView);
 
-			_scrollBar.Visibility = _scrollBar.MaxValue == 0 ? ControlVisibility.Collapsed : ControlVisibility.Visible;
+            _scrollBar.Visibility = _scrollBar.MaxValue == 0 ? ControlVisibility.Collapsed : ControlVisibility.Visible;
 
-			int i = 0;
+            int i = 0;
 
-			foreach (ToggleButton tb in _toggleButtons)
-			{
-				if (i < _scrollBar.Value)
-				{ tb.Visibility = ControlVisibility.Collapsed; }
-				else if (i < _scrollBar.Value + _itemsInView)
-				{ tb.Visibility = ControlVisibility.Visible; }
-				else
-				{ tb.Visibility = ControlVisibility.Collapsed; }
+            foreach (ToggleButton tb in _toggleButtons)
+            {
+                if (i < _scrollBar.Value)
+                { tb.Visibility = ControlVisibility.Collapsed; }
+                else if (i < _scrollBar.Value + _itemsInView)
+                { tb.Visibility = ControlVisibility.Visible; }
+                else
+                { tb.Visibility = ControlVisibility.Collapsed; }
 
-				i++;
-			}
+                i++;
+            }
 
-			base.Draw(canvas, zOffset);
-		}
+            base.Draw(canvas, zOffset);
+        }
 
-		public void SetItems(IEnumerable<object> items)
-		{
-			object[] selectedItems = this.SelectedItems.ToArray();
+        public void SetItems(IEnumerable<object> items)
+        {
+            object[] selectedItems = this.SelectedItems.ToArray();
 
-			_toggleButtons.Clear();
-			_stackPanel.Clear();
+            _toggleButtons.Clear();
+            _stackPanel.Clear();
 
-			foreach (object obj in items)
-			{
-				ToggleButton toggle = new ToggleButton()
-				{
-					Text = obj.ToString(),
-					Tag = obj,
-					Visibility = ControlVisibility.Collapsed,
-					Toggled = selectedItems.Contains(obj),
-					Size = this.ListBoxConfiguration.ItemsSize,
-					TextConfiguration = this.TextConfiguration,
-					ToggleChangeEventHandler = (button, isToggled) =>
-					{
-						if (isToggled && !MultiSelection)
-						{
-							foreach (ToggleButton tb in _toggleButtons.Where(tb => tb != button))
-							{
-								tb.Toggled = false;
-							}
-						}
-					}
-				};
+            foreach (object obj in items)
+            {
+                ToggleButton toggle = new ToggleButton()
+                {
+                    Text = obj.ToString(),
+                    Tag = obj,
+                    Visibility = ControlVisibility.Collapsed,
+                    Toggled = selectedItems.Contains(obj),
+                    Size = this.ListBoxConfiguration.ItemsSize,
+                    TextConfiguration = this.TextConfiguration,
+                    ToggleChangeEventHandler = (button, isToggled) =>
+                    {
+                        if (isToggled && !MultiSelection)
+                        {
+                            foreach (ToggleButton tb in _toggleButtons.Where(tb => tb != button))
+                            {
+                                tb.Toggled = false;
+                            }
+                        }
+                    }
+                };
 
-				toggle.ApplySkin(_baseSkin);
+                toggle.ApplySkin(_baseSkin);
 
-				_toggleButtons.Add(toggle);
-				_stackPanel.Add(toggle);
-			}
+                _toggleButtons.Add(toggle);
+                _stackPanel.Add(toggle);
+            }
 
-			OnUpdate(0);
-		}
-	}
+            OnUpdate(0);
+        }
+    }
 }

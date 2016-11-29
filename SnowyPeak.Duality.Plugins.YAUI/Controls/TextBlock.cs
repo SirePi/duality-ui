@@ -12,20 +12,21 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class TextBlock : Control
-	{
-		private FormattedText _fText;
+    public class TextBlock : Control
+    {
+        private FormattedText _fText;
 
-		public string Text { get; set; }
-		public TextConfiguration TextConfiguration { get; set; }
+        public string Text { get; set; }
 
-		public TextBlock(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
+        public TextConfiguration TextConfiguration { get; set; }
+
+        public TextBlock(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
         {
-			this.Text = String.Empty;
-			_fText = new FormattedText();
+            this.Text = String.Empty;
+            _fText = new FormattedText();
 
-			ApplySkin(_baseSkin);
+            ApplySkin(_baseSkin);
         }
 
         public override void ApplySkin(Skin skin)
@@ -34,7 +35,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             this.TextConfiguration = _baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
         }
 
-		public override void Draw(Canvas canvas, float zOffset)
+        public override void Draw(Canvas canvas, float zOffset)
         {
             base.Draw(canvas, zOffset);
 
@@ -46,17 +47,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
             if (!String.IsNullOrWhiteSpace(this.Text))
             {
-				_fText.SourceText = this.Text;
-				_fText.Fonts[0] = this.TextConfiguration.Font;
-				_fText.UpdateVertexCache();
+                _fText.SourceText = this.Text;
+                _fText.Fonts[0] = this.TextConfiguration.Font;
+                _fText.UpdateVertexCache();
 
-				canvas.DrawText(_fText,
-					textPosition.X,
-					textPosition.Y,
-					zOffset + (INNER_ZOFFSET * 2),
-					null,
-					this.TextConfiguration.Alignment);
+                canvas.DrawText(_fText,
+                    textPosition.X,
+                    textPosition.Y,
+                    zOffset + (INNER_ZOFFSET * 2),
+                    null,
+                    this.TextConfiguration.Alignment);
             }
         }
-	}
+    }
 }

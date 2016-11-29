@@ -10,33 +10,33 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public sealed class VerticalScrollBar : ScrollBar
-	{
-		public VerticalScrollBar(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
-		{ }
+    public sealed class VerticalScrollBar : ScrollBar
+    {
+        public VerticalScrollBar(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
+        { }
 
-		public override ControlsContainer BuildControl()
-		{
-			ControlsContainer scrollBar = base.BuildControl();
+        public override ControlsContainer BuildControl()
+        {
+            ControlsContainer scrollBar = base.BuildControl();
 
-			_btnDecrease.Docking = DockPanel.Dock.Top;
-			_btnIncrease.Docking = DockPanel.Dock.Bottom;
+            _btnDecrease.Docking = DockPanel.Dock.Top;
+            _btnIncrease.Docking = DockPanel.Dock.Bottom;
 
-			return scrollBar;
-		}
+            return scrollBar;
+        }
 
-		protected override float ApplyMouseMovement(Vector2 mouseDelta)
-		{
-			float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
-			return mouseDelta.Y / delta;
-		}
+        protected override float ApplyMouseMovement(Vector2 mouseDelta)
+        {
+            float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
+            return mouseDelta.Y / delta;
+        }
 
-		protected override void UpdateCursor()
+        protected override void UpdateCursor()
         {
             float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
             _btnCursor.Position.Y = (delta * this.Value);
-			_btnCursor.Position.X = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / 2;
+            _btnCursor.Position.X = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / 2;
         }
-	}
+    }
 }

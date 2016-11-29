@@ -104,7 +104,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             TextTemplate buttonTemplate = new TextTemplate()
             {
                 Appearance = buttonAppearance,
-				MinSize = new Size(20),
+                MinSize = new Size(20),
                 TextConfiguration = new TextConfiguration()
                 {
                     Alignment = Alignment.Right,
@@ -115,22 +115,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             };
             AddDefaultTemplate(typeof(Button), buttonTemplate);
             AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
-			AddDefaultTemplate(typeof(TextBox), buttonTemplate);
+            AddDefaultTemplate(typeof(TextBox), buttonTemplate);
 
-			GlyphTemplate glyphTemplate = new GlyphTemplate()
-			{
-				Appearance = buttonAppearance,
-				MinSize = new Size(20),
-				GlyphConfiguration = new GlyphConfiguration()
-				{
-					Glyph = matRoundWhite,
-					Margin = new Border(5),
-					Alignment = Alignment.Right
-				},
-				TextConfiguration = buttonTemplate.TextConfiguration
-			};
-			AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
-			AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
+            GlyphTemplate glyphTemplate = new GlyphTemplate()
+            {
+                Appearance = buttonAppearance,
+                MinSize = new Size(20),
+                GlyphConfiguration = new GlyphConfiguration()
+                {
+                    Glyph = matRoundWhite,
+                    Margin = new Border(5),
+                    Alignment = Alignment.Right
+                },
+                TextConfiguration = buttonTemplate.TextConfiguration
+            };
+            AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
+            AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
 
             ScrollBarTemplate vScrollBarTemplate = new ScrollBarTemplate()
             {
@@ -167,7 +167,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
             ListBoxTemplate listBoxTemplate = new ListBoxTemplate()
             {
                 Appearance = backgroundAppearance,
-				MinSize = new Size(4),
+                MinSize = new Size(4),
                 ListBoxConfiguration = new ListBoxConfiguration()
                 {
                     ItemAppearance = buttonAppearance,

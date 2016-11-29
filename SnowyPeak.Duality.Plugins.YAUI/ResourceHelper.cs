@@ -11,32 +11,31 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-	internal static class ResourceHelper
-	{
-		public static ContentRef<Font> LoadFont(Assembly embeddingAssembly, string resourceName)
-		{
-			ContentRef<Font> result;
+    internal static class ResourceHelper
+    {
+        public static ContentRef<Font> LoadFont(Assembly embeddingAssembly, string resourceName)
+        {
+            ContentRef<Font> result;
 
-			using (Stream stream = embeddingAssembly.GetManifestResourceStream(resourceName))
-			{
-				result = Resource.Load<Font>(stream);
-			}
+            using (Stream stream = embeddingAssembly.GetManifestResourceStream(resourceName))
+            {
+                result = Resource.Load<Font>(stream);
+            }
 
-			return result;
-		}
+            return result;
+        }
 
-		public static ContentRef<Pixmap> LoadPixmap(Assembly embeddingAssembly, string resourceName)
-		{
-			IImageCodec codec = ImageCodec.GetRead(ImageCodec.FormatPng);
-			ContentRef<Pixmap> result;
+        public static ContentRef<Pixmap> LoadPixmap(Assembly embeddingAssembly, string resourceName)
+        {
+            IImageCodec codec = ImageCodec.GetRead(ImageCodec.FormatPng);
+            ContentRef<Pixmap> result;
 
-			using (Stream stream = embeddingAssembly.GetManifestResourceStream(resourceName))
-			{
-				result = new Pixmap(codec.Read(stream));
-			}
+            using (Stream stream = embeddingAssembly.GetManifestResourceStream(resourceName))
+            {
+                result = new Pixmap(codec.Read(stream));
+            }
 
-			return result;
-		}
-
-	}
+            return result;
+        }
+    }
 }

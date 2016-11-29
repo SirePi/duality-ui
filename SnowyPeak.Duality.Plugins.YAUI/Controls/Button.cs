@@ -12,24 +12,26 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class Button : Control
-	{
-		public delegate void MouseButtonEventDelegate(Button button, MouseButtonEventArgs args);
-		public MouseButtonEventDelegate MouseButtonEventHandler { get; set; }
+    public class Button : Control
+    {
+        public delegate void MouseButtonEventDelegate(Button button, MouseButtonEventArgs args);
 
-		public string Text { get; set; }
-		public TextConfiguration TextConfiguration { get; set; }
+        public MouseButtonEventDelegate MouseButtonEventHandler { get; set; }
+
+        public string Text { get; set; }
+
+        public TextConfiguration TextConfiguration { get; set; }
 
         private FormattedText _fText;
 
-		public Button(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
-		{
-			this.Text = String.Empty;
+        public Button(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
+        {
+            this.Text = String.Empty;
             _fText = new FormattedText();
 
-			ApplySkin(_baseSkin);
-		}
+            ApplySkin(_baseSkin);
+        }
 
         public override void ApplySkin(Skin skin)
         {
@@ -37,16 +39,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
             this.TextConfiguration = _baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
         }
 
-		public override void Draw(Canvas canvas, float zOffset)
-		{
-			base.Draw(canvas, zOffset);
+        public override void Draw(Canvas canvas, float zOffset)
+        {
+            base.Draw(canvas, zOffset);
 
-			Vector2 textPosition = AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
+            Vector2 textPosition = AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 
-			if (!String.IsNullOrWhiteSpace(this.Text))
-			{
-				canvas.State.Reset();
-				canvas.State.ColorTint = this.TextConfiguration.Color;
+            if (!String.IsNullOrWhiteSpace(this.Text))
+            {
+                canvas.State.Reset();
+                canvas.State.ColorTint = this.TextConfiguration.Color;
 
                 _fText.SourceText = this.Text;
                 if (_fText.Fonts[0] != this.TextConfiguration.Font)
@@ -55,35 +57,35 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
                     _fText.UpdateVertexCache();
                 }
 
-				canvas.DrawText(_fText,
-					textPosition.X,
-					textPosition.Y,
-					zOffset + (INNER_ZOFFSET * 2),
+                canvas.DrawText(_fText,
+                    textPosition.X,
+                    textPosition.Y,
+                    zOffset + (INNER_ZOFFSET * 2),
                     null,
-					this.TextConfiguration.Alignment);
-			}
-		}
+                    this.TextConfiguration.Alignment);
+            }
+        }
 
-		public override void OnMouseButtonEvent(MouseButtonEventArgs args)
-		{
-			base.OnMouseButtonEvent(args);
+        public override void OnMouseButtonEvent(MouseButtonEventArgs args)
+        {
+            base.OnMouseButtonEvent(args);
 
-			if (args.Button == MouseButton.Left)
-			{
-				if (args.IsPressed) 
-				{ this.Status |= Control.ControlStatus.Active; }
-				else 
-				{ this.Status &= ~Control.ControlStatus.Active; }
-			}
+            if (args.Button == MouseButton.Left)
+            {
+                if (args.IsPressed)
+                { this.Status |= Control.ControlStatus.Active; }
+                else
+                { this.Status &= ~Control.ControlStatus.Active; }
+            }
 
-			if (this.MouseButtonEventHandler != null) { this.MouseButtonEventHandler(this, args); }
-		}
+            if (this.MouseButtonEventHandler != null) { this.MouseButtonEventHandler(this, args); }
+        }
 
-		public override void OnMouseLeaveEvent()
-		{
-			base.OnMouseLeaveEvent();
+        public override void OnMouseLeaveEvent()
+        {
+            base.OnMouseLeaveEvent();
 
-			this.Status &= ~Control.ControlStatus.Active;
-		}
-	}
+            this.Status &= ~Control.ControlStatus.Active;
+        }
+    }
 }

@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
-	public class TextTemplate : ControlTemplate
-	{
-		public TextConfiguration TextConfiguration { get; set; }
+    public class TextTemplate : ControlTemplate
+    {
+        public TextConfiguration TextConfiguration { get; set; }
 
         public TextTemplate()
             : base()
         {
             this.TextConfiguration = TextConfiguration.DEFAULT;
         }
-	}
+    }
 }

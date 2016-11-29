@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-	public enum Orientation
-	{
-		Horizontal,
-		Vertical
-	}
+    public enum Orientation
+    {
+        Horizontal,
+        Vertical
+    }
 }
