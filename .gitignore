@@ -1,3 +1,5 @@
+packages
 SnowyPeak.Duality.Plugins.YAUI/bin/
 SnowyPeak.Duality.Plugins.YAUI/obj/
 *.suo
+*.nupkg

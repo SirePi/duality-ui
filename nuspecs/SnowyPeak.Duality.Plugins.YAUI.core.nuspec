@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>SnowyPeak.Duality.Plugins.YAUI.Core</id>
+        <version>1.0.0</version>
+        <title>Yet Another UI Plugin (Core)</title>
+        <authors>Pilati Alessandro</authors>
+        <owners>Pilati Alessandro</owners>
+        <licenseUrl>https://raw.githubusercontent.com/SirePi/duality-ui/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/SirePi/duality-ui</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/SirePi/duality-ui/master/nuspecs/icon.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This plugin provides a simple and easy to use UI framework for use with Duality.</description>
+        <summary>SnowyPeak.Duality.Plugins.YAUI.Core plugin</summary>
+        <tags>Duality Plugin UI YAUI SnowyPeak</tags>
+        <dependencies>
+            <dependency id="AdamsLair.Duality" version="2.8.3" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.dll" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.dll" />
+        <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.pdb" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.pdb" />
+        <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.XML" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.XML" />
+    </files>
+</package>
