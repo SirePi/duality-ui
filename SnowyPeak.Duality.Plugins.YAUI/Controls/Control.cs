@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Drawing;
 using Duality.Input;
 using Duality.Resources;
@@ -11,289 +12,277 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-    public abstract class Control
-    {
-        [Flags]
-        public enum ControlStatus
-        {
-            None = 0x00,
-            Disabled = 0x0001,
-            Normal = 0x0010,
-            Active = 0x0100,
-            Hover = 0x1000
-        }
+	public abstract class Control
+	{
+		[Flags]
+		public enum ControlStatus
+		{
+			None = 0x00,
+			Disabled = 0x0001,
+			Normal = 0x0010,
+			Active = 0x0100,
+			Hover = 0x1000
+		}
 
-        public enum ControlVisibility
-        {
-            Visible,
-            Hidden,
-            Collapsed
-        }
+		public enum ControlVisibility
+		{
+			Visible,
+			Hidden,
+			Collapsed
+		}
 
-        public delegate void UpdateDelegate(Control control, float msFrame);
+		public Vector2 ActualPosition;
+		public Size ActualSize;
+		public Vector2 Position;
+		public Size Size;
 
-        public UpdateDelegate UpdateHandler { get; set; }
+		protected static readonly float INNER_ZOFFSET = -0.00001f;
+		protected static readonly float LAYOUT_ZOFFSET = -0.0001f;
+		protected Skin _baseSkin;
+		protected VertexC1P3T2[] _vertices;
 
-        public delegate void FocusChangeDelegate(Control control, bool isFocused);
+		public ContentRef<Appearance> Appearance { get; set; }
+		public GridPanel.Cell Cell { get; set; }
+		public Rect ControlArea
+		{
+			get { return new Rect(this.ActualPosition.X, this.ActualPosition.Y, this.ActualSize.X, this.ActualSize.Y); }
+		}
 
-        public FocusChangeDelegate FocusChangeHandler { get; set; }
+		public DockPanel.Dock Docking { get; set; }
+		public FocusChangeDelegate FocusChangeHandler { get; set; }
+		public string Name { get; set; }
+		public ControlsContainer Parent { get; set; }
+		public ControlStatus Status { get; set; }
+		public bool StretchToFill { get; set; }
+		public object Tag { get; set; }
+		public UpdateDelegate UpdateHandler { get; set; }
+		public ControlVisibility Visibility { get; set; }
+		internal string TemplateName { get; private set; }
 
-        protected static readonly float LAYOUT_ZOFFSET = -0.0001f;
-        protected static readonly float INNER_ZOFFSET = -0.00001f;
+		public delegate void FocusChangeDelegate(Control control, bool isFocused);
 
-        public Vector2 Position;
-        public Size Size;
-        public Vector2 ActualPosition;
-        public Size ActualSize;
+		public delegate void UpdateDelegate(Control control, float msFrame);
 
-        public string Name { get; set; }
+		protected Control(Skin skin, string templateName)
+		{
+			_vertices = new VertexC1P3T2[36];
 
-        public bool StretchToFill { get; set; }
+			this.StretchToFill = true;
+			this.Visibility = ControlVisibility.Visible;
+			this.Status = ControlStatus.Normal;
 
-        public DockPanel.Dock Docking { get; set; }
+			this.TemplateName = templateName == null ? this.GetType().Name : templateName;
+			_baseSkin = (skin == null ? Skin.DEFAULT : skin);
+		}
 
-        public GridPanel.Cell Cell { get; set; }
+		public virtual void ApplySkin(Skin skin)
+		{
+			if (skin == null) return;
 
-        public ControlStatus Status { get; set; }
+			_baseSkin = skin;
+			ControlTemplate template = _baseSkin.GetTemplate<ControlTemplate>(this);
 
-        public object Tag { get; set; }
+			this.Appearance = template.Appearance;
+			this.Size.AtLeast(template.MinSize);
+		}
 
-        public ControlVisibility Visibility { get; set; }
+		public virtual void Draw(Canvas canvas, float zOffset)
+		{
+			if (this.Appearance.IsAvailable)
+			{
+				Appearance appearance = this.Appearance.Res;
+				Material material = appearance[this.Status];
 
-        public ControlsContainer Parent { get; set; }
+				Vector2 topLeft = this.ActualPosition;
+				Vector2 bottomRight = this.ActualPosition + this.ActualSize;
 
-        public ContentRef<Appearance> Appearance { get; set; }
+				if (material != null && material.MainTexture.IsAvailable)
+				{
+					Vector2 innerTopLeft = this.ActualPosition + appearance.Border.TopLeft;
+					Vector2 innerBottomRight = this.ActualPosition + this.ActualSize - appearance.Border.BottomRight;
 
-        protected VertexC1P3T2[] _vertices;
-        protected Skin _baseSkin;
+					Texture tx = material.MainTexture.Res;
+					if (tx != null)
+					{
+						Vector2 uvSize = tx.UVRatio / tx.Size;
+						Vector2 uvTopLeft = uvSize * appearance.Border.TopLeft;
+						Vector2 uvBottomRight = tx.UVRatio - (uvSize * appearance.Border.BottomRight);
 
-        internal string TemplateName { get; private set; }
+						SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, material.MainColor);
+						SetupVertex(1, topLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, material.MainColor);
+						SetupVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
+						SetupVertex(3, innerTopLeft.X, topLeft.Y, zOffset, uvTopLeft.X, 0, material.MainColor);
 
-        public Rect ControlArea
-        {
-            get { return new Rect(this.ActualPosition.X, this.ActualPosition.Y, this.ActualSize.X, this.ActualSize.Y); }
-        }
+						CopyVertex(4, 3);
+						CopyVertex(5, 2);
+						SetupVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
+						SetupVertex(7, innerBottomRight.X, topLeft.Y, zOffset, uvBottomRight.X, 0, material.MainColor);
 
-        protected Control(Skin skin, string templateName)
-        {
-            _vertices = new VertexC1P3T2[36];
+						CopyVertex(8, 7);
+						CopyVertex(9, 6);
+						SetupVertex(10, bottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, material.MainColor);
+						SetupVertex(11, bottomRight.X, topLeft.Y, zOffset, tx.UVRatio.X, 0, material.MainColor);
 
-            this.StretchToFill = true;
-            this.Visibility = ControlVisibility.Visible;
-            this.Status = ControlStatus.Normal;
+						CopyVertex(12, 1);
+						SetupVertex(13, topLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, material.MainColor);
+						SetupVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
+						CopyVertex(15, 2);
 
-            this.TemplateName = templateName == null ? this.GetType().Name : templateName;
-            _baseSkin = (skin == null ? Skin.DEFAULT : skin);
-        }
+						CopyVertex(16, 2);
+						CopyVertex(17, 14);
+						SetupVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
+						CopyVertex(19, 6);
 
-        public virtual void ApplySkin(Skin skin)
-        {
-            if (skin == null) return;
+						CopyVertex(20, 6);
+						CopyVertex(21, 18);
+						SetupVertex(22, bottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, material.MainColor);
+						CopyVertex(23, 10);
 
-            _baseSkin = skin;
-            ControlTemplate template = _baseSkin.GetTemplate<ControlTemplate>(this);
+						CopyVertex(24, 13);
+						SetupVertex(25, topLeft.X, bottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
+						SetupVertex(26, innerTopLeft.X, bottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, material.MainColor);
+						CopyVertex(27, 14);
 
-            this.Appearance = template.Appearance;
-            this.Size.AtLeast(template.MinSize);
-        }
+						CopyVertex(28, 14);
+						CopyVertex(29, 26);
+						SetupVertex(30, innerBottomRight.X, bottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, material.MainColor);
+						CopyVertex(31, 18);
 
-        public virtual void Draw(Canvas canvas, float zOffset)
-        {
-            if (this.Appearance.IsAvailable)
-            {
-                Appearance appearance = this.Appearance.Res;
-                Material material = appearance[this.Status];
+						CopyVertex(32, 18);
+						CopyVertex(33, 30);
+						SetupVertex(34, bottomRight.X, bottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, material.MainColor);
+						CopyVertex(35, 22);
 
-                Vector2 topLeft = this.ActualPosition;
-                Vector2 bottomRight = this.ActualPosition + this.ActualSize;
+						canvas.State.Reset();
+						canvas.State.SetMaterial(material);
+						canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads);
+					}
+				}
+				else
+				{
+					SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.Red);
+					SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 0, ColorRgba.Red);
+					SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 0, 0, ColorRgba.Red);
+					SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 0, 0, ColorRgba.Red);
 
-                if (material != null && material.MainTexture.IsAvailable)
-                {
-                    Vector2 innerTopLeft = this.ActualPosition + appearance.Border.TopLeft;
-                    Vector2 innerBottomRight = this.ActualPosition + this.ActualSize - appearance.Border.BottomRight;
+					canvas.State.Reset();
+					canvas.State.SetMaterial(ContentProvider.RequestContent<Material>(@"Default:Material.White"));
+					canvas.DrawVertices<VertexC1P3T2>(_vertices.Take(4).ToArray(), VertexMode.Quads);
+				}
+			}
+		}
 
-                    Texture tx = material.MainTexture.Res;
-                    if (tx != null)
-                    {
-                        Vector2 uvSize = tx.UVRatio / tx.Size;
-                        Vector2 uvTopLeft = uvSize * appearance.Border.TopLeft;
-                        Vector2 uvBottomRight = tx.UVRatio - (uvSize * appearance.Border.BottomRight);
+		public virtual void OnBlur()
+		{
+			if (this.FocusChangeHandler != null)
+			{ this.FocusChangeHandler(this, false); }
+		}
 
-                        SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, material.MainColor);
-                        SetupVertex(1, topLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, material.MainColor);
-                        SetupVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
-                        SetupVertex(3, innerTopLeft.X, topLeft.Y, zOffset, uvTopLeft.X, 0, material.MainColor);
+		public virtual void OnFocus()
+		{
+			if (this.FocusChangeHandler != null)
+			{ this.FocusChangeHandler(this, true); }
+		}
 
-                        CopyVertex(4, 3);
-                        CopyVertex(5, 2);
-                        SetupVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
-                        SetupVertex(7, innerBottomRight.X, topLeft.Y, zOffset, uvBottomRight.X, 0, material.MainColor);
+		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
+		{
+		}
 
-                        CopyVertex(8, 7);
-                        CopyVertex(9, 6);
-                        SetupVertex(10, bottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, material.MainColor);
-                        SetupVertex(11, bottomRight.X, topLeft.Y, zOffset, tx.UVRatio.X, 0, material.MainColor);
+		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
+		{
+		}
 
-                        CopyVertex(12, 1);
-                        SetupVertex(13, topLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, material.MainColor);
-                        SetupVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
-                        CopyVertex(15, 2);
+		public virtual void OnMouseEnterEvent()
+		{
+			this.Status |= Control.ControlStatus.Hover;
+		}
 
-                        CopyVertex(16, 2);
-                        CopyVertex(17, 14);
-                        SetupVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
-                        CopyVertex(19, 6);
+		public virtual void OnMouseLeaveEvent()
+		{
+			this.Status &= ~Control.ControlStatus.Hover;
+		}
 
-                        CopyVertex(20, 6);
-                        CopyVertex(21, 18);
-                        SetupVertex(22, bottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, material.MainColor);
-                        CopyVertex(23, 10);
+		public virtual void OnUpdate(float msFrame)
+		{
+			if (this.UpdateHandler != null)
+			{ this.UpdateHandler(this, msFrame); }
+		}
 
-                        CopyVertex(24, 13);
-                        SetupVertex(25, topLeft.X, bottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
-                        SetupVertex(26, innerTopLeft.X, bottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, material.MainColor);
-                        CopyVertex(27, 14);
+		public override string ToString()
+		{
+			return String.IsNullOrWhiteSpace(this.Name) ? this.GetType().ToString() : this.Name;
+		}
 
-                        CopyVertex(28, 14);
-                        CopyVertex(29, 26);
-                        SetupVertex(30, innerBottomRight.X, bottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, material.MainColor);
-                        CopyVertex(31, 18);
+		protected Vector2 AlignElement(Vector2 elementSize, Border margin, Alignment alignment)
+		{
+			Vector2 topLeft = Vector2.Zero;
 
-                        CopyVertex(32, 18);
-                        CopyVertex(33, 30);
-                        SetupVertex(34, bottomRight.X, bottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, material.MainColor);
-                        CopyVertex(35, 22);
+			switch (alignment)
+			{
+				case Alignment.TopLeft:
+					topLeft.X = this.ActualPosition.X + margin.Left;
+					topLeft.Y = this.ActualPosition.Y + margin.Top;
+					break;
 
-                        canvas.State.Reset();
-                        canvas.State.SetMaterial(material);
-                        canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads);
-                    }
-                }
-                else
-                {
-                    SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.Red);
-                    SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 0, ColorRgba.Red);
-                    SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 0, 0, ColorRgba.Red);
-                    SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 0, 0, ColorRgba.Red);
+				case Alignment.Top:
+					topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
+					topLeft.Y = this.ActualPosition.Y + margin.Top;
+					break;
 
-                    canvas.State.Reset();
-                    canvas.State.SetMaterial(ContentProvider.RequestContent<Material>(@"Default:Material.White"));
-                    canvas.DrawVertices<VertexC1P3T2>(_vertices.Take(4).ToArray(), VertexMode.Quads);
-                }
-            }
-        }
+				case Alignment.TopRight:
+					topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
+					topLeft.Y = this.ActualPosition.Y + margin.Top;
+					break;
 
-        protected Vector2 AlignElement(Vector2 elementSize, Border margin, Alignment alignment)
-        {
-            Vector2 topLeft = Vector2.Zero;
+				case Alignment.Left:
+					topLeft.X = this.ActualPosition.X + margin.Left;
+					topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
+					break;
 
-            switch (alignment)
-            {
-                case Alignment.TopLeft:
-                    topLeft.X = this.ActualPosition.X + margin.Left;
-                    topLeft.Y = this.ActualPosition.Y + margin.Top;
-                    break;
+				case Alignment.Center:
+					topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
+					topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
+					break;
 
-                case Alignment.Top:
-                    topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
-                    topLeft.Y = this.ActualPosition.Y + margin.Top;
-                    break;
+				case Alignment.Right:
+					topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
+					topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
+					break;
 
-                case Alignment.TopRight:
-                    topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
-                    topLeft.Y = this.ActualPosition.Y + margin.Top;
-                    break;
+				case Alignment.BottomLeft:
+					topLeft.X = this.ActualPosition.X + margin.Left;
+					topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
+					break;
 
-                case Alignment.Left:
-                    topLeft.X = this.ActualPosition.X + margin.Left;
-                    topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
-                    break;
+				case Alignment.Bottom:
+					topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
+					topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
+					break;
 
-                case Alignment.Center:
-                    topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
-                    topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
-                    break;
+				case Alignment.BottomRight:
+					topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
+					topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
+					break;
+			}
 
-                case Alignment.Right:
-                    topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
-                    topLeft.Y = this.ActualPosition.Y + (this.ActualSize.Y - elementSize.Y) / 2;
-                    break;
+			return topLeft;
+		}
 
-                case Alignment.BottomLeft:
-                    topLeft.X = this.ActualPosition.X + margin.Left;
-                    topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
-                    break;
+		protected void CopyVertex(int destinationIndex, int sourceIndex)
+		{
+			_vertices[destinationIndex].Pos = _vertices[sourceIndex].Pos;
+			_vertices[destinationIndex].TexCoord = _vertices[sourceIndex].TexCoord;
+			_vertices[destinationIndex].Color = _vertices[sourceIndex].Color;
+		}
 
-                case Alignment.Bottom:
-                    topLeft.X = this.ActualPosition.X + (this.ActualSize.X - elementSize.X) / 2;
-                    topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
-                    break;
-
-                case Alignment.BottomRight:
-                    topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
-                    topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
-                    break;
-            }
-
-            return topLeft;
-        }
-
-        public virtual void OnUpdate(float msFrame)
-        {
-            if (this.UpdateHandler != null)
-            { this.UpdateHandler(this, msFrame); }
-        }
-
-        public virtual void OnFocus()
-        {
-            if (this.FocusChangeHandler != null)
-            { this.FocusChangeHandler(this, true); }
-        }
-
-        public virtual void OnBlur()
-        {
-            if (this.FocusChangeHandler != null)
-            { this.FocusChangeHandler(this, false); }
-        }
-
-        public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
-        {
-        }
-
-        public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
-        {
-        }
-
-        public virtual void OnMouseEnterEvent()
-        {
-            this.Status |= Control.ControlStatus.Hover;
-        }
-
-        public virtual void OnMouseLeaveEvent()
-        {
-            this.Status &= ~Control.ControlStatus.Hover;
-        }
-
-        protected void SetupVertex(int index, float x, float y, float z, float uvX, float uvY, ColorRgba color)
-        {
-            _vertices[index].Pos.X = x;
-            _vertices[index].Pos.Y = y;
-            _vertices[index].Pos.Z = z;
-            _vertices[index].TexCoord.X = uvX;
-            _vertices[index].TexCoord.Y = uvY;
-            _vertices[index].Color = color;
-        }
-
-        protected void CopyVertex(int destinationIndex, int sourceIndex)
-        {
-            _vertices[destinationIndex].Pos = _vertices[sourceIndex].Pos;
-            _vertices[destinationIndex].TexCoord = _vertices[sourceIndex].TexCoord;
-            _vertices[destinationIndex].Color = _vertices[sourceIndex].Color;
-        }
-
-        public override string ToString()
-        {
-            return String.IsNullOrWhiteSpace(this.Name) ? this.GetType().ToString() : this.Name;
-        }
-    }
+		protected void SetupVertex(int index, float x, float y, float z, float uvX, float uvY, ColorRgba color)
+		{
+			_vertices[index].Pos.X = x;
+			_vertices[index].Pos.Y = y;
+			_vertices[index].Pos.Z = z;
+			_vertices[index].TexCoord.X = uvX;
+			_vertices[index].TexCoord.Y = uvY;
+			_vertices[index].Color = color;
+		}
+	}
 }

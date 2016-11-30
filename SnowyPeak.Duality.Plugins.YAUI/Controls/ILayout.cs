@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-    public interface ILayout
-    {
-        void LayoutControls();
+	public interface ILayout
+	{
+		Control FindHoveredControl(Vector2 position);
 
-        Control FindHoveredControl(Vector2 position);
-    }
+		void LayoutControls();
+	}
 }

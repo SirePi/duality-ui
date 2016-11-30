@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Drawing;
 using Duality.Input;
 using SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration;
@@ -11,207 +12,203 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-    public abstract class ScrollBar : CompositeControl
-    {
-        public static readonly string INCREASE_TEMPLATE = ".Increase";
-        public static readonly string DECREASE_TEMPLATE = ".Decrease";
-        public static readonly string CURSOR_TEMPLATE = ".Cursor";
+	public abstract class ScrollBar : CompositeControl
+	{
+		public static readonly string CURSOR_TEMPLATE = ".Cursor";
+		public static readonly string DECREASE_TEMPLATE = ".Decrease";
+		public static readonly string INCREASE_TEMPLATE = ".Increase";
 
-        public delegate void ValueChangedEventDelegate(ScrollBar scrollBar, int value);
+		protected Button _btnCursor;
+		protected Button _btnDecrease;
+		protected Button _btnIncrease;
+		protected CanvasPanel _canvas;
+		protected int _valueDelta;
 
-        public ValueChangedEventDelegate ValueChangedEventHandler { get; set; }
+		private Vector2? _cursorDragPosition;
+		private bool _isDecreasing;
+		private bool _isIncreasing;
+		private int _maxValue;
+		private int _minValue;
+		private float _mseconds;
+		private ScrollBarConfiguration _scrollBarConfiguration;
+		private float _tempValue;
+		private int _value;
 
-        protected Button _btnDecrease;
-        protected Button _btnIncrease;
-        protected Button _btnCursor;
+		public int MaxValue
+		{
+			get { return _maxValue; }
+			set
+			{
+				_maxValue = value;
+				_valueDelta = _maxValue - _minValue;
 
-        protected CanvasPanel _canvas;
+				this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
+			}
+		}
 
-        private bool _isIncreasing;
-        private bool _isDecreasing;
-        private Vector2? _cursorDragPosition;
-        private float _mseconds;
-        private float _tempValue;
+		public int MinValue
+		{
+			get { return _minValue; }
+			set
+			{
+				_minValue = value;
+				_valueDelta = _maxValue - _minValue;
 
-        private int _minValue;
-        private int _maxValue;
-        private int _value;
-        protected int _valueDelta;
+				this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
+			}
+		}
 
-        public int MinValue
-        {
-            get { return _minValue; }
-            set
-            {
-                _minValue = value;
-                _valueDelta = _maxValue - _minValue;
+		public ScrollBarConfiguration ScrollBarConfiguration
+		{
+			get { return _scrollBarConfiguration; }
+			set
+			{
+				_scrollBarConfiguration = value;
 
-                this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
-            }
-        }
+				_btnDecrease.Size = _scrollBarConfiguration.ButtonsSize;
+				_btnIncrease.Size = _scrollBarConfiguration.ButtonsSize;
+				_btnCursor.Size = _scrollBarConfiguration.CursorSize;
 
-        public int Value
-        {
-            get { return _value; }
-            set
-            {
-                bool valueChanged = _value != value;
-                _value = value;
+				_btnIncrease.Appearance = _scrollBarConfiguration.ButtonIncreaseAppearance;
+				_btnDecrease.Appearance = _scrollBarConfiguration.ButtonDecreaseAppearance;
+				_btnCursor.Appearance = _scrollBarConfiguration.CursorAppearance;
+			}
+		}
 
-                if (valueChanged && this.ValueChangedEventHandler != null)
-                { this.ValueChangedEventHandler(this, value); }
-            }
-        }
+		public int Value
+		{
+			get { return _value; }
+			set
+			{
+				bool valueChanged = _value != value;
+				_value = value;
 
-        public int MaxValue
-        {
-            get { return _maxValue; }
-            set
-            {
-                _maxValue = value;
-                _valueDelta = _maxValue - _minValue;
+				if (valueChanged && this.ValueChangedEventHandler != null)
+				{ this.ValueChangedEventHandler(this, value); }
+			}
+		}
 
-                this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
-            }
-        }
+		public ValueChangedEventDelegate ValueChangedEventHandler { get; set; }
+		public delegate void ValueChangedEventDelegate(ScrollBar scrollBar, int value);
 
-        private ScrollBarConfiguration _scrollBarConfiguration;
+		public ScrollBar(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{
+			this.MinValue = 0;
+			this.Value = 0;
+			this.MaxValue = 100;
 
-        public ScrollBarConfiguration ScrollBarConfiguration
-        {
-            get { return _scrollBarConfiguration; }
-            set
-            {
-                _scrollBarConfiguration = value;
+			ApplySkin(_baseSkin);
+		}
 
-                _btnDecrease.Size = _scrollBarConfiguration.ButtonsSize;
-                _btnIncrease.Size = _scrollBarConfiguration.ButtonsSize;
-                _btnCursor.Size = _scrollBarConfiguration.CursorSize;
+		public override void ApplySkin(Skin skin)
+		{
+			base.ApplySkin(skin);
 
-                _btnIncrease.Appearance = _scrollBarConfiguration.ButtonIncreaseAppearance;
-                _btnDecrease.Appearance = _scrollBarConfiguration.ButtonDecreaseAppearance;
-                _btnCursor.Appearance = _scrollBarConfiguration.CursorAppearance;
-            }
-        }
+			ScrollBarTemplate template = _baseSkin.GetTemplate<ScrollBarTemplate>(this);
+			this.ScrollBarConfiguration = template.ScrollBarConfiguration.Clone();
+			this.Margin = template.ScrollBarMargin;
+		}
 
-        public ScrollBar(Skin skin = null, string templateName = null)
-            : base(skin, templateName)
-        {
-            this.MinValue = 0;
-            this.Value = 0;
-            this.MaxValue = 100;
+		public override ControlsContainer BuildControl()
+		{
+			DockPanel scrollBar = new DockPanel();
+			scrollBar.Add(_btnDecrease = new Button(_baseSkin, this.TemplateName + DECREASE_TEMPLATE)
+			{
+				StretchToFill = false,
+				MouseButtonEventHandler = (button, args) =>
+				{
+					if (args.Button == MouseButton.Left)
+					{ _isDecreasing = args.IsPressed; }
+				},
+				FocusChangeHandler = (button, isFocused) =>
+				{
+					if (!isFocused)
+					{ _isDecreasing = false; }
+				}
+			});
+			scrollBar.Add(_btnIncrease = new Button(_baseSkin, this.TemplateName + INCREASE_TEMPLATE)
+			{
+				StretchToFill = false,
+				MouseButtonEventHandler = (button, args) =>
+				{
+					if (args.Button == MouseButton.Left)
+					{ _isIncreasing = args.IsPressed; }
+				},
+				FocusChangeHandler = (button, isFocused) =>
+				{
+					if (!isFocused)
+					{ _isIncreasing = false; }
+				}
+			});
+			scrollBar.Add(_canvas = new CanvasPanel(_baseSkin)
+			{
+				Docking = DockPanel.Dock.Center
+			});
 
-            ApplySkin(_baseSkin);
-        }
+			_canvas.Add(_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)
+			{
+				StretchToFill = false,
+				MouseButtonEventHandler = (button, args) =>
+				{
+					if (args.Button == MouseButton.Left)
+					{
+						_tempValue = this.Value;
 
-        public override ControlsContainer BuildControl()
-        {
-            DockPanel scrollBar = new DockPanel();
-            scrollBar.Add(_btnDecrease = new Button(_baseSkin, this.TemplateName + DECREASE_TEMPLATE)
-            {
-                StretchToFill = false,
-                MouseButtonEventHandler = (button, args) =>
-                {
-                    if (args.Button == MouseButton.Left)
-                    { _isDecreasing = args.IsPressed; }
-                },
-                FocusChangeHandler = (button, isFocused) =>
-                {
-                    if (!isFocused)
-                    { _isDecreasing = false; }
-                }
-            });
-            scrollBar.Add(_btnIncrease = new Button(_baseSkin, this.TemplateName + INCREASE_TEMPLATE)
-            {
-                StretchToFill = false,
-                MouseButtonEventHandler = (button, args) =>
-                {
-                    if (args.Button == MouseButton.Left)
-                    { _isIncreasing = args.IsPressed; }
-                },
-                FocusChangeHandler = (button, isFocused) =>
-                {
-                    if (!isFocused)
-                    { _isIncreasing = false; }
-                }
-            });
-            scrollBar.Add(_canvas = new CanvasPanel(_baseSkin)
-            {
-                Docking = DockPanel.Dock.Center
-            });
+						if (args.IsPressed)
+						{ _cursorDragPosition = args.Position; }
+						else
+						{ _cursorDragPosition = null; }
+					}
+				},
+				FocusChangeHandler = (button, isFocused) =>
+				{
+					if (!isFocused)
+					{ _cursorDragPosition = null; }
+				}
+			});
 
-            _canvas.Add(_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)
-            {
-                StretchToFill = false,
-                MouseButtonEventHandler = (button, args) =>
-                {
-                    if (args.Button == MouseButton.Left)
-                    {
-                        _tempValue = this.Value;
+			return scrollBar;
+		}
 
-                        if (args.IsPressed)
-                        { _cursorDragPosition = args.Position; }
-                        else
-                        { _cursorDragPosition = null; }
-                    }
-                },
-                FocusChangeHandler = (button, isFocused) =>
-                {
-                    if (!isFocused)
-                    { _cursorDragPosition = null; }
-                }
-            });
+		public override void OnUpdate(float msFrame)
+		{
+			base.OnUpdate(msFrame);
 
-            return scrollBar;
-        }
+			if (_isIncreasing || _isDecreasing)
+			{
+				_mseconds += msFrame;
 
-        public override void ApplySkin(Skin skin)
-        {
-            base.ApplySkin(skin);
+				if (_mseconds > 100)
+				{
+					if (_isIncreasing)
+					{ this.Value += 1; }
 
-            ScrollBarTemplate template = _baseSkin.GetTemplate<ScrollBarTemplate>(this);
-            this.ScrollBarConfiguration = template.ScrollBarConfiguration.Clone();
-            this.Margin = template.ScrollBarMargin;
-        }
+					if (_isDecreasing)
+					{ this.Value -= 1; }
 
-        public override void OnUpdate(float msFrame)
-        {
-            base.OnUpdate(msFrame);
+					this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
+					_mseconds -= 100;
+				}
+			}
+			else if (_cursorDragPosition.HasValue)
+			{
+				Vector2 mouseDelta = DualityApp.Mouse.Pos - _cursorDragPosition.Value;
 
-            if (_isIncreasing || _isDecreasing)
-            {
-                _mseconds += msFrame;
+				if (mouseDelta.Length > 0)
+				{
+					_tempValue += ApplyMouseMovement(mouseDelta);
 
-                if (_mseconds > 100)
-                {
-                    if (_isIncreasing)
-                    { this.Value += 1; }
+					this.Value = Math.Max(Math.Min(MaxValue, (int)_tempValue), MinValue);
+					_cursorDragPosition = DualityApp.Mouse.Pos;
+				}
+			}
 
-                    if (_isDecreasing)
-                    { this.Value -= 1; }
+			UpdateCursor();
+		}
 
-                    this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
-                    _mseconds -= 100;
-                }
-            }
-            else if (_cursorDragPosition.HasValue)
-            {
-                Vector2 mouseDelta = DualityApp.Mouse.Pos - _cursorDragPosition.Value;
+		protected abstract float ApplyMouseMovement(Vector2 mouseDelta);
 
-                if (mouseDelta.Length > 0)
-                {
-                    _tempValue += ApplyMouseMovement(mouseDelta);
-
-                    this.Value = Math.Max(Math.Min(MaxValue, (int)_tempValue), MinValue);
-                    _cursorDragPosition = DualityApp.Mouse.Pos;
-                }
-            }
-
-            UpdateCursor();
-        }
-
-        protected abstract float ApplyMouseMovement(Vector2 mouseDelta);
-
-        protected abstract void UpdateCursor();
-    }
+		protected abstract void UpdateCursor();
+	}
 }

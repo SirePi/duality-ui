@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Drawing;
 using Duality.Input;
 using Duality.Resources;
@@ -11,82 +12,82 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-    public class ToggleButton : Button
-    {
-        public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool isToggled);
+	public class ToggleButton : Button
+	{
+		private bool _isMouseOver;
+		private bool _isMousePressed;
+		private bool _isToggled;
 
-        public ToggleChangeEventDelegate ToggleChangeEventHandler { get; set; }
+		public ToggleChangeEventDelegate ToggleChangeEventHandler { get; set; }
 
-        private bool _isMouseOver;
-        private bool _isMousePressed;
-        private bool _isToggled;
+		public bool Toggled
+		{
+			get { return _isToggled; }
+			set
+			{
+				_isToggled = value;
+				if (this.ToggleChangeEventHandler != null) { this.ToggleChangeEventHandler(this, _isToggled); }
+			}
+		}
 
-        public bool Toggled
-        {
-            get { return _isToggled; }
-            set
-            {
-                _isToggled = value;
-                if (this.ToggleChangeEventHandler != null) { this.ToggleChangeEventHandler(this, _isToggled); }
-            }
-        }
+		public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool isToggled);
 
-        public ToggleButton(Skin skin = null, string templateName = null)
-            : base(skin, templateName)
-        {
-            this.MouseButtonEventHandler = (button, args) =>
-            {
-                if (args.Button == MouseButton.Left)
-                {
-                    _isMousePressed = args.IsPressed;
-                    if (args.IsPressed) this.Toggled = !this.Toggled;
-                }
-            };
+		public ToggleButton(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{
+			this.MouseButtonEventHandler = (button, args) =>
+			{
+				if (args.Button == MouseButton.Left)
+				{
+					_isMousePressed = args.IsPressed;
+					if (args.IsPressed) this.Toggled = !this.Toggled;
+				}
+			};
 
-            ApplySkin(_baseSkin);
-        }
+			ApplySkin(_baseSkin);
+		}
 
-        public override void OnUpdate(float msFrame)
-        {
-            if (!_isMouseOver)
-            {
-                if (this.Toggled)
-                { this.Status |= ControlStatus.Active; }
-                else
-                { this.Status &= ~ControlStatus.Active; }
-            }
-            else
-            {
-                if (_isMousePressed)
-                {
-                    this.Status &= ~ControlStatus.Hover;
+		public override void OnMouseEnterEvent()
+		{
+			base.OnMouseEnterEvent();
 
-                    if (this.Toggled)
-                    { this.Status |= ControlStatus.Active; }
-                    else
-                    { this.Status &= ~ControlStatus.Active; }
-                }
-                else
-                {
-                    this.Status &= ~ControlStatus.Active;
-                    this.Status |= ControlStatus.Hover;
-                }
-            }
-        }
+			_isMouseOver = true;
+		}
 
-        public override void OnMouseEnterEvent()
-        {
-            base.OnMouseEnterEvent();
+		public override void OnMouseLeaveEvent()
+		{
+			base.OnMouseLeaveEvent();
 
-            _isMouseOver = true;
-        }
+			_isMouseOver = false;
+			_isMousePressed = false;
+		}
 
-        public override void OnMouseLeaveEvent()
-        {
-            base.OnMouseLeaveEvent();
+		public override void OnUpdate(float msFrame)
+		{
+			if (!_isMouseOver)
+			{
+				if (this.Toggled)
+				{ this.Status |= ControlStatus.Active; }
+				else
+				{ this.Status &= ~ControlStatus.Active; }
+			}
+			else
+			{
+				if (_isMousePressed)
+				{
+					this.Status &= ~ControlStatus.Hover;
 
-            _isMouseOver = false;
-            _isMousePressed = false;
-        }
-    }
+					if (this.Toggled)
+					{ this.Status |= ControlStatus.Active; }
+					else
+					{ this.Status &= ~ControlStatus.Active; }
+				}
+				else
+				{
+					this.Status &= ~ControlStatus.Active;
+					this.Status |= ControlStatus.Hover;
+				}
+			}
+		}
+	}
 }

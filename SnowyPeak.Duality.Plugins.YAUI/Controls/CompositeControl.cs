@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Drawing;
 using SnowyPeak.Duality.Plugins.YAUI.Templates;
 using System;
@@ -9,52 +10,51 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-    public abstract class CompositeControl : Control, ILayout
-    {
-        public Border Margin { get; set; }
+	public abstract class CompositeControl : Control, ILayout
+	{
+		protected ControlsContainer _container;
+		public Border Margin { get; set; }
 
-        protected ControlsContainer _container;
+		public CompositeControl(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{
+			_container = BuildControl();
+		}
 
-        public CompositeControl(Skin skin = null, string templateName = null)
-            : base(skin, templateName)
-        {
-            _container = BuildControl();
-        }
+		public abstract ControlsContainer BuildControl();
 
-        public abstract ControlsContainer BuildControl();
+		public override void Draw(Canvas canvas, float zOffset)
+		{
+			base.Draw(canvas, zOffset);
 
-        public override void Draw(Canvas canvas, float zOffset)
-        {
-            base.Draw(canvas, zOffset);
+			if (_container != null)
+			{ _container.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
+		}
 
-            if (_container != null)
-            { _container.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
-        }
+		public Control FindHoveredControl(Vector2 position)
+		{
+			return _container.FindHoveredControl(position);
+		}
 
-        public override void OnUpdate(float msFrame)
-        {
-            base.OnUpdate(msFrame);
+		public void LayoutControls()
+		{
+			if (_container != null)
+			{
+				_container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
+				_container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
 
-            _container.OnUpdate(msFrame);
-        }
+				_container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
+				_container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
 
-        public void LayoutControls()
-        {
-            if (_container != null)
-            {
-                _container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
-                _container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
+				_container.LayoutControls();
+			}
+		}
 
-                _container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
-                _container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
+		public override void OnUpdate(float msFrame)
+		{
+			base.OnUpdate(msFrame);
 
-                _container.LayoutControls();
-            }
-        }
-
-        public Control FindHoveredControl(Vector2 position)
-        {
-            return _container.FindHoveredControl(position);
-        }
-    }
+			_container.OnUpdate(msFrame);
+		}
+	}
 }

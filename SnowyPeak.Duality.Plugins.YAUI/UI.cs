@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Components;
 using Duality.Drawing;
 using Duality.Editor;
@@ -13,209 +14,208 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    [EditorHintImage(ResNames.ImageUI)]
-    [EditorHintCategory(ResNames.CategoryUI)]
-    public abstract class UI : Component, ICmpUpdatable, ICmpRenderer, ICmpInitializable
-    {
-        private static readonly float GLOBAL_ZOFFSET = 0.01f;
+	[EditorHintImage(ResNames.ImageUI)]
+	[EditorHintCategory(ResNames.CategoryUI)]
+	public abstract class UI : Component, ICmpUpdatable, ICmpRenderer, ICmpInitializable
+	{
+		private static readonly float GLOBAL_ZOFFSET = 0.01f;
 
-        [DontSerialize]
-        private List<MouseButtonEventArgs> _lastFrameMouseButtonEventArgs;
+		[DontSerialize]
+		private Control _focusedControl;
 
-        [DontSerialize]
-        private List<KeyboardKeyEventArgs> _lastFrameKeyboardKeyEventArgs;
+		[DontSerialize]
+		private Control _hoveredControl;
 
-        [DontSerialize]
-        private ControlsContainer _rootContainer;
+		[DontSerialize]
+		private List<KeyboardKeyEventArgs> _lastFrameKeyboardKeyEventArgs;
 
-        [DontSerialize]
-        private Control _hoveredControl;
+		[DontSerialize]
+		private List<MouseButtonEventArgs> _lastFrameMouseButtonEventArgs;
 
-        [DontSerialize]
-        private Control _focusedControl;
+		[DontSerialize]
+		private ControlsContainer _rootContainer;
 
-        public bool IsFullScreen { get; set; }
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Control HoveredControl
+		{
+			get { return _hoveredControl; }
+		}
 
-        public int Offset { get; set; }
+		float ICmpRenderer.BoundRadius
+		{
+			get { return 0; }
+		}
 
-        [EditorHintFlags(MemberFlags.Invisible)]
-        public Control HoveredControl
-        {
-            get { return _hoveredControl; }
-        }
+		public bool IsFullScreen { get; set; }
+		public int Offset { get; set; }
 
-        protected UI()
-        {
-            this.Offset = 1;
-        }
+		protected UI()
+		{
+			this.Offset = 1;
+		}
 
-        void ICmpUpdatable.OnUpdate()
-        {
-            if (_rootContainer != null)
-            {
-                Control currentHoveredControl = _rootContainer.FindHoveredControl(DualityApp.Mouse.Pos);
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Activate)
+			{
+				_rootContainer = CreateUI();
 
-                // Check if the hovered control changed
-                if (_hoveredControl != currentHoveredControl)
-                {
-                    if (currentHoveredControl != null)
-                    { currentHoveredControl.OnMouseEnterEvent(); }
+				OnUpdate();
 
-                    if (_hoveredControl != null)
-                    { _hoveredControl.OnMouseLeaveEvent(); }
-                }
+				DualityApp.Mouse.ButtonDown += Mouse_ButtonDown;
+				DualityApp.Mouse.ButtonUp += Mouse_ButtonUp;
+				DualityApp.Keyboard.KeyDown += Keyboard_KeyDown;
+				DualityApp.Keyboard.KeyUp += Keyboard_KeyUp;
 
-                // check if the focused control changed
-                if (_lastFrameMouseButtonEventArgs.Count > 0)
-                {
-                    if (currentHoveredControl != _focusedControl && _focusedControl != null)
-                    {
-                        _focusedControl.OnBlur();
-                        _focusedControl = null;
-                    }
+				if (_lastFrameKeyboardKeyEventArgs == null)
+					_lastFrameKeyboardKeyEventArgs = new List<KeyboardKeyEventArgs>();
 
-                    if (currentHoveredControl != null)
-                    {
-                        _focusedControl = currentHoveredControl;
-                        _focusedControl.OnFocus();
-                    }
-                }
+				if (_lastFrameMouseButtonEventArgs == null)
+					_lastFrameMouseButtonEventArgs = new List<MouseButtonEventArgs>();
 
-                // send events to the focused control
-                if (_focusedControl != null)
-                {
-                    foreach (MouseButtonEventArgs e in _lastFrameMouseButtonEventArgs)
-                    {
-                        _focusedControl.OnMouseButtonEvent(e);
-                    }
+				_lastFrameKeyboardKeyEventArgs.Clear();
+				_lastFrameMouseButtonEventArgs.Clear();
+			}
+		}
 
-                    foreach (KeyboardKeyEventArgs e in _lastFrameKeyboardKeyEventArgs)
-                    {
-                        _focusedControl.OnKeyboardKeyEvent(e);
-                    }
-                }
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		{
+			if (context == ShutdownContext.Deactivate)
+			{
+				_rootContainer = null;
 
-                _lastFrameMouseButtonEventArgs.Clear();
-                _lastFrameKeyboardKeyEventArgs.Clear();
+				DualityApp.Mouse.ButtonDown -= Mouse_ButtonDown;
+				DualityApp.Mouse.ButtonUp -= Mouse_ButtonUp;
+				DualityApp.Keyboard.KeyDown -= Keyboard_KeyDown;
+				DualityApp.Keyboard.KeyUp -= Keyboard_KeyUp;
+			}
+		}
 
-                _hoveredControl = currentHoveredControl;
-                _rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
-            }
+		void ICmpRenderer.Draw(IDrawDevice device)
+		{
+			if (_rootContainer != null)
+			{
+				if (this.IsFullScreen)
+				{
+					_rootContainer.ActualSize.X = DualityApp.TargetResolution.X;
+					_rootContainer.ActualSize.Y = DualityApp.TargetResolution.Y;
+					_rootContainer.ActualPosition = Vector2.Zero;
+				}
+				else
+				{
+					_rootContainer.ActualSize = _rootContainer.Size;
+					_rootContainer.ActualPosition = _rootContainer.Position;
+				}
 
-            OnUpdate();
-        }
+				_rootContainer.LayoutControls();
 
-        float ICmpRenderer.BoundRadius
-        {
-            get { return 0; }
-        }
+				Canvas c = new Canvas(device);
+				_rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
+			}
+		}
 
-        void ICmpRenderer.Draw(IDrawDevice device)
-        {
-            if (_rootContainer != null)
-            {
-                if (this.IsFullScreen)
-                {
-                    _rootContainer.ActualSize.X = DualityApp.TargetResolution.X;
-                    _rootContainer.ActualSize.Y = DualityApp.TargetResolution.Y;
-                    _rootContainer.ActualPosition = Vector2.Zero;
-                }
-                else
-                {
-                    _rootContainer.ActualSize = _rootContainer.Size;
-                    _rootContainer.ActualPosition = _rootContainer.Position;
-                }
+		bool ICmpRenderer.IsVisible(IDrawDevice device)
+		{
+			bool result = true;
 
-                _rootContainer.LayoutControls();
+			// this is visible only as Group30 / ScreenOverlay
+			if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) == VisibilityFlag.None)
+			{
+				result = false;
+			}
+			// No match in any VisibilityGroup? Don't render!
+			if ((VisibilityFlag.Group30 & device.VisibilityMask) == VisibilityFlag.None)
+			{
+				result = false;
+			}
 
-                Canvas c = new Canvas(device);
-                _rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
-            }
-        }
+			return result;
+		}
 
-        bool ICmpRenderer.IsVisible(IDrawDevice device)
-        {
-            bool result = true;
+		void ICmpUpdatable.OnUpdate()
+		{
+			if (_rootContainer != null)
+			{
+				Control currentHoveredControl = _rootContainer.FindHoveredControl(DualityApp.Mouse.Pos);
 
-            // this is visible only as Group30 / ScreenOverlay
-            if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) == VisibilityFlag.None)
-            {
-                result = false;
-            }
-            // No match in any VisibilityGroup? Don't render!
-            if ((VisibilityFlag.Group30 & device.VisibilityMask) == VisibilityFlag.None)
-            {
-                result = false;
-            }
+				// Check if the hovered control changed
+				if (_hoveredControl != currentHoveredControl)
+				{
+					if (currentHoveredControl != null)
+					{ currentHoveredControl.OnMouseEnterEvent(); }
 
-            return result;
-        }
+					if (_hoveredControl != null)
+					{ _hoveredControl.OnMouseLeaveEvent(); }
+				}
 
-        void ICmpInitializable.OnInit(Component.InitContext context)
-        {
-            if (context == InitContext.Activate)
-            {
-                _rootContainer = CreateUI();
+				// check if the focused control changed
+				if (_lastFrameMouseButtonEventArgs.Count > 0)
+				{
+					if (currentHoveredControl != _focusedControl && _focusedControl != null)
+					{
+						_focusedControl.OnBlur();
+						_focusedControl = null;
+					}
 
-                OnUpdate();
+					if (currentHoveredControl != null)
+					{
+						_focusedControl = currentHoveredControl;
+						_focusedControl.OnFocus();
+					}
+				}
 
-                DualityApp.Mouse.ButtonDown += Mouse_ButtonDown;
-                DualityApp.Mouse.ButtonUp += Mouse_ButtonUp;
-                DualityApp.Keyboard.KeyDown += Keyboard_KeyDown;
-                DualityApp.Keyboard.KeyUp += Keyboard_KeyUp;
+				// send events to the focused control
+				if (_focusedControl != null)
+				{
+					foreach (MouseButtonEventArgs e in _lastFrameMouseButtonEventArgs)
+					{
+						_focusedControl.OnMouseButtonEvent(e);
+					}
 
-                if (_lastFrameKeyboardKeyEventArgs == null)
-                    _lastFrameKeyboardKeyEventArgs = new List<KeyboardKeyEventArgs>();
+					foreach (KeyboardKeyEventArgs e in _lastFrameKeyboardKeyEventArgs)
+					{
+						_focusedControl.OnKeyboardKeyEvent(e);
+					}
+				}
 
-                if (_lastFrameMouseButtonEventArgs == null)
-                    _lastFrameMouseButtonEventArgs = new List<MouseButtonEventArgs>();
+				_lastFrameMouseButtonEventArgs.Clear();
+				_lastFrameKeyboardKeyEventArgs.Clear();
 
-                _lastFrameKeyboardKeyEventArgs.Clear();
-                _lastFrameMouseButtonEventArgs.Clear();
-            }
-        }
+				_hoveredControl = currentHoveredControl;
+				_rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
+			}
 
-        void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
-        {
-            if (context == ShutdownContext.Deactivate)
-            {
-                _rootContainer = null;
+			OnUpdate();
+		}
 
-                DualityApp.Mouse.ButtonDown -= Mouse_ButtonDown;
-                DualityApp.Mouse.ButtonUp -= Mouse_ButtonUp;
-                DualityApp.Keyboard.KeyDown -= Keyboard_KeyDown;
-                DualityApp.Keyboard.KeyUp -= Keyboard_KeyUp;
-            }
-        }
+		#region Input Events
 
-        #region Input Events
+		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		{
+			_lastFrameKeyboardKeyEventArgs.Add(e);
+		}
 
-        private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            _lastFrameMouseButtonEventArgs.Add(e);
-        }
+		private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
+		{
+			_lastFrameKeyboardKeyEventArgs.Add(e);
+		}
 
-        private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            _lastFrameMouseButtonEventArgs.Add(e);
-        }
+		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			_lastFrameMouseButtonEventArgs.Add(e);
+		}
 
-        private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-            _lastFrameKeyboardKeyEventArgs.Add(e);
-        }
+		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			_lastFrameMouseButtonEventArgs.Add(e);
+		}
 
-        private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
-        {
-            _lastFrameKeyboardKeyEventArgs.Add(e);
-        }
+		#endregion Input Events
 
-        #endregion Input Events
+		protected abstract ControlsContainer CreateUI();
 
-        protected abstract ControlsContainer CreateUI();
-
-        protected virtual void OnUpdate()
-        {
-        }
-    }
+		protected virtual void OnUpdate()
+		{
+		}
+	}
 }

@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
@@ -13,41 +14,40 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    [EditorHintImage(ResNames.ImageAppearance)]
-    [EditorHintCategory(ResNames.CategoryUI)]
-    public class Appearance : Resource
-    {
-        public static readonly Appearance DEFAULT = new Appearance();
+	[EditorHintImage(ResNames.ImageAppearance)]
+	[EditorHintCategory(ResNames.CategoryUI)]
+	public class Appearance : Resource
+	{
+		public static readonly Appearance DEFAULT = new Appearance();
 
-        public ContentRef<Material> Normal;
-        public ContentRef<Material> Hover;
-        public ContentRef<Material> Active;
-        public ContentRef<Material> Disabled;
+		public ContentRef<Material> Active;
+		public ContentRef<Material> Disabled;
+		public ContentRef<Material> Hover;
+		public ContentRef<Material> Normal;
+		public Border Border { get; set; }
 
-        public Border Border { get; set; }
+		public Appearance()
+		{
+			Normal = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			Hover = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			Active = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			Disabled = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			Border = Border.Zero;
+		}
 
-        public Appearance()
-        {
-            Normal = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-            Hover = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-            Active = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-            Disabled = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-            Border = Border.Zero;
-        }
-
-        public Material this[Control.ControlStatus status]
-        {
-            get
-            {
-                if ((status & Control.ControlStatus.Disabled) != Control.ControlStatus.None)
-                { return this.Disabled.Res; }
-                else if ((status & Control.ControlStatus.Active) != Control.ControlStatus.None)
-                { return this.Active.Res; }
-                else if ((status & Control.ControlStatus.Hover) != Control.ControlStatus.None)
-                { return this.Hover.Res; }
-                else
-                { return this.Normal.Res; }
-            }
-        }
-    }
+		public Material this[Control.ControlStatus status]
+		{
+			get
+			{
+				if ((status & Control.ControlStatus.Disabled) != Control.ControlStatus.None)
+				{ return this.Disabled.Res; }
+				else if ((status & Control.ControlStatus.Active) != Control.ControlStatus.None)
+				{ return this.Active.Res; }
+				else if ((status & Control.ControlStatus.Hover) != Control.ControlStatus.None)
+				{ return this.Hover.Res; }
+				else
+				{ return this.Normal.Res; }
+			}
+		}
+	}
 }

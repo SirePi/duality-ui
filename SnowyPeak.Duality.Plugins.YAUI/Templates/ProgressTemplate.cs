@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+using Duality;
 using SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
-    public class ProgressTemplate : TextTemplate
-    {
-        public ProgressConfiguration ProgressConfiguration { get; set; }
+	public class ProgressTemplate : TextTemplate
+	{
+		public ProgressConfiguration ProgressConfiguration { get; set; }
 
-        public ProgressTemplate()
-            : base()
-        {
-            this.ProgressConfiguration = ProgressConfiguration.DEFAULT;
-        }
-    }
+		public ProgressTemplate()
+			: base()
+		{
+			this.ProgressConfiguration = ProgressConfiguration.DEFAULT;
+		}
+	}
 }
