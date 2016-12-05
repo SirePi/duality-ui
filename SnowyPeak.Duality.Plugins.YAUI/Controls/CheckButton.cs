@@ -16,9 +16,20 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	public class CheckButton : Button
 	{
 		private VertexC1P3T2[] _glyphVertices;
+		private bool _isChecked;
 
 		public CheckChangeEventDelegate CheckChangeEventHandler { get; set; }
-		public bool Checked { get; set; }
+
+		public bool Checked
+		{
+			get { return _isChecked; }
+			set
+			{
+				_isChecked = value;
+				if (this.CheckChangeEventHandler != null) { this.CheckChangeEventHandler(this, _isChecked); }
+			}
+		}
+
 		public GlyphConfiguration GlyphConfiguration { get; set; }
 		public delegate void CheckChangeEventDelegate(CheckButton checkButton, bool isChecked);
 
@@ -29,12 +40,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			this.MouseButtonEventHandler = (button, args) =>
 			{
-				if (args.Button == MouseButton.Left && args.IsPressed)
+				if (args.Button == MouseButton.Left)
 				{
-					this.Checked = !this.Checked;
-
-					if (this.CheckChangeEventHandler != null)
-					{ this.CheckChangeEventHandler(this, this.Checked); }
+					if (args.IsPressed) this.Checked = !this.Checked;
 				}
 			};
 
