@@ -20,14 +20,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			Cutoff
 		}
 
-		public enum Direction
-		{
-			LeftToRight,
-			RightToLeft,
-			UpToDown,
-			DownToUp
-		}
-
 		private VertexC1P3T2[] _barVertices;
 		private float _value;
 

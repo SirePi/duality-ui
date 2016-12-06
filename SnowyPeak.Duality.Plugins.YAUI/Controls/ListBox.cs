@@ -88,7 +88,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			.Add(_stackPanel = new StackPanel(_baseSkin, this.TemplateName + PANEL_TEMPLATE)
 			{
 				Docking = DockPanel.Dock.Center,
-				Orientation = Orientation.Vertical
+				Direction = Direction.UpToDown
 			});
 		}
 

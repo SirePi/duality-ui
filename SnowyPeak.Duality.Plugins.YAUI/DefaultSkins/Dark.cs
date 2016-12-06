@@ -265,7 +265,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					BarAppearance = buttonAppearance,
 					BarStyle = ProgressBar.BarStyle.Cutoff,
-					Direction = ProgressBar.Direction.LeftToRight,
+					Direction = Direction.LeftToRight,
 					Margin = new Border(5)
 				},
 				TextConfiguration = buttonTemplate.TextConfiguration

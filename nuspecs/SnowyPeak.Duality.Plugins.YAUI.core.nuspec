@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>SnowyPeak.Duality.Plugins.YAUI.Core</id>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <title>Yet Another UI Plugin (Core)</title>
         <authors>Pilati Alessandro</authors>
         <owners>Pilati Alessandro</owners>
@@ -20,6 +20,6 @@
     <files>
         <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.dll" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.dll" />
         <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.pdb" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.pdb" />
-        <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.XML" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.XML" />
+        <file src="..\SnowyPeak.Duality.Plugins.YAUI\bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.xml" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.XML" />
     </files>
 </package>

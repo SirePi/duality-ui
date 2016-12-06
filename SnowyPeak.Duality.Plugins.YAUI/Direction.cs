@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-	public enum Orientation
+	public enum Direction
 	{
-		Horizontal,
-		Vertical
+		LeftToRight,
+		RightToLeft,
+		UpToDown,
+		DownToUp
 	}
 }

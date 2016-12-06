@@ -17,13 +17,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 		public ContentRef<Appearance> BarAppearance { get; set; }
 
 		public ProgressBar.BarStyle BarStyle { get; set; }
-		public ProgressBar.Direction Direction { get; set; }
+		public Direction Direction { get; set; }
 		public Border Margin { get; set; }
 
 		public ProgressConfiguration()
 		{
 			this.BarAppearance = Appearance.DEFAULT;
-			this.Direction = ProgressBar.Direction.LeftToRight;
+			this.Direction = Direction.LeftToRight;
 			this.BarStyle = ProgressBar.BarStyle.Stretching;
 			this.Margin = Border.Zero;
 		}
