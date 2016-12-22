@@ -182,7 +182,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				_lastFrameKeyboardKeyEventArgs.Clear();
 
 				_hoveredControl = currentHoveredControl;
-				_rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
+
+				if (_rootContainer != null) _rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
 			}
 
 			OnUpdate();
