@@ -183,6 +183,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				_hoveredControl = currentHoveredControl;
 
+				// Added check because it might have been set to null due to a Deactivation event
 				if (_rootContainer != null) _rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
 			}
 
