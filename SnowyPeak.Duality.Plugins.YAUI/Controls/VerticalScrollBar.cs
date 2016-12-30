@@ -21,8 +21,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			ControlsContainer scrollBar = base.BuildControl();
 
-			_btnDecrease.Docking = DockPanel.Dock.Top;
-			_btnIncrease.Docking = DockPanel.Dock.Bottom;
+			_btnDecrease.Docking = Dock.Top;
+			_btnIncrease.Docking = Dock.Bottom;
 
 			return scrollBar;
 		}

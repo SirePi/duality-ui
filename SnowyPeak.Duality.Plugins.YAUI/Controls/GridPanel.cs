@@ -11,14 +11,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
-		new public struct Cell
-		{
-			public int ColSpan;
-			public int Column;
-			public int Row;
-			public int RowSpan;
-		}
-
 		private IEnumerable<int> columnsSize;
 		private IEnumerable<int> rowsSize;
 

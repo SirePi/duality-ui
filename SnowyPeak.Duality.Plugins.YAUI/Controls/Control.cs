@@ -42,13 +42,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected VertexC1P3T2[] _vertices;
 
 		public ContentRef<Appearance> Appearance { get; set; }
-		public GridPanel.Cell Cell { get; set; }
+		public CellInfo Cell { get; set; }
 		public Rect ControlArea
 		{
 			get { return new Rect(this.ActualPosition.X, this.ActualPosition.Y, this.ActualSize.X, this.ActualSize.Y); }
 		}
 
-		public DockPanel.Dock Docking { get; set; }
+		public Dock Docking { get; set; }
 		public FocusChangeDelegate FocusChangeHandler { get; set; }
 		public string Name { get; set; }
 		public ControlsContainer Parent { get; set; }

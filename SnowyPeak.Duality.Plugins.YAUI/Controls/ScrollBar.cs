@@ -143,7 +143,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			});
 			scrollBar.Add(_canvas = new CanvasPanel(_baseSkin)
 			{
-				Docking = DockPanel.Dock.Center
+				Docking = Dock.Center
 			});
 
 			_canvas.Add(_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)

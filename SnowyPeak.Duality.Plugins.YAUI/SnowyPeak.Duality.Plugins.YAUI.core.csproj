@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Appearance.cs" />
     <Compile Include="Border.cs" />
+    <Compile Include="CellInfo.cs" />
     <Compile Include="Controls\Configuration\ProgressConfiguration.cs" />
     <Compile Include="Controls\ILayout.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="DefaultSkins\Dark.cs" />
     <Compile Include="DefaultSkins\Fathoms.cs" />
     <Compile Include="DefaultSkins\LightRounded.cs" />
+    <Compile Include="Dock.cs" />
     <Compile Include="Templates\GlyphTemplate.cs" />
     <Compile Include="Templates\ListBoxTemplate.cs" />
     <Compile Include="Templates\ProgressTemplate.cs" />

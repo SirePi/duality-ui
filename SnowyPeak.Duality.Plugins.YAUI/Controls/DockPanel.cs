@@ -11,15 +11,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class DockPanel : ControlsContainer
 	{
-		public enum Dock
-		{
-			Center,
-			Left,
-			Right,
-			Top,
-			Bottom
-		}
-
 		public DockPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{

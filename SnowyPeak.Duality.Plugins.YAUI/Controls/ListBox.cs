@@ -83,11 +83,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			return new DockPanel()
 			.Add(_scrollBar = new VerticalScrollBar(_baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE)
 			{
-				Docking = DockPanel.Dock.Right
+				Docking = Dock.Right
 			})
 			.Add(_stackPanel = new StackPanel(_baseSkin, this.TemplateName + PANEL_TEMPLATE)
 			{
-				Docking = DockPanel.Dock.Center,
+				Docking = Dock.Center,
 				Direction = Direction.UpToDown
 			});
 		}
