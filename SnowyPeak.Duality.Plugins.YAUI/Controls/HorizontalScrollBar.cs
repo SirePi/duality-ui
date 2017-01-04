@@ -36,7 +36,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void UpdateCursor()
 		{
 			float delta = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / _valueDelta;
-			_btnCursor.Position.X = (delta * this.Value);
+			_btnCursor.Position.X = (delta * (this.Value - this.MinValue));
 			_btnCursor.Position.Y = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / 2;
 		}
 	}
