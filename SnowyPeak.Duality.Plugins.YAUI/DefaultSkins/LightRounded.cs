@@ -101,6 +101,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				}
 			};
 			AddDefaultTemplate(typeof(TextBlock), baseTemplate);
+            AddDefaultTemplate(typeof(SpriteBox), baseTemplate);
 
 			TextTemplate buttonTemplate = new TextTemplate()
 			{

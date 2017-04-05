@@ -36,7 +36,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ProgressBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			_barVertices = new VertexC1P3T2[36];
 			ApplySkin(_baseSkin);
 		}
 
@@ -56,6 +55,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				Appearance appearance = this.ProgressConfiguration.BarAppearance.Res;
 				Material material = appearance[this.Status];
+
+                _barVertices = canvas.RequestVertexArray(36);
 
 				Texture tx = material.MainTexture.Res;
 				if (tx != null)

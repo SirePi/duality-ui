@@ -65,8 +65,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected Control(Skin skin, string templateName)
 		{
-			_vertices = new VertexC1P3T2[36];
-
 			this.StretchToFill = true;
 			this.Visibility = ControlVisibility.Visible;
 			this.Status = ControlStatus.Normal;
@@ -95,6 +93,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 				Vector2 topLeft = this.ActualPosition;
 				Vector2 bottomRight = this.ActualPosition + this.ActualSize;
+
+                _vertices = canvas.RequestVertexArray(36);
 
 				if (material != null && material.MainTexture.IsAvailable)
 				{

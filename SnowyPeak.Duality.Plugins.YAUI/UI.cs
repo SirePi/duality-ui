@@ -35,6 +35,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		[DontSerialize]
 		private ControlsContainer _rootContainer;
 
+        [DontSerialize]
+        private CanvasBuffer _canvasBuffer;
+
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Control HoveredControl
 		{
@@ -59,6 +62,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			if (context == InitContext.Activate)
 			{
 				_rootContainer = CreateUI();
+                _canvasBuffer = new CanvasBuffer();
 
 				OnUpdate();
 
@@ -109,7 +113,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				_rootContainer.LayoutControls();
 
-				Canvas c = new Canvas(device);
+                Canvas c = new Canvas(device, _canvasBuffer);
 				_rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
 			}
 		}
