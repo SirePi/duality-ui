@@ -46,7 +46,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
                 if (_frameTime > FrameDuration)
                 {
                     _currentFrame++;
-                    if (_currentFrame > FirstFrame + AnimationFrames) _currentFrame = FirstFrame;
+                    if (_currentFrame >= FirstFrame + AnimationFrames) _currentFrame = FirstFrame;
+
+                    _frameTime -= FrameDuration;
                 }
             }
             else

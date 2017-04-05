@@ -141,6 +141,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void OnBlur()
 		{
+            base.OnBlur();
+
 			this.Status &= ~Control.ControlStatus.Active;
 		}
 

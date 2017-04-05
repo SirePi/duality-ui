@@ -161,7 +161,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 						_focusedControl = null;
 					}
 
-					if (currentHoveredControl != null)
+                    if (currentHoveredControl != null && currentHoveredControl != _focusedControl)
 					{
 						_focusedControl = currentHoveredControl;
 						_focusedControl.OnFocus();
