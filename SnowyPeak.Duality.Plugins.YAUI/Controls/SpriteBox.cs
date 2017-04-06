@@ -155,10 +155,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
                 vertices[3].TexCoord.Y = uvTopLeft.Y;
                 vertices[3].Color = SpriteTint;
 
-                canvas.PushState();
+                canvas.State.Reset();
                 canvas.State.SetMaterial(Sprite);
-                canvas.DrawVertices<VertexC1P3T2>(vertices, VertexMode.Quads);
-                canvas.PopState();
+                canvas.DrawVertices<VertexC1P3T2>(vertices, VertexMode.Quads, 4);
             }
         }
     }

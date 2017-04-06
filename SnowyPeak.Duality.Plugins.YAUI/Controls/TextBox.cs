@@ -79,10 +79,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					zOffset + INNER_ZOFFSET,
 					this.TextConfiguration.Alignment);
 			}
-
+            
 			if (_caretVisible)
 			{
-				Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, _caretPosition));
+				Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, MathF.Clamp(_caretPosition, 0, textToDraw.Length)));
 
 				if (textSize.Y == 0)
 				{ textSize.Y = canvas.MeasureText(WQ).Y; }
@@ -152,35 +152,32 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			if ((this.Status & ControlStatus.Active) != ControlStatus.None && args.IsPressed)
 			{
-				if (this.Text.Length < MaxLength)
+				if (DualityApp.Keyboard.CharInput.Length > 0 && this.Text.Length < MaxLength)
 				{
-					if (DualityApp.Keyboard.CharInput.Length > 0)
-					{
-						this.Text = this.Text.Insert(_caretPosition, DualityApp.Keyboard.CharInput);
-						_caretPosition += DualityApp.Keyboard.CharInput.Length;
-					}
-					if (args.Key == Key.BackSpace && _caretPosition > 0)
-					{
-						this.Text = this.Text.Remove(_caretPosition - 1, 1);
-						_caretPosition--;
-					}
-					if (args.Key == Key.Delete && _caretPosition < this.Text.Length)
-					{ this.Text = this.Text.Remove(_caretPosition, 1); }
-
-					if (args.Key == Key.Enter || args.Key == Key.KeypadEnter)
-					{ this.OnBlur(); }
-
-					if (args.Key == Key.Left)
-					{ _caretPosition--; }
-					if (args.Key == Key.Right)
-					{ _caretPosition++; }
-					if (args.Key == Key.Home)
-					{ _caretPosition = 0; }
-					if (args.Key == Key.End)
-					{ _caretPosition = this.Text.Length; }
+					this.Text = this.Text.Insert(_caretPosition, DualityApp.Keyboard.CharInput);
+					_caretPosition += DualityApp.Keyboard.CharInput.Length;
 				}
+				if (args.Key == Key.BackSpace && _caretPosition > 0)
+				{
+					this.Text = this.Text.Remove(_caretPosition - 1, 1);
+					_caretPosition--;
+				}
+				if (args.Key == Key.Delete && _caretPosition < this.Text.Length)
+				{ this.Text = this.Text.Remove(_caretPosition, 1); }
 
-				_caretPosition = Math.Min(Math.Max(0, _caretPosition), this.Text.Length);
+				if (args.Key == Key.Enter || args.Key == Key.KeypadEnter)
+				{ this.OnBlur(); }
+
+				if (args.Key == Key.Left)
+				{ _caretPosition--; }
+				if (args.Key == Key.Right)
+				{ _caretPosition++; }
+				if (args.Key == Key.Home)
+				{ _caretPosition = 0; }
+				if (args.Key == Key.End)
+				{ _caretPosition = this.Text.Length; }
+
+                _caretPosition = MathF.Clamp(_caretPosition, 0, this.Text.Length);
 			}
 		}
 

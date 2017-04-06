@@ -155,7 +155,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 						canvas.State.Reset();
 						canvas.State.SetMaterial(material);
-						canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads);
+						canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads, 36);
 					}
 				}
 				else
@@ -167,7 +167,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 					canvas.State.Reset();
 					canvas.State.SetMaterial(ContentProvider.RequestContent<Material>(@"Default:Material.White"));
-					canvas.DrawVertices<VertexC1P3T2>(_vertices.Take(4).ToArray(), VertexMode.Quads);
+					canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads, 4);
 				}
 			}
 		}
