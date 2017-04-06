@@ -150,21 +150,17 @@
     <EmbeddedResource Include="DefaultSkins\glyph.png" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Duality, Version=2.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.Duality.2.8.3\lib\Duality.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Duality">
+      <HintPath>..\packages\AdamsLair.Duality.2.10.1\lib\Duality.dll</HintPath>
     </Reference>
-    <Reference Include="DualityPrimitives, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.Duality.Primitives.2.0.1\lib\DualityPrimitives.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DualityPrimitives">
+      <HintPath>..\packages\AdamsLair.Duality.Primitives.2.0.4\lib\DualityPrimitives.dll</HintPath>
     </Reference>
-    <Reference Include="FarseerDuality, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FarseerDuality">
       <HintPath>..\packages\AdamsLair.FarseerDuality.4.1.1\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NVorbis">
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

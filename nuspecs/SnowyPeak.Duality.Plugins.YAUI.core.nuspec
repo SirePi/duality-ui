@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>SnowyPeak.Duality.Plugins.YAUI.Core</id>
-        <version>1.3.1</version>
+        <version>1.4.0</version>
         <title>Yet Another UI Plugin (Core)</title>
         <authors>Pilati Alessandro</authors>
         <owners>Pilati Alessandro</owners>
@@ -14,7 +14,7 @@
         <summary>SnowyPeak.Duality.Plugins.YAUI.Core plugin</summary>
         <tags>Duality Plugin UI YAUI SnowyPeak</tags>
         <dependencies>
-            <dependency id="AdamsLair.Duality" version="2.8.3" />
+            <dependency id="AdamsLair.Duality" version="2.10.1" />
         </dependencies>
     </metadata>
     <files>
