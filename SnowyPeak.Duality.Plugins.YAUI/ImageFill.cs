@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    public enum ImageFill
-    {
-        Stretch,
-        FitControl,
-        KeepSize
-    }
+	public enum ImageFill
+	{
+		Stretch,
+		FitControl,
+		KeepSize
+	}
 }

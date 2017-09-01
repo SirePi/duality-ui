@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    public enum Dock
-    {
-        Center,
-        Left,
-        Right,
-        Top,
-        Bottom
-    }
+	public enum Dock
+	{
+		Center,
+		Left,
+		Right,
+		Top,
+		Bottom
+	}
 }

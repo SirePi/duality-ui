@@ -28,7 +28,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		internal override void _LayoutControls()
 		{
-			switch(this.Direction)
+			switch (this.Direction)
 			{
 				case YAUI.Direction.LeftToRight:
 					StackFromLeft();

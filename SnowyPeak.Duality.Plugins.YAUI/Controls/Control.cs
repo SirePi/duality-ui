@@ -94,7 +94,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				Vector2 topLeft = this.ActualPosition;
 				Vector2 bottomRight = this.ActualPosition + this.ActualSize;
 
-                _vertices = canvas.RequestVertexArray(36);
+				_vertices = canvas.RequestVertexArray(36);
 
 				if (material != null && material.MainTexture.IsAvailable)
 				{

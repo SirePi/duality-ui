@@ -66,7 +66,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				Vector2 glyphTopLeft = AlignElement(tx.Size, this.GlyphConfiguration.Margin, this.GlyphConfiguration.Alignment);
 				Vector2 glyphBottomRight = glyphTopLeft + tx.Size;
 
-                VertexC1P3T2[] glyphVertices = canvas.RequestVertexArray(4);
+				VertexC1P3T2[] glyphVertices = canvas.RequestVertexArray(4);
 
 				glyphVertices[0].Pos.X = glyphTopLeft.X;
 				glyphVertices[0].Pos.Y = glyphTopLeft.Y;

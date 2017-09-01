@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    public struct CellInfo
-    {
-        public int ColSpan;
-        public int Column;
-        public int Row;
-        public int RowSpan;
-    }
+	public struct CellInfo
+	{
+		public int ColSpan;
+		public int Column;
+		public int Row;
+		public int RowSpan;
+	}
 }

@@ -11,11 +11,60 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
+		private static string STAR = "*";
+
+		private class Dimension
+		{
+			public int Value { get; set; }
+			public bool IsVariable { get; set; }
+
+			public override string ToString()
+			{
+				return String.Format("{0}{1}", Value, IsVariable ? STAR : String.Empty);
+			}
+		}
+
 		private IEnumerable<int> columnsSize;
 		private IEnumerable<int> rowsSize;
 
-		public float[] Columns { get; set; }
-		public float[] Rows { get; set; }
+		private Dimension[] _columns;
+		private Dimension[] _rows;
+
+		public IEnumerable<string> Columns
+		{
+			get
+			{
+				return _columns.Select(x => x.ToString());
+			}
+			set
+			{
+				_columns = value.Select(x =>
+				{
+					bool isVariable = x.EndsWith(STAR);
+					int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+
+					return new Dimension() { Value = val, IsVariable = isVariable };
+				}).ToArray();
+			}
+		}
+
+		public IEnumerable<string> Rows
+		{
+			get
+			{
+				return _rows.Select(x => x.ToString());
+			}
+			set
+			{
+				_rows = value.Select(x =>
+				{
+					bool isVariable = x.EndsWith(STAR);
+					int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+
+					return new Dimension() { Value = val, IsVariable = isVariable };
+				}).ToArray();
+			}
+		}
 
 		public GridPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -25,17 +74,35 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		internal override void _LayoutControls()
 		{
-			Size innerSize = this.ActualSize;
-			innerSize.X -= (this.Margin.Left + this.Margin.Right);
-			innerSize.Y -= (this.Margin.Top + this.Margin.Bottom);
+			float preallocatedRows = _rows.Where(y => !y.IsVariable).Sum(y => y.Value);
+			float preallocatedColumns = _columns.Where(x => !x.IsVariable).Sum(x => x.Value);
 
-			rowsSize = Rows.Select(y => MathF.RoundToInt(innerSize.Y * y, MidpointRounding.AwayFromZero));
-			columnsSize = Columns.Select(x => MathF.RoundToInt(innerSize.X * x, MidpointRounding.AwayFromZero));
+			float variableRows = _rows.Where(y => y.IsVariable).Sum(y => y.Value);
+			float variableColumns = _columns.Where(x => x.IsVariable).Sum(x => x.Value);
+
+			Size innerSize = this.ActualSize;
+			innerSize.X -= (this.Margin.Left + this.Margin.Right + preallocatedColumns);
+			innerSize.Y -= (this.Margin.Top + this.Margin.Bottom + preallocatedRows);
+
+			rowsSize = _rows.Select(y =>
+			{
+				int result = y.Value;
+				if (y.IsVariable) result = MathF.RoundToInt(innerSize.Y * y.Value / variableRows, MidpointRounding.AwayFromZero);
+
+				return result;
+			});
+			columnsSize = _columns.Select(x =>
+			{
+				int result = x.Value;
+				if (x.IsVariable) result = MathF.RoundToInt(innerSize.X * x.Value / variableColumns, MidpointRounding.AwayFromZero);
+
+				return result;
+			});
 
 			foreach (Control c in this.Children)
 			{
-				int row = c.Cell.Row < this.Rows.Length ? c.Cell.Row : this.Rows.Length - 1;
-				int col = c.Cell.Column < this.Columns.Length ? c.Cell.Column : this.Columns.Length - 1;
+				int row = c.Cell.Row < _rows.Length ? c.Cell.Row : _rows.Length - 1;
+				int col = c.Cell.Column < _columns.Length ? c.Cell.Column : _columns.Length - 1;
 				int rspan = c.Cell.RowSpan != 0 ? c.Cell.RowSpan : 1;
 				int cspan = c.Cell.ColSpan != 0 ? c.Cell.ColSpan : 1;
 

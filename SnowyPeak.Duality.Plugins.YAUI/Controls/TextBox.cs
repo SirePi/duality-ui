@@ -79,7 +79,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					zOffset + INNER_ZOFFSET,
 					this.TextConfiguration.Alignment);
 			}
-            
+
 			if (_caretVisible)
 			{
 				Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, MathF.Clamp(_caretPosition, 0, textToDraw.Length)));
@@ -141,7 +141,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void OnBlur()
 		{
-            base.OnBlur();
+			base.OnBlur();
 
 			this.Status &= ~Control.ControlStatus.Active;
 		}
@@ -177,7 +177,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				if (args.Key == Key.End)
 				{ _caretPosition = this.Text.Length; }
 
-                _caretPosition = MathF.Clamp(_caretPosition, 0, this.Text.Length);
+				_caretPosition = MathF.Clamp(_caretPosition, 0, this.Text.Length);
 			}
 		}
 

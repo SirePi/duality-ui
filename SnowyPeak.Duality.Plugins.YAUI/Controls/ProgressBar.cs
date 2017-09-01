@@ -56,7 +56,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				Appearance appearance = this.ProgressConfiguration.BarAppearance.Res;
 				Material material = appearance[this.Status];
 
-                _barVertices = canvas.RequestVertexArray(36);
+				_barVertices = canvas.RequestVertexArray(36);
 
 				Texture tx = material.MainTexture.Res;
 				if (tx != null)
