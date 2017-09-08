@@ -40,10 +40,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				_columns = value.Select(x =>
 				{
-					bool isVariable = x.EndsWith(STAR);
-					int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+					if (x.Equals(STAR))
+						return new Dimension() { Value = 1, IsVariable = true };
+					else
+					{
+						bool isVariable = x.EndsWith(STAR);
+						int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
 
-					return new Dimension() { Value = val, IsVariable = isVariable };
+						return new Dimension() { Value = val, IsVariable = isVariable };
+					}
 				}).ToArray();
 			}
 		}
@@ -58,10 +63,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				_rows = value.Select(x =>
 				{
-					bool isVariable = x.EndsWith(STAR);
-					int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+					if (x.Equals(STAR))
+						return new Dimension() { Value = 1, IsVariable = true };
+					else
+					{
+						bool isVariable = x.EndsWith(STAR);
+						int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
 
-					return new Dimension() { Value = val, IsVariable = isVariable };
+						return new Dimension() { Value = val, IsVariable = isVariable };
+					}
 				}).ToArray();
 			}
 		}

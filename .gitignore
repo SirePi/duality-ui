@@ -4,3 +4,6 @@ SnowyPeak.Duality.Plugins.YAUI/obj/
 *.suo
 *.nupkg
 SnowyPeak.Duality.Plugins.YAUI/SnowyPeak.Duality.Plugins.YAUI.core.xml
+.nuget/
+.vs/SnowyPeak.Duality.Plugins.YAUI/
+SnowyPeak.Duality.Plugins.YAUI/SnowyPeak.Duality.Plugins.YAUI.core.csproj.user
