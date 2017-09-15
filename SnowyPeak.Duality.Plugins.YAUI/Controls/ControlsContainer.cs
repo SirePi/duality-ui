@@ -26,6 +26,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public Border Margin { get; set; }
 
+		public bool IsPassthrough { get; set; }
+
 		protected List<Control> Children { get; private set; }
 
 		protected ControlsContainer(Skin skin = null, string templateName = null)
@@ -33,6 +35,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			this.Margin = Border.Zero;
 			this.Children = new List<Control>();
+			this.IsPassthrough = true;
 			ApplySkin(_baseSkin);
 		}
 
@@ -86,9 +89,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			base.Draw(canvas, zOffset);
 
 			foreach (Control c in this.Children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
-			{
-				c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
-			}
+			{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
 		}
 
 		public Control FindHoveredControl(Vector2 position)
@@ -101,27 +102,24 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			while (result is ILayout)
 			{ result = (result as ILayout).FindHoveredControl(position); }
 
+			if (result == null && !this.IsPassthrough)
+			{ result = this; }
+
 			return result;
 		}
 
 		public void LayoutControls()
 		{
 			foreach (Control c in this.Children)
-			{
-				c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size;
-			}
+			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
 
 			_LayoutControls();
 
 			foreach (Control c in this.Children)
-			{
-				c.ActualPosition += this.ActualPosition;
-			}
+			{ c.ActualPosition += this.ActualPosition; }
 
 			foreach (ILayout c in this.Children.Where(c => c is ILayout))
-			{
-				c.LayoutControls();
-			}
+			{ c.LayoutControls(); }
 		}
 
 		public override void OnUpdate(float msFrame)
@@ -129,9 +127,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			base.OnUpdate(msFrame);
 
 			foreach (Control c in this.Children)
-			{
-				c.OnUpdate(msFrame);
-			}
+			{ c.OnUpdate(msFrame); }
 		}
 
 		public ControlsContainer Remove(Control child)

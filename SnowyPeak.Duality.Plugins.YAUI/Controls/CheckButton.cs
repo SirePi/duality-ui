@@ -25,7 +25,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			set
 			{
 				_isChecked = value;
-				if (this.CheckChangeEventHandler != null) { this.CheckChangeEventHandler(this, _isChecked); }
+				if (this.CheckChangeEventHandler != null)
+				{ this.CheckChangeEventHandler(this, _isChecked); }
 			}
 		}
 
@@ -39,7 +40,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				if (args.Button == MouseButton.Left)
 				{
-					if (args.IsPressed) this.Checked = !this.Checked;
+					if (args.IsPressed)
+					{ this.Checked = !this.Checked; }
 				}
 			};
 

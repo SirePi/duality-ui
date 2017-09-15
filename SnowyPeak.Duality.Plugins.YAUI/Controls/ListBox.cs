@@ -140,9 +140,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 						if (isToggled && !MultiSelection)
 						{
 							foreach (ToggleButton tb in _toggleButtons.Where(tb => tb != button))
-							{
-								tb.Toggled = false;
-							}
+							{ tb.Toggled = false; }
 						}
 					}
 				};

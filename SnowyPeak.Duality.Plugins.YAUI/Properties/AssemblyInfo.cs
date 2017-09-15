@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar
-// für COM-Komponenten. Wenn Sie auf einen Typ in dieser Assembly von
+// für COM-Komponenten. Wenn Sie auf einen Typ in dieser Assembly vonj
 // COM zugreifen müssen, legen Sie das ComVisible-Attribut für diesen Typ auf "true" fest.
 [assembly: ComVisible(false)]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.5.1.0")]
+[assembly: AssemblyVersion("1.5.2.0")]

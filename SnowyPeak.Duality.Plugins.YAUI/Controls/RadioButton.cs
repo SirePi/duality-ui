@@ -34,9 +34,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				if (args.Button == MouseButton.Left && args.IsPressed)
 				{
 					foreach (RadioButton rb in UIHelper.GetRadioButtonsInGroup(this.RadioGroup))
-					{
-						rb.Checked = false;
-					}
+					{ rb.Checked = false; }
 
 					this.Checked = true;
 				}

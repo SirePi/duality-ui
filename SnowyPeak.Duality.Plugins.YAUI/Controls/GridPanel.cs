@@ -32,10 +32,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public IEnumerable<string> Columns
 		{
-			get
-			{
-				return _columns.Select(x => x.ToString());
-			}
+			get { return _columns.Select(x => x.ToString()); }
 			set
 			{
 				_columns = value.Select(x =>
@@ -55,10 +52,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public IEnumerable<string> Rows
 		{
-			get
-			{
-				return _rows.Select(x => x.ToString());
-			}
+			get { return _rows.Select(x => x.ToString()); }
 			set
 			{
 				_rows = value.Select(x =>
@@ -97,14 +91,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			rowsSize = _rows.Select(y =>
 			{
 				int result = y.Value;
-				if (y.IsVariable) result = MathF.RoundToInt(innerSize.Y * y.Value / variableRows, MidpointRounding.AwayFromZero);
+				if (y.IsVariable)
+				{ result = MathF.RoundToInt(innerSize.Y * y.Value / variableRows, MidpointRounding.AwayFromZero); }
 
 				return result;
 			});
 			columnsSize = _columns.Select(x =>
 			{
 				int result = x.Value;
-				if (x.IsVariable) result = MathF.RoundToInt(innerSize.X * x.Value / variableColumns, MidpointRounding.AwayFromZero);
+				if (x.IsVariable)
+				{ result = MathF.RoundToInt(innerSize.X * x.Value / variableColumns, MidpointRounding.AwayFromZero); }
 
 				return result;
 			});
