@@ -27,12 +27,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		private Control _hoveredControl;
 
 		[DontSerialize]
-		private List<KeyboardKeyEventArgs> _lastFrameKeyboardKeyEventArgs;
-
-		[DontSerialize]
-		private List<MouseButtonEventArgs> _lastFrameMouseButtonEventArgs;
-
-		[DontSerialize]
 		private ControlsContainer _rootContainer;
 
 		[DontSerialize]
@@ -65,20 +59,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				_canvasBuffer = new CanvasBuffer();
 
 				OnUpdate();
-
-				DualityApp.Mouse.ButtonDown += Mouse_ButtonDown;
-				DualityApp.Mouse.ButtonUp += Mouse_ButtonUp;
-				DualityApp.Keyboard.KeyDown += Keyboard_KeyDown;
-				DualityApp.Keyboard.KeyUp += Keyboard_KeyUp;
-
-				if (_lastFrameKeyboardKeyEventArgs == null)
-					_lastFrameKeyboardKeyEventArgs = new List<KeyboardKeyEventArgs>();
-
-				if (_lastFrameMouseButtonEventArgs == null)
-					_lastFrameMouseButtonEventArgs = new List<MouseButtonEventArgs>();
-
-				_lastFrameKeyboardKeyEventArgs.Clear();
-				_lastFrameMouseButtonEventArgs.Clear();
 			}
 		}
 
@@ -87,11 +67,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			if (context == ShutdownContext.Deactivate)
 			{
 				_rootContainer = null;
-
-				DualityApp.Mouse.ButtonDown -= Mouse_ButtonDown;
-				DualityApp.Mouse.ButtonUp -= Mouse_ButtonUp;
-				DualityApp.Keyboard.KeyDown -= Keyboard_KeyDown;
-				DualityApp.Keyboard.KeyUp -= Keyboard_KeyUp;
 			}
 		}
 
@@ -153,7 +128,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				}
 
 				// check if the focused control changed
-				if (_lastFrameMouseButtonEventArgs.Count > 0)
+				if (YAUICorePlugin.LastFrameMouseButtonEventArgs.Count > 0)
 				{
 					if (currentHoveredControl != _focusedControl && _focusedControl != null)
 					{
@@ -171,19 +146,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				// send events to the focused control
 				if (_focusedControl != null)
 				{
-					foreach (MouseButtonEventArgs e in _lastFrameMouseButtonEventArgs)
+					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
 					{
 						_focusedControl.OnMouseButtonEvent(e);
 					}
 
-					foreach (KeyboardKeyEventArgs e in _lastFrameKeyboardKeyEventArgs)
+					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
 					{
 						_focusedControl.OnKeyboardKeyEvent(e);
 					}
 				}
-
-				_lastFrameMouseButtonEventArgs.Clear();
-				_lastFrameKeyboardKeyEventArgs.Clear();
 
 				_hoveredControl = currentHoveredControl;
 
@@ -194,29 +166,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			OnUpdate();
 		}
 
-		#region Input Events
-
-		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
-		{
-			_lastFrameKeyboardKeyEventArgs.Add(e);
-		}
-
-		private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
-		{
-			_lastFrameKeyboardKeyEventArgs.Add(e);
-		}
-
-		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
-		{
-			_lastFrameMouseButtonEventArgs.Add(e);
-		}
-
-		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
-		{
-			_lastFrameMouseButtonEventArgs.Add(e);
-		}
-
-		#endregion Input Events
 
 		protected abstract ControlsContainer CreateUI();
 

@@ -99,10 +99,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				c.Visibility == Control.ControlVisibility.Visible &&
 				c.ControlArea.Contains(position));
 
-			while (result is ILayout)
+			if (result is ILayout)
 			{ result = (result as ILayout).FindHoveredControl(position); }
 
-			if (result == null && !this.IsPassthrough)
+			if(result == null && !this.IsPassthrough)
 			{ result = this; }
 
 			return result;

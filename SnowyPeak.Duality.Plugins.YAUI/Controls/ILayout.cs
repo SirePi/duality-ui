@@ -10,6 +10,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public interface ILayout
 	{
+		bool IsPassthrough { get; }
+
 		Control FindHoveredControl(Vector2 position);
 
 		void LayoutControls();

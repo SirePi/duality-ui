@@ -11,64 +11,55 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
-		private static string STAR = "*";
+		private static string STAR_CHAR = "*";
 
 		private class Dimension
 		{
-			public int Value { get; set; }
+            public static Dimension STAR_DIMENSION = new Dimension() { Value = 1, IsVariable = true };
+
+            public int Value { get; set; }
 			public bool IsVariable { get; set; }
 
 			public override string ToString()
 			{
-				return String.Format("{0}{1}", Value, IsVariable ? STAR : String.Empty);
+				return String.Format("{0}{1}", Value, IsVariable ? STAR_CHAR : String.Empty);
 			}
 		}
 
 		private IEnumerable<int> columnsSize;
 		private IEnumerable<int> rowsSize;
 
-		private Dimension[] _columns;
-		private Dimension[] _rows;
+        // these are arrays to avoid multiple iterations over the set values
+		private Dimension[] _columns = new[] { Dimension.STAR_DIMENSION };
+		private Dimension[] _rows = new[] { Dimension.STAR_DIMENSION };
 
-		public IEnumerable<string> Columns
+        public IEnumerable<string> Columns
 		{
 			get { return _columns.Select(x => x.ToString()); }
-			set
-			{
-				_columns = value.Select(x =>
-				{
-					if (x.Equals(STAR))
-						return new Dimension() { Value = 1, IsVariable = true };
-					else
-					{
-						bool isVariable = x.EndsWith(STAR);
-						int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
-
-						return new Dimension() { Value = val, IsVariable = isVariable };
-					}
-				}).ToArray();
-			}
-		}
+            set { _columns = ParseDimensions(value).ToArray(); }
+        }
 
 		public IEnumerable<string> Rows
 		{
 			get { return _rows.Select(x => x.ToString()); }
-			set
-			{
-				_rows = value.Select(x =>
-				{
-					if (x.Equals(STAR))
-						return new Dimension() { Value = 1, IsVariable = true };
-					else
-					{
-						bool isVariable = x.EndsWith(STAR);
-						int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
-
-						return new Dimension() { Value = val, IsVariable = isVariable };
-					}
-				}).ToArray();
-			}
+			set { _rows = ParseDimensions(value).ToArray(); }
 		}
+
+        private IEnumerable<Dimension> ParseDimensions(IEnumerable<string> value)
+        {
+            return value.Select(x =>
+            {
+                if (x.Equals(STAR_CHAR))
+                    return Dimension.STAR_DIMENSION;
+                else
+                {
+                    bool isVariable = x.EndsWith(STAR_CHAR);
+                    int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+
+                    return new Dimension() { Value = val, IsVariable = isVariable };
+                }
+            });
+        }
 
 		public GridPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
