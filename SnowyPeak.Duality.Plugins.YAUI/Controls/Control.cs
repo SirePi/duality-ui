@@ -47,26 +47,54 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			get { return new Rect(this.ActualPosition.X, this.ActualPosition.Y, this.ActualSize.X, this.ActualSize.Y); }
 		}
-
 		public Dock Docking { get; set; }
 		public FocusChangeDelegate FocusChangeHandler { get; set; }
 		public string Name { get; set; }
 		public ControlsContainer Parent { get; set; }
-		public ControlStatus Status { get; set; }
+		public ControlStatus Status
+        {
+            get { return _status; }
+            set
+            {
+                if (_status != value && StatusChangeHandler != null)
+                { StatusChangeHandler(this, value); }
+
+                _status = value;
+            }
+        }
+        public StatusChangeDelegate StatusChangeHandler { get; set; }
 		public bool StretchToFill { get; set; }
 		public object Tag { get; set; }
-		public UpdateDelegate UpdateHandler { get; set; }
-		public ControlVisibility Visibility { get; set; }
         public Dictionary<string, float[]> Uniforms { get; private set; }
+        public UpdateDelegate UpdateHandler { get; set; }
+		public ControlVisibility Visibility
+        {
+            get { return _visibility; }
+            set
+            {
+                if (_visibility != value && VisibilityChangeHandler != null)
+                { VisibilityChangeHandler(this, value); }
+
+                _visibility = value;
+            }
+        }
+        public VisibilityChangeDelegate VisibilityChangeHandler { get; set; }
+
         internal string TemplateName { get; private set; }
 
         private Dictionary<ControlStatus, BatchInfo> _customAppearance;
+        private ControlVisibility _visibility;
+        private ControlStatus _status;
 
 		public delegate void FocusChangeDelegate(Control control, bool isFocused);
 
 		public delegate void UpdateDelegate(Control control, float msFrame);
 
-		protected Control(Skin skin, string templateName)
+        public delegate void StatusChangeDelegate(Control control, ControlStatus newValue);
+
+        public delegate void VisibilityChangeDelegate(Control control, ControlVisibility newValue);
+
+        protected Control(Skin skin, string templateName)
 		{
 			this.StretchToFill = true;
 			this.Visibility = ControlVisibility.Visible;
