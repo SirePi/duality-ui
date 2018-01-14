@@ -74,8 +74,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 
 				canvas.DrawText(textToDraw,
-					textPosition.X,
-					textPosition.Y,
+					(int)textPosition.X,
+                    (int)textPosition.Y,
 					zOffset + INNER_ZOFFSET,
 					this.TextConfiguration.Alignment);
 			}

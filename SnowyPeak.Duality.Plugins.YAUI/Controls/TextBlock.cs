@@ -52,8 +52,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_fText.UpdateVertexCache();
 
 				canvas.DrawText(_fText,
-					textPosition.X,
-					textPosition.Y,
+                    (int)textPosition.X,
+                    (int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),
 					null,
 					this.TextConfiguration.Alignment);
