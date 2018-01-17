@@ -64,6 +64,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void OnUpdate(float msFrame)
 		{
+            base.OnUpdate(msFrame);
+
 			if (!_isMouseOver)
 			{
 				if (this.Toggled)
