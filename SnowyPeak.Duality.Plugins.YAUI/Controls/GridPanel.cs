@@ -15,9 +15,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		private class Dimension
 		{
-            public static Dimension STAR_DIMENSION = new Dimension() { Value = 1, IsVariable = true };
+			public static Dimension STAR_DIMENSION = new Dimension() { Value = 1, IsVariable = true };
 
-            public int Value { get; set; }
+			public int Value { get; set; }
 			public bool IsVariable { get; set; }
 
 			public override string ToString()
@@ -29,15 +29,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private IEnumerable<int> columnsSize;
 		private IEnumerable<int> rowsSize;
 
-        // these are arrays to avoid multiple iterations over the set values
+		// these are arrays to avoid multiple iterations over the set values
 		private Dimension[] _columns = new[] { Dimension.STAR_DIMENSION };
 		private Dimension[] _rows = new[] { Dimension.STAR_DIMENSION };
 
-        public IEnumerable<string> Columns
+		public IEnumerable<string> Columns
 		{
 			get { return _columns.Select(x => x.ToString()); }
-            set { _columns = ParseDimensions(value).ToArray(); }
-        }
+			set { _columns = ParseDimensions(value).ToArray(); }
+		}
 
 		public IEnumerable<string> Rows
 		{
@@ -45,27 +45,25 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			set { _rows = ParseDimensions(value).ToArray(); }
 		}
 
-        private IEnumerable<Dimension> ParseDimensions(IEnumerable<string> value)
-        {
-            return value.Select(x =>
-            {
-                if (x.Equals(STAR_CHAR))
-                    return Dimension.STAR_DIMENSION;
-                else
-                {
-                    bool isVariable = x.EndsWith(STAR_CHAR);
-                    int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
-
-                    return new Dimension() { Value = val, IsVariable = isVariable };
-                }
-            });
-        }
-
-		public GridPanel(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
+		private IEnumerable<Dimension> ParseDimensions(IEnumerable<string> value)
 		{
-			ApplySkin(_baseSkin);
+			return value.Select(x =>
+			{
+				if (x.Equals(STAR_CHAR))
+					return Dimension.STAR_DIMENSION;
+				else
+				{
+					bool isVariable = x.EndsWith(STAR_CHAR);
+					int val = Convert.ToInt32(x.Substring(0, x.Length - (isVariable ? 1 : 0)));
+
+					return new Dimension() { Value = val, IsVariable = isVariable };
+				}
+			});
 		}
+
+        public GridPanel(Skin skin = null, string templateName = null)
+            : base(skin, templateName)
+        { }
 
 		internal override void _LayoutControls()
 		{

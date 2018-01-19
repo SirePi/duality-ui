@@ -54,6 +54,7 @@
     <Compile Include="Appearance.cs" />
     <Compile Include="Border.cs" />
     <Compile Include="CellInfo.cs" />
+    <Compile Include="Controls\InteractiveControl.cs" />
     <Compile Include="Controls\SpriteBox.cs" />
     <Compile Include="Controls\Configuration\ProgressConfiguration.cs" />
     <Compile Include="Controls\ILayout.cs" />

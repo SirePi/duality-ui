@@ -309,8 +309,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				canvas.State.TextFont = this.TextConfiguration.Font;
 
 				canvas.DrawText(this.Text,
-                    (int)textPosition.X,
-                    (int)textPosition.Y,
+					(int)textPosition.X,
+					(int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),
 					this.TextConfiguration.Alignment);
 			}

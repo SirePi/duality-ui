@@ -135,7 +135,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					Toggled = selectedItems.Contains(obj),
 					Size = this.ListBoxConfiguration.ItemsSize,
 					TextConfiguration = this.TextConfiguration,
-					ToggleChangeEventHandler = (button, isToggled) =>
+					ToggleChangeEventHandler = (button, wasToggled, isToggled) =>
 					{
 						if (isToggled && !MultiSelection)
 						{

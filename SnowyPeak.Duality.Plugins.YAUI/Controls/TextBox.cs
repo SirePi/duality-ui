@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class TextBox : Control
+	public class TextBox : InteractiveControl
 	{
 		private static readonly string ELLIPSIS = "...";
 		private static readonly string WQ = "Wq";

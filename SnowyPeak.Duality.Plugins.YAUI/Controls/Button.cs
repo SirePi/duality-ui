@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class Button : Control
+	public class Button : InteractiveControl
 	{
 		private FormattedText _fText;
 

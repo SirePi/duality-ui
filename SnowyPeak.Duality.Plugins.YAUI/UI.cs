@@ -132,14 +132,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				{
 					if (currentHoveredControl != _focusedControl && _focusedControl != null)
 					{
-						_focusedControl.OnBlur();
+                        (_focusedControl as InteractiveControl)?.OnBlur();
 						_focusedControl = null;
 					}
 
 					if (currentHoveredControl != null && currentHoveredControl != _focusedControl)
 					{
 						_focusedControl = currentHoveredControl;
-						_focusedControl.OnFocus();
+                        (_focusedControl as InteractiveControl)?.OnFocus();
 					}
 				}
 

@@ -95,6 +95,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public Control FindHoveredControl(Vector2 position)
 		{
 			Control result = this.Children.FirstOrDefault(c =>
+                (c is ILayout || c is InteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
 				c.ControlArea.Contains(position));

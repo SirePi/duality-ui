@@ -24,14 +24,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _isChecked; }
 			set
 			{
-				_isChecked = value;
 				if (this.CheckChangeEventHandler != null)
-				{ this.CheckChangeEventHandler(this, _isChecked); }
-			}
+				{ this.CheckChangeEventHandler(this, _isChecked, value); }
+
+                _isChecked = value;
+            }
 		}
 
 		public GlyphConfiguration GlyphConfiguration { get; set; }
-		public delegate void CheckChangeEventDelegate(CheckButton checkButton, bool isChecked);
+		public delegate void CheckChangeEventDelegate(CheckButton checkButton, bool previousValue, bool newValue);
 
 		public CheckButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)

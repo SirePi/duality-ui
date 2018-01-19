@@ -25,12 +25,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _isToggled; }
 			set
 			{
-				_isToggled = value;
-				if (this.ToggleChangeEventHandler != null) { this.ToggleChangeEventHandler(this, _isToggled); }
+                if (_isToggled != value && this.ToggleChangeEventHandler != null)
+                { this.ToggleChangeEventHandler(this, _isToggled, value); }
+
+                _isToggled = value;
 			}
 		}
 
-		public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool isToggled);
+		public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool previousValue, bool newValue);
 
 		public ToggleButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)

@@ -23,7 +23,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public TextBlock(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.Text = String.Empty;
 			_fText = new FormattedText();
 
 			ApplySkin(_baseSkin);
@@ -52,8 +51,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_fText.UpdateVertexCache();
 
 				canvas.DrawText(_fText,
-                    (int)textPosition.X,
-                    (int)textPosition.Y,
+					(int)textPosition.X,
+					(int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),
 					null,
 					this.TextConfiguration.Alignment);
