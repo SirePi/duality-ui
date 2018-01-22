@@ -55,29 +55,27 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _status; }
 			set
 			{
-				if (_status != value && this.StatusChangeHandler != null)
-				{ this.StatusChangeHandler(this, _status, value); }
+				if (_status != value)
+				{ this.OnStatusChange.Invoke(this, _status, value); }
 
 				_status = value;
 			}
 		}
-		public StatusChangeDelegate StatusChangeHandler { get; set; }
 		public bool StretchToFill { get; set; }
 		public object Tag { get; set; }
 		public Dictionary<string, float[]> Uniforms { get; private set; }
-		public UpdateDelegate UpdateHandler { get; set; }
 		public ControlVisibility Visibility
 		{
 			get { return _visibility; }
 			set
 			{
-				if (_visibility != value && this.VisibilityChangeHandler != null)
-				{ this.VisibilityChangeHandler(this, _visibility, value); }
+				if (_visibility != value)
+				{ this.OnVisibilityChange.Invoke(this, _visibility, value); }
 
 				_visibility = value;
 			}
 		}
-		public VisibilityChangeDelegate VisibilityChangeHandler { get; set; }
+		
 
 		internal string TemplateName { get; private set; }
 
@@ -85,11 +83,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private ControlVisibility _visibility;
 		private ControlStatus _status;
 
+		// Delegates
 		public delegate void UpdateDelegate(Control control, float msFrame);
-
 		public delegate void StatusChangeDelegate(Control control, ControlStatus previousValue, ControlStatus newValue);
-
 		public delegate void VisibilityChangeDelegate(Control control, ControlVisibility previousValue, ControlVisibility newValue);
+
+		// Events
+		public event UpdateDelegate OnGameUpdate = delegate { };
+		public event StatusChangeDelegate OnStatusChange = delegate { };
+		public event VisibilityChangeDelegate OnVisibilityChange = delegate { };
 
 		protected Control(Skin skin, string templateName)
 		{
@@ -227,9 +229,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 				else
 				{
-					SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.Red);
+					SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.White);
 					SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 1, ColorRgba.Red);
-					SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, ColorRgba.Red);
+					SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, ColorRgba.White);
 					SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 1, 0, ColorRgba.Red);
 
 					canvas.State.Reset();
@@ -239,23 +241,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		private void DrawWithMaterial(ContentRef<Material> mat)
-		{
-
-		}
-
-		private void DrawWithBatchInfo(BatchInfo bi)
-		{
-
-		}
-
 		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
-		{
-		}
+		{ }
 
 		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
-		{
-		}
+		{ }
 
 		public virtual void OnMouseEnterEvent()
 		{
@@ -269,8 +259,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public virtual void OnUpdate(float msFrame)
 		{
-			if (this.UpdateHandler != null)
-			{ this.UpdateHandler(this, msFrame); }
+			this.OnGameUpdate.Invoke(this, msFrame);
 		}
 
 		public override string ToString()

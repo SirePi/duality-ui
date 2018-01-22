@@ -17,11 +17,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		private FormattedText _fText;
 
-		public MouseButtonEventDelegate MouseButtonEventHandler { get; set; }
 		public string Text { get; set; }
 		public TextConfiguration TextConfiguration { get; set; }
 
+		// Delegates
 		public delegate void MouseButtonEventDelegate(Button button, MouseButtonEventArgs args);
+		
+		// Events
+		public event MouseButtonEventDelegate OnMouseButton = delegate { };
 
 		public Button(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -57,8 +60,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 
 				canvas.DrawText(_fText,
-                    (int)textPosition.X,
-                    (int)textPosition.Y,
+					(int)textPosition.X,
+					(int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),
 					null,
 					this.TextConfiguration.Alignment);
@@ -77,7 +80,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{ this.Status &= ~Control.ControlStatus.Active; }
 			}
 
-			if (this.MouseButtonEventHandler != null) { this.MouseButtonEventHandler(this, args); }
+			this.OnMouseButton.Invoke(this, args);
 		}
 
 		public override void OnMouseLeaveEvent()

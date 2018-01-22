@@ -17,36 +17,39 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		private bool _isChecked;
 
-		public CheckChangeEventDelegate CheckChangeEventHandler { get; set; }
-
 		public bool Checked
 		{
 			get { return _isChecked; }
 			set
 			{
-				if (this.CheckChangeEventHandler != null)
-				{ this.CheckChangeEventHandler(this, _isChecked, value); }
+				this.OnCheckedChange.Invoke(this, _isChecked, value);
 
-                _isChecked = value;
-            }
+				_isChecked = value;
+			}
 		}
 
 		public GlyphConfiguration GlyphConfiguration { get; set; }
-		public delegate void CheckChangeEventDelegate(CheckButton checkButton, bool previousValue, bool newValue);
+
+		// Delegates
+		public delegate void CheckedChangeEventDelegate(CheckButton checkButton, bool previousValue, bool newValue);
+
+		// Events
+		public event CheckedChangeEventDelegate OnCheckedChange = delegate { };
 
 		public CheckButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.MouseButtonEventHandler = (button, args) =>
-			{
-				if (args.Button == MouseButton.Left)
-				{
-					if (args.IsPressed)
-					{ this.Checked = !this.Checked; }
-				}
-			};
-
+			this.OnMouseButton += CheckButton_OnMouseButton;
 			ApplySkin(_baseSkin);
+		}
+
+		private void CheckButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left)
+			{
+				if (args.IsPressed)
+				{ this.Checked = !this.Checked; }
+			}
 		}
 
 		public override void ApplySkin(Skin skin)

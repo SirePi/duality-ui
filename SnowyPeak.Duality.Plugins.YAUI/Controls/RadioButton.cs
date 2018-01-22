@@ -29,18 +29,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public RadioButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.MouseButtonEventHandler = (button, args) =>
-			{
-				if (args.Button == MouseButton.Left && args.IsPressed)
-				{
-					foreach (RadioButton rb in UIHelper.GetRadioButtonsInGroup(this.RadioGroup))
-					{ rb.Checked = false; }
-
-					this.Checked = true;
-				}
-			};
-
+			this.OnMouseButton += RadioButton_OnMouseButton;
 			ApplySkin(_baseSkin);
+		}
+
+		private void RadioButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left && args.IsPressed)
+			{
+				foreach (RadioButton rb in UIHelper.GetRadioButtonsInGroup(this.RadioGroup))
+				{ rb.Checked = false; }
+
+				this.Checked = true;
+			}
 		}
 	}
 }

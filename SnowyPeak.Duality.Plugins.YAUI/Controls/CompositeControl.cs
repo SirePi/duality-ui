@@ -54,7 +54,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override void OnUpdate(float msFrame)
 		{
 			base.OnUpdate(msFrame);
-
 			_container.OnUpdate(msFrame);
 		}
 	}

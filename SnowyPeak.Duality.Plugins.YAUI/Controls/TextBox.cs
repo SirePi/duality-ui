@@ -22,12 +22,28 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private Vector2 _caretTopLeft;
 		private bool _caretVisible;
 		private float _seconds;
+		private string _text;
 
 		public float CaretSpeed { get; set; }
 		public bool IsPassword { get; set; }
 		public int MaxLength { get; set; }
-		public string Text { get; set; }
+		public string Text
+		{
+			get { return _text; }
+			set
+			{
+				if (_text != value)
+				{ this.OnTextChange.Invoke(this, _text, value); }
+
+				_text = value;
+			}
+		}
 		public TextConfiguration TextConfiguration { get; set; }
+
+		// Delegates
+		public delegate void TextChangeEventDelegate(TextBox textBox, string oldText, string newText);
+		// Events
+		public event TextChangeEventDelegate OnTextChange = delegate { };
 
 		public TextBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -75,7 +91,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 				canvas.DrawText(textToDraw,
 					(int)textPosition.X,
-                    (int)textPosition.Y,
+					(int)textPosition.Y,
 					zOffset + INNER_ZOFFSET,
 					this.TextConfiguration.Alignment);
 			}

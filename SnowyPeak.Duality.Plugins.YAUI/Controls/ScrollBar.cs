@@ -80,16 +80,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _value; }
 			set
 			{
-				bool valueChanged = _value != value;
-				_value = value;
+				if (_value != value)
+				{ this.OnValueChange.Invoke(this, _value, value); }
 
-				if (valueChanged && this.ValueChangedEventHandler != null)
-				{ this.ValueChangedEventHandler(this, value); }
+				_value = value;
 			}
 		}
 
-		public ValueChangedEventDelegate ValueChangedEventHandler { get; set; }
-		public delegate void ValueChangedEventDelegate(ScrollBar scrollBar, int value);
+		// Delegates
+		public delegate void ValueChangeEventDelegate(ScrollBar scrollBar, int oldValue, int newValue);
+		// Events
+		public event ValueChangeEventDelegate OnValueChange = delegate { };
 
 		public ScrollBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -113,62 +114,82 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override ControlsContainer BuildControl()
 		{
 			DockPanel scrollBar = new DockPanel();
-			scrollBar.Add(_btnDecrease = new Button(_baseSkin, this.TemplateName + DECREASE_TEMPLATE)
+			_btnDecrease = new Button(_baseSkin, this.TemplateName + DECREASE_TEMPLATE)
 			{
-				StretchToFill = false,
-				MouseButtonEventHandler = (button, args) =>
-				{
-					if (args.Button == MouseButton.Left)
-					{ _isDecreasing = args.IsPressed; }
-				},
-				FocusChangeHandler = (button, isFocused) =>
-				{
-					if (!isFocused)
-					{ _isDecreasing = false; }
-				}
-			});
-			scrollBar.Add(_btnIncrease = new Button(_baseSkin, this.TemplateName + INCREASE_TEMPLATE)
+				StretchToFill = false
+			};
+			_btnDecrease.OnMouseButton += _btnDecrease_OnMouseButton;
+			_btnDecrease.OnFocusChange += _btnDecrease_OnFocusChange;
+
+			_btnIncrease = new Button(_baseSkin, this.TemplateName + INCREASE_TEMPLATE)
 			{
-				StretchToFill = false,
-				MouseButtonEventHandler = (button, args) =>
-				{
-					if (args.Button == MouseButton.Left)
-					{ _isIncreasing = args.IsPressed; }
-				},
-				FocusChangeHandler = (button, isFocused) =>
-				{
-					if (!isFocused)
-					{ _isIncreasing = false; }
-				}
-			});
-			scrollBar.Add(_canvas = new CanvasPanel(_baseSkin)
+				StretchToFill = false
+			};
+			_btnIncrease.OnMouseButton += _btnIncrease_OnMouseButton;
+			_btnIncrease.OnFocusChange += _btnIncrease_OnFocusChange;
+
+			_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)
+			{
+				StretchToFill = false
+			};
+			_btnCursor.OnMouseButton += _btnCursor_OnMouseButton;
+			_btnCursor.OnFocusChange += _btnCursor_OnFocusChange;
+
+			_canvas = new CanvasPanel(_baseSkin)
 			{
 				Docking = Dock.Center
-			});
+			};
+			_canvas.Add(_btnCursor);
 
-			_canvas.Add(_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)
-			{
-				StretchToFill = false,
-				MouseButtonEventHandler = (button, args) =>
-				{
-					if (args.Button == MouseButton.Left)
-					{
-						_tempValue = this.Value;
-
-						if (args.IsPressed)
-						{ _cursorDragPosition = args.Position; }
-						else
-						{ _cursorDragPosition = null; }
-					}
-				},
-				FocusChangeHandler = (button, isFocused) =>
-				{
-					if (!isFocused)
-					{ _cursorDragPosition = null; }
-				}
-			});
+			scrollBar
+				.Add(_btnDecrease)
+				.Add(_btnIncrease)
+				.Add(_canvas);
 
 			return scrollBar;
+		}
+
+		private void _btnCursor_OnFocusChange(Control control, bool isFocused)
+		{
+			if (!isFocused)
+			{ _cursorDragPosition = null; }
+		}
+
+		private void _btnCursor_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left)
+			{
+				_tempValue = this.Value;
+
+				if (args.IsPressed)
+				{ _cursorDragPosition = args.Position; }
+				else
+				{ _cursorDragPosition = null; }
+			}
+		}
+
+		private void _btnIncrease_OnFocusChange(Control control, bool isFocused)
+		{
+			if (!isFocused)
+			{ _isIncreasing = false; }
+		}
+
+		private void _btnIncrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left)
+			{ _isIncreasing = args.IsPressed; }
+		}
+
+		private void _btnDecrease_OnFocusChange(Control control, bool isFocused)
+		{
+			if (!isFocused)
+			{ _isDecreasing = false; }
+		}
+
+		private void _btnDecrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left)
+			{ _isDecreasing = args.IsPressed; }
 		}
 
 		public override void OnUpdate(float msFrame)

@@ -56,6 +56,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
+		// Delegates
+		public delegate void SelectionChangeDelegate(ListBox listBox);
+
+		// Events
+		public SelectionChangeDelegate OnSelectionChange = delegate { };
+
 		public ListBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
@@ -134,15 +140,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					Visibility = ControlVisibility.Collapsed,
 					Toggled = selectedItems.Contains(obj),
 					Size = this.ListBoxConfiguration.ItemsSize,
-					TextConfiguration = this.TextConfiguration,
-					ToggleChangeEventHandler = (button, wasToggled, isToggled) =>
+					TextConfiguration = this.TextConfiguration
+				};
+
+				toggle.OnToggleChange += (button, wasToggled, isToggled) =>
+				{
+					if (isToggled && !this.MultiSelection)
 					{
-						if (isToggled && !MultiSelection)
-						{
-							foreach (ToggleButton tb in _toggleButtons.Where(tb => tb != button))
-							{ tb.Toggled = false; }
-						}
+						foreach (ToggleButton tb in _toggleButtons.Where(tb => tb != button))
+						{ tb.Toggled = false; }
 					}
+
+					if (button == toggle)
+						this.OnSelectionChange.Invoke(this);
 				};
 
 				toggle.ApplySkin(_baseSkin);

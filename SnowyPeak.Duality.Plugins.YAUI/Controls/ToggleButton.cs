@@ -18,38 +18,41 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private bool _isMousePressed;
 		private bool _isToggled;
 
-		public ToggleChangeEventDelegate ToggleChangeEventHandler { get; set; }
-
 		public bool Toggled
 		{
 			get { return _isToggled; }
 			set
 			{
-                if (_isToggled != value && this.ToggleChangeEventHandler != null)
-                { this.ToggleChangeEventHandler(this, _isToggled, value); }
+                if (_isToggled != value)
+                { this.OnToggleChange.Invoke(this, _isToggled, value); }
 
                 _isToggled = value;
 			}
 		}
 
+        // Delegates
 		public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool previousValue, bool newValue);
 
-		public ToggleButton(Skin skin = null, string templateName = null)
+        // Events
+        public event ToggleChangeEventDelegate OnToggleChange = delegate { };
+
+        public ToggleButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.MouseButtonEventHandler = (button, args) =>
-			{
-				if (args.Button == MouseButton.Left)
-				{
-					_isMousePressed = args.IsPressed;
-					if (args.IsPressed) this.Toggled = !this.Toggled;
-				}
-			};
-
+			this.OnMouseButton += ToggleButton_OnMouseButton;
 			ApplySkin(_baseSkin);
 		}
 
-		public override void OnMouseEnterEvent()
+        private void ToggleButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+        {
+            if (args.Button == MouseButton.Left)
+            {
+                _isMousePressed = args.IsPressed;
+                if (args.IsPressed) this.Toggled = !this.Toggled;
+            }
+        }
+
+        public override void OnMouseEnterEvent()
 		{
 			base.OnMouseEnterEvent();
 

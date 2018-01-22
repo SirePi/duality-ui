@@ -14,9 +14,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class InteractiveControl : Control
 	{
-		public FocusChangeDelegate FocusChangeHandler { get; set; }
-
+		// Delegates
 		public delegate void FocusChangeDelegate(Control control, bool isFocused);
+
+		// Events
+		public event FocusChangeDelegate OnFocusChange = delegate { };
 
 		protected InteractiveControl(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -24,14 +26,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public virtual void OnBlur()
 		{
-			if (this.FocusChangeHandler != null)
-			{ this.FocusChangeHandler(this, false); }
+			this.OnFocusChange.Invoke(this, false);
 		}
 
 		public virtual void OnFocus()
 		{
-			if (this.FocusChangeHandler != null)
-			{ this.FocusChangeHandler(this, true); }
+			this.OnFocusChange.Invoke(this, true);
 		}
 	}
 }
