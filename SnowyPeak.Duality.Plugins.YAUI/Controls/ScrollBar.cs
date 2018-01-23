@@ -42,7 +42,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_maxValue = value;
 				_valueDelta = _maxValue - _minValue;
 
-				this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
+				this.Value = MathF.Clamp(Value, MinValue, MaxValue);
 			}
 		}
 
@@ -54,8 +54,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_minValue = value;
 				_valueDelta = _maxValue - _minValue;
 
-				this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
-			}
+                this.Value = MathF.Clamp(Value, MinValue, MaxValue);
+            }
 		}
 
 		public ScrollBarConfiguration ScrollBarConfiguration
@@ -208,7 +208,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					if (_isDecreasing)
 					{ this.Value -= 1; }
 
-					this.Value = Math.Max(Math.Min(MaxValue, Value), MinValue);
+					this.Value = MathF.Clamp(Value, MinValue, MaxValue);
 					_mseconds -= 100;
 				}
 			}
@@ -220,7 +220,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{
 					_tempValue += ApplyMouseMovement(mouseDelta);
 
-					this.Value = Math.Max(Math.Min(MaxValue, (int)_tempValue), MinValue);
+					this.Value = MathF.Clamp((int)MathF.Round(_tempValue, MidpointRounding.AwayFromZero), MinValue, MaxValue);
 					_cursorDragPosition = DualityApp.Mouse.Pos;
 				}
 			}
