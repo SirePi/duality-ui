@@ -295,8 +295,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					}
 
 					canvas.State.Reset();
-					canvas.State.SetMaterial(material);
-					canvas.DrawVertices<VertexC1P3T2>(_barVertices, VertexMode.Quads, 4);
+                    canvas.State.SetMaterial(material);
+                    canvas.DrawVertices<VertexC1P3T2>(_barVertices, VertexMode.Quads, 36);
 				}
 			}
 
