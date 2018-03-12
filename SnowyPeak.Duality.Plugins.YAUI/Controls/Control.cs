@@ -241,12 +241,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
-		{ }
-
-		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
-		{ }
-
 		public virtual void OnMouseEnterEvent()
 		{
 			this.Status |= Control.ControlStatus.Hover;

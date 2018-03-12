@@ -22,7 +22,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _isChecked; }
 			set
 			{
-				this.OnCheckedChange.Invoke(this, _isChecked, value);
+                if (_isChecked != value)
+                { this.OnCheckedChange.Invoke(this, _isChecked, value); }
 
 				_isChecked = value;
 			}

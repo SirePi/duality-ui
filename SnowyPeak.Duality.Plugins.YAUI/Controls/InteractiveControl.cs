@@ -33,5 +33,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			this.OnFocusChange.Invoke(this, true);
 		}
-	}
+
+        public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
+        { }
+
+        public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
+        { }
+    }
 }

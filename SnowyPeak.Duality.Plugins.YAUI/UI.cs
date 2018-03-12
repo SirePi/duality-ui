@@ -148,12 +148,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				{
 					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
 					{
-						_focusedControl.OnMouseButtonEvent(e);
+                        (_focusedControl as InteractiveControl)?.OnMouseButtonEvent(e);
 					}
 
 					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
 					{
-						_focusedControl.OnKeyboardKeyEvent(e);
+                        (_focusedControl as InteractiveControl)?.OnKeyboardKeyEvent(e);
 					}
 				}
 
