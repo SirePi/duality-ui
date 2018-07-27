@@ -88,8 +88,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				_rootContainer.LayoutControls();
 
-				Canvas c = new Canvas(device, _canvasBuffer);
-				_rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
+                if (_rootContainer.Visibility == Control.ControlVisibility.Visible)
+                {
+                    Canvas c = new Canvas(device, _canvasBuffer);
+                    _rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
+                }
 			}
 		}
 
