@@ -12,6 +12,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class ControlsContainer : Control, ILayout
 	{
+        private List<Control> _children;
+
 		public Rect ChildrenArea
 		{
 			get
@@ -28,20 +30,21 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public bool IsPassthrough { get; set; }
 
-		protected List<Control> Children { get; private set; }
+		public IEnumerable<Control> Children { get { return _children; } }
 
 		protected ControlsContainer(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
 			this.Margin = Border.Zero;
-			this.Children = new List<Control>();
 			this.IsPassthrough = true;
-			ApplySkin(_baseSkin);
+            _children = new List<Control>();
+
+            ApplySkin(_baseSkin);
 		}
 
 		public ControlsContainer Add(Control child)
 		{
-			if (this.Children.Contains(child))
+			if (_children.Contains(child))
 			{ throw new Exception(String.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
@@ -62,7 +65,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 
 				child.Parent = this;
-				this.Children.Add(child);
+				_children.Add(child);
 
 				return this;
 			}
@@ -72,29 +75,32 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			if (this.Children != null)
+			if (_children != null)
 			{
-				foreach (Control c in this.Children)
+				foreach (Control c in _children)
 				{ c.ApplySkin(_baseSkin); }
 			}
 		}
 
 		public void Clear()
 		{
-			this.Children.Clear();
+            _children.Clear();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
 			base.Draw(canvas, zOffset);
 
-			foreach (Control c in this.Children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
+			foreach (Control c in _children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
 			{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
-			Control result = this.Children.FirstOrDefault(c =>
+            if (this.Visibility != Control.ControlVisibility.Visible)
+                return null;
+
+			Control result = _children.FirstOrDefault(c =>
                 (c is ILayout || c is InteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
@@ -111,15 +117,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public void LayoutControls()
 		{
-			foreach (Control c in this.Children)
+			foreach (Control c in _children)
 			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
 
 			_LayoutControls();
 
-			foreach (Control c in this.Children)
+			foreach (Control c in _children)
 			{ c.ActualPosition += this.ActualPosition; }
 
-			foreach (ILayout c in this.Children.Where(c => c is ILayout))
+			foreach (ILayout c in _children.Where(c => c is ILayout))
 			{ c.LayoutControls(); }
 		}
 
@@ -127,13 +133,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.OnUpdate(msFrame);
 
-			foreach (Control c in this.Children)
+			foreach (Control c in _children)
 			{ c.OnUpdate(msFrame); }
 		}
 
 		public ControlsContainer Remove(Control child)
 		{
-			this.Children.Remove(child);
+			_children.Remove(child);
 			return this;
 		}
 
