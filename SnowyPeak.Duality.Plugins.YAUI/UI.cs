@@ -20,6 +20,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	{
 		private static readonly float GLOBAL_ZOFFSET = 0.01f;
 
+        [DontSerialize]
+        private Canvas _canvas;
+
 		[DontSerialize]
 		private Control _focusedControl;
 
@@ -29,18 +32,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		[DontSerialize]
 		private ControlsContainer _rootContainer;
 
-		[DontSerialize]
-		private CanvasBuffer _canvasBuffer;
-
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Control HoveredControl
 		{
 			get { return _hoveredControl; }
-		}
-
-		float ICmpRenderer.BoundRadius
-		{
-			get { return 0; }
 		}
 
 		public bool IsFullScreen { get; set; }
@@ -51,23 +46,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			this.Offset = 1;
 		}
 
-		void ICmpInitializable.OnInit(Component.InitContext context)
+		void ICmpInitializable.OnActivate()
 		{
-			if (context == InitContext.Activate)
-			{
-				_rootContainer = CreateUI();
-				_canvasBuffer = new CanvasBuffer();
-
-				OnUpdate();
-			}
+			_rootContainer = CreateUI();
+            OnUpdate();
 		}
 
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		void ICmpInitializable.OnDeactivate()
 		{
-			if (context == ShutdownContext.Deactivate)
-			{
-				_rootContainer = null;
-			}
+			_rootContainer = null;
 		}
 
 		void ICmpRenderer.Draw(IDrawDevice device)
@@ -76,8 +63,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			{
 				if (this.IsFullScreen)
 				{
-					_rootContainer.ActualSize.X = DualityApp.TargetResolution.X;
-					_rootContainer.ActualSize.Y = DualityApp.TargetResolution.Y;
+					_rootContainer.ActualSize.X = DualityApp.TargetViewSize.X;
+					_rootContainer.ActualSize.Y = DualityApp.TargetViewSize.Y;
 					_rootContainer.ActualPosition = Vector2.Zero;
 				}
 				else
@@ -88,30 +75,21 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				_rootContainer.LayoutControls();
 
-                if (_rootContainer.Visibility == Control.ControlVisibility.Visible)
+                if (_canvas == null)
+                    _canvas = new Canvas();
+
+                _canvas.Begin(device);
+                try
                 {
-                    Canvas c = new Canvas(device, _canvasBuffer);
-                    _rootContainer.Draw(c, this.Offset * GLOBAL_ZOFFSET);
+                    _rootContainer.Draw(_canvas, this.Offset * GLOBAL_ZOFFSET);
                 }
+                catch (Exception ex)
+                {
+                    Logs.Get<UILog>().WriteError("Exception {0} while drawing", ex.Message);
+                    Logs.Get<UILog>().WriteError(ex.StackTrace);
+                }
+                _canvas.End();
 			}
-		}
-
-		bool ICmpRenderer.IsVisible(IDrawDevice device)
-		{
-			bool result = true;
-
-			// this is visible only as Group30 / ScreenOverlay
-			if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) == VisibilityFlag.None)
-			{
-				result = false;
-			}
-			// No match in any VisibilityGroup? Don't render!
-			if ((VisibilityFlag.Group30 & device.VisibilityMask) == VisibilityFlag.None)
-			{
-				result = false;
-			}
-
-			return result;
 		}
 
 		void ICmpUpdatable.OnUpdate()
@@ -151,19 +129,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				{
 					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
 					{
-                        (_focusedControl as InteractiveControl)?.OnMouseButtonEvent(e);
+						_focusedControl.OnMouseButtonEvent(e);
 					}
 
 					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
 					{
-                        (_focusedControl as InteractiveControl)?.OnKeyboardKeyEvent(e);
+						_focusedControl.OnKeyboardKeyEvent(e);
 					}
 				}
 
 				_hoveredControl = currentHoveredControl;
 
 				// Added check because it might have been set to null due to a Deactivation event
-				if (_rootContainer != null) _rootContainer.OnUpdate(Time.MsPFMult * Time.TimeMult);
+				if (_rootContainer != null) _rootContainer.OnUpdate(Time.DeltaTime * 1000);
 			}
 
 			OnUpdate();
@@ -175,5 +153,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		protected virtual void OnUpdate()
 		{
 		}
-	}
+
+        void ICmpRenderer.GetCullingInfo(out CullingInfo info)
+        {
+            info = new CullingInfo()
+            {
+                Radius = 0,
+                Visibility = VisibilityFlag.Group30 | VisibilityFlag.ScreenOverlay
+            };
+        }
+    }
 }

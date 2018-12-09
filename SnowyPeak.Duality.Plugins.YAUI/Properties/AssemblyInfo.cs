@@ -6,9 +6,8 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("SnowyPeak.Duality.Plugins.YAUI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("This plugin provides a simple and easy to use UI framework for use with Duality.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SnowyPeak.Duality.Plugins.YAUI")]
 [assembly: AssemblyCopyright("Alessandro Pilati")]
 [assembly: AssemblyTrademark("")]
@@ -32,4 +31,4 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.3.0")]
+[assembly: AssemblyVersion("3.0.1.0")]

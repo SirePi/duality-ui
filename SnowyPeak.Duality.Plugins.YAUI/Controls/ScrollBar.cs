@@ -162,7 +162,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_tempValue = this.Value;
 
 				if (args.IsPressed)
-				{ _cursorDragPosition = args.Position; }
+				{ _cursorDragPosition = args.Pos; }
 				else
 				{ _cursorDragPosition = null; }
 			}

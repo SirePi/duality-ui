@@ -28,7 +28,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 		{
 			Assembly embeddingAssembly = typeof(Skin).GetTypeInfo().Assembly;
 
-			ContentRef<Font> fntOpenSans = ResourceHelper.LoadFont(embeddingAssembly, "SnowyPeak.Duality.Plugins.YAUI.DefaultSkins.OpenSans.Font.res");
+			ContentRef<Font> fntFont = ResourceHelper.LoadFont(embeddingAssembly, Fonts.NotoSansRegular);
 
 			ContentRef<Texture> txSquare = new Texture(ResourceHelper.LoadPixmap(embeddingAssembly, "SnowyPeak.Duality.Plugins.YAUI.DefaultSkins.square.png"));
 			ContentRef<Texture> txGlyph = new Texture(ResourceHelper.LoadPixmap(embeddingAssembly, "SnowyPeak.Duality.Plugins.YAUI.DefaultSkins.glyph.png"));
@@ -117,7 +117,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					Alignment = Alignment.Center,
 					Color = COLOR_ACCENT,
-					Font = fntOpenSans,
+					Font = fntFont,
 					Margin = new Border(5)
 				}
 			};
@@ -132,7 +132,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					Alignment = Alignment.Center,
 					Color = COLOR_ACCENT,
-					Font = fntOpenSans,
+					Font = fntFont,
 					Margin = new Border(5)
 				}
 			};

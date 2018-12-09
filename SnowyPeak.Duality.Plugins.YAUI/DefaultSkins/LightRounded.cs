@@ -28,7 +28,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 		{
 			Assembly embeddingAssembly = typeof(Skin).GetTypeInfo().Assembly;
 
-			ContentRef<Font> fntOpenSans = ResourceHelper.LoadFont(embeddingAssembly, "SnowyPeak.Duality.Plugins.YAUI.DefaultSkins.OpenSans.Font.res");
+			ContentRef<Font> fntFont = ResourceHelper.LoadFont(embeddingAssembly, Fonts.NotoSansRegular);
 			ContentRef<Pixmap> pxRound = ResourceHelper.LoadPixmap(embeddingAssembly, "SnowyPeak.Duality.Plugins.YAUI.DefaultSkins.round.png");
 
 			ContentRef<Texture> txRound = new Texture(pxRound);
@@ -96,7 +96,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					Alignment = Alignment.Left,
 					Color = ColorRgba.White,
-					Font = fntOpenSans,
+					Font = fntFont,
 					Margin = new Border(5)
 				}
 			};
@@ -111,7 +111,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					Alignment = Alignment.Right,
 					Color = ColorRgba.White,
-					Font = fntOpenSans,
+					Font = fntFont,
 					Margin = new Border(5)
 				}
 			};
@@ -195,7 +195,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				{
 					Alignment = Alignment.Center,
 					Color = ColorRgba.DarkGrey,
-					Font = fntOpenSans
+					Font = fntFont
 				}
 			};
 			AddDefaultTemplate(typeof(ProgressBar), progressTemplate);

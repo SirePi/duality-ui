@@ -12,8 +12,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class ControlsContainer : Control, ILayout
 	{
-        private List<Control> _children;
-
 		public Rect ChildrenArea
 		{
 			get
@@ -30,21 +28,20 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public bool IsPassthrough { get; set; }
 
-		public IEnumerable<Control> Children { get { return _children; } }
+		protected List<Control> Children { get; private set; }
 
 		protected ControlsContainer(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
 			this.Margin = Border.Zero;
+			this.Children = new List<Control>();
 			this.IsPassthrough = true;
-            _children = new List<Control>();
-
-            ApplySkin(_baseSkin);
+			ApplySkin(_baseSkin);
 		}
 
 		public ControlsContainer Add(Control child)
 		{
-			if (_children.Contains(child))
+			if (this.Children.Contains(child))
 			{ throw new Exception(String.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
@@ -60,12 +57,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 				if (child.Parent != null)
 				{
-					Log.Editor.WriteWarning("Control {0} moved from parent {1} to {2}. Might be an error.", child, child.Parent, this);
+					Logs.Get<UILog>().WriteWarning("Control {0} moved from parent {1} to {2}. Might be an error.", child, child.Parent, this);
 					child.Parent.Remove(child);
 				}
 
 				child.Parent = this;
-				_children.Add(child);
+				this.Children.Add(child);
 
 				return this;
 			}
@@ -75,32 +72,29 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			if (_children != null)
+			if (this.Children != null)
 			{
-				foreach (Control c in _children)
+				foreach (Control c in this.Children)
 				{ c.ApplySkin(_baseSkin); }
 			}
 		}
 
 		public void Clear()
 		{
-            _children.Clear();
+			this.Children.Clear();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
 			base.Draw(canvas, zOffset);
 
-			foreach (Control c in _children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
+			foreach (Control c in this.Children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
 			{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
-            if (this.Visibility != Control.ControlVisibility.Visible)
-                return null;
-
-			Control result = _children.FirstOrDefault(c =>
+			Control result = this.Children.FirstOrDefault(c =>
                 (c is ILayout || c is InteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
@@ -115,17 +109,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			return result;
 		}
 
+        public IEnumerable<T> GetChildren<T>() where T: Control
+        {
+            return this.Children.Where(c => c is T).Cast<T>();
+        }
+
 		public void LayoutControls()
 		{
-			foreach (Control c in _children)
+			foreach (Control c in this.Children)
 			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
 
 			_LayoutControls();
 
-			foreach (Control c in _children)
+			foreach (Control c in this.Children)
 			{ c.ActualPosition += this.ActualPosition; }
 
-			foreach (ILayout c in _children.Where(c => c is ILayout))
+			foreach (ILayout c in this.Children.Where(c => c is ILayout))
 			{ c.LayoutControls(); }
 		}
 
@@ -133,16 +132,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.OnUpdate(msFrame);
 
-			foreach (Control c in _children)
+			foreach (Control c in this.Children)
 			{ c.OnUpdate(msFrame); }
 		}
 
 		public ControlsContainer Remove(Control child)
 		{
-			_children.Remove(child);
+			this.Children.Remove(child);
 			return this;
 		}
 
-		internal abstract void _LayoutControls();
+        public ControlsContainer RemoveAll<T>() where T : Control
+        {
+            this.Children.RemoveAll(c => c is T);
+            return this;
+        }
+
+        internal abstract void _LayoutControls();
 	}
 }

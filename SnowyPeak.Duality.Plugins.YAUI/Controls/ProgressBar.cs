@@ -20,7 +20,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			Cutoff
 		}
 
-		private VertexC1P3T2[] _barVertices;
+		private RawList<VertexC1P3T2> _barVertices;
 		private float _value;
 
 		public ProgressConfiguration ProgressConfiguration { get; set; }
@@ -36,7 +36,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ProgressBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			ApplySkin(_baseSkin);
+            _barVertices = new RawList<VertexC1P3T2>(36);
+
+            ApplySkin(_baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
@@ -55,8 +57,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				Appearance appearance = this.ProgressConfiguration.BarAppearance.Res;
 				Material material = appearance[this.Status];
-
-				_barVertices = canvas.RequestVertexArray(36);
 
 				Texture tx = material.MainTexture.Res;
 				if (tx != null)
@@ -295,8 +295,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					}
 
 					canvas.State.Reset();
-                    canvas.State.SetMaterial(material);
-                    canvas.DrawVertices<VertexC1P3T2>(_barVertices, VertexMode.Quads, 36);
+					canvas.State.SetMaterial(material);
+					canvas.DrawVertices<VertexC1P3T2>(_barVertices.Data, VertexMode.Quads, 36);
 				}
 			}
 
@@ -318,19 +318,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected void CopyBarVertex(int destinationIndex, int sourceIndex)
 		{
-			_barVertices[destinationIndex].Pos = _barVertices[sourceIndex].Pos;
-			_barVertices[destinationIndex].TexCoord = _barVertices[sourceIndex].TexCoord;
-			_barVertices[destinationIndex].Color = _barVertices[sourceIndex].Color;
+			_barVertices.Data[destinationIndex].Pos = _barVertices.Data[sourceIndex].Pos;
+			_barVertices.Data[destinationIndex].TexCoord = _barVertices.Data[sourceIndex].TexCoord;
+			_barVertices.Data[destinationIndex].Color = _barVertices.Data[sourceIndex].Color;
 		}
 
 		private void SetupBarVertex(int index, float x, float y, float z, float uvX, float uvY, ColorRgba color)
 		{
-			_barVertices[index].Pos.X = x;
-			_barVertices[index].Pos.Y = y;
-			_barVertices[index].Pos.Z = z;
-			_barVertices[index].TexCoord.X = uvX;
-			_barVertices[index].TexCoord.Y = uvY;
-			_barVertices[index].Color = color;
+			_barVertices.Data[index].Pos.X = x;
+			_barVertices.Data[index].Pos.Y = y;
+			_barVertices.Data[index].Pos.Z = z;
+			_barVertices.Data[index].TexCoord.X = uvX;
+			_barVertices.Data[index].TexCoord.Y = uvY;
+			_barVertices.Data[index].Color = color;
 		}
 	}
 }

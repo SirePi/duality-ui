@@ -39,7 +39,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected static readonly float INNER_ZOFFSET = -0.00001f;
 		protected static readonly float LAYOUT_ZOFFSET = -0.0001f;
 		protected Skin _baseSkin;
-		protected VertexC1P3T2[] _vertices;
+		protected RawList<VertexC1P3T2> _vertices;
 
 		public ContentRef<Appearance> Appearance { get; set; }
 		public CellInfo Cell { get; set; }
@@ -63,8 +63,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		}
 		public bool StretchToFill { get; set; }
 		public object Tag { get; set; }
-		public Dictionary<string, float[]> Uniforms { get; private set; }
-		public ControlVisibility Visibility
+        public ShaderParameterCollection ControlVariables { get; private set; }
+        public ControlVisibility Visibility
 		{
 			get { return _visibility; }
 			set
@@ -95,11 +95,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected Control(Skin skin, string templateName)
 		{
-			this.StretchToFill = true;
+            _vertices = new RawList<VertexC1P3T2>(36);
+
+            this.StretchToFill = true;
 			this.Visibility = ControlVisibility.Visible;
 			this.Status = ControlStatus.Normal;
 
-			this.Uniforms = new Dictionary<string, float[]>();
+            this.ControlVariables = new ShaderParameterCollection();
 
 			this.TemplateName = templateName == null ? this.GetType().Name : templateName;
 			_baseSkin = (skin == null ? Skin.DEFAULT : skin);
@@ -116,130 +118,133 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.Size.AtLeast(template.MinSize);
 		}
 
-		public virtual void Draw(Canvas canvas, float zOffset)
-		{
-			if (this.Appearance.IsAvailable)
-			{
-				Appearance appearance = this.Appearance.Res;
-				Material material = appearance[this.Status];
+        public virtual void Draw(Canvas canvas, float zOffset)
+        {
+            if (!this.Appearance.IsExplicitNull)
+            {
+                Border border = (this.Appearance.Res?.Border).GetValueOrDefault();
+                Material material = this.Appearance.Res?[this.Status];
 
-				Vector2 topLeft = this.ActualPosition;
-				Vector2 bottomRight = this.ActualPosition + this.ActualSize;
+                Vector2 topLeft = this.ActualPosition;
+                Vector2 bottomRight = this.ActualPosition + this.ActualSize;
 
-				_vertices = canvas.RequestVertexArray(36);
+                if (material != null)
+                {
+                    if (this.ControlVariables.Count > 0)
+                    {
+                        if (_customAppearance == null)
+                            _customAppearance = new Dictionary<ControlStatus, BatchInfo>();
 
-				if (material != null)
-				{
-					if (this.Uniforms.Count > 0)
-					{
-						if (_customAppearance == null)
-							_customAppearance = new Dictionary<ControlStatus, BatchInfo>();
+                        if (!_customAppearance.ContainsKey(this.Status))
+                            _customAppearance[this.Status] = new BatchInfo(material);
 
-						if (!_customAppearance.ContainsKey(this.Status))
-							_customAppearance[this.Status] = new BatchInfo(appearance[this.Status]);
+                        _customAppearance[this.Status].SetVariables(this.ControlVariables);
+                    }
 
-						foreach (KeyValuePair<string, float[]> kvp in this.Uniforms)
-							_customAppearance[this.Status].SetUniform(kvp.Key, kvp.Value);
-					}
+                    ContentRef<Texture> mainTex = _customAppearance != null ? _customAppearance[this.Status].MainTexture : material.MainTexture;
+                    ColorRgba mainColor = _customAppearance != null ? _customAppearance[this.Status].MainColor : material.MainColor;
 
-					ContentRef<Texture> mainText = _customAppearance != null ? _customAppearance[this.Status].MainTexture : material.MainTexture;
-					ColorRgba mainColor = _customAppearance != null ? _customAppearance[this.Status].MainColor : material.MainColor;
+                    if (mainTex.IsAvailable)
+                    {
+                        Vector2 innerTopLeft = this.ActualPosition + border.TopLeft;
+                        Vector2 innerBottomRight = this.ActualPosition + this.ActualSize - border.BottomRight;
 
-					if (mainText.IsAvailable)
-					{
-						Vector2 innerTopLeft = this.ActualPosition + appearance.Border.TopLeft;
-						Vector2 innerBottomRight = this.ActualPosition + this.ActualSize - appearance.Border.BottomRight;
+                        Texture tx = mainTex.Res;
+                        if (tx != null)
+                        {
+                            Vector2 uvSize = tx.UVRatio / tx.Size;
+                            Vector2 uvTopLeft = uvSize * border.TopLeft;
+                            Vector2 uvBottomRight = tx.UVRatio - (uvSize * border.BottomRight);
 
-						Texture tx = material.MainTexture.Res;
-						if (tx != null)
-						{
-							Vector2 uvSize = tx.UVRatio / tx.Size;
-							Vector2 uvTopLeft = uvSize * appearance.Border.TopLeft;
-							Vector2 uvBottomRight = tx.UVRatio - (uvSize * appearance.Border.BottomRight);
+                            SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, mainColor);
+                            SetupVertex(1, topLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, mainColor);
+                            SetupVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, mainColor);
+                            SetupVertex(3, innerTopLeft.X, topLeft.Y, zOffset, uvTopLeft.X, 0, mainColor);
 
-							SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, mainColor);
-							SetupVertex(1, topLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, mainColor);
-							SetupVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, mainColor);
-							SetupVertex(3, innerTopLeft.X, topLeft.Y, zOffset, uvTopLeft.X, 0, mainColor);
+                            CopyVertex(4, 3);
+                            CopyVertex(5, 2);
+                            SetupVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, mainColor);
+                            SetupVertex(7, innerBottomRight.X, topLeft.Y, zOffset, uvBottomRight.X, 0, mainColor);
 
-							CopyVertex(4, 3);
-							CopyVertex(5, 2);
-							SetupVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, mainColor);
-							SetupVertex(7, innerBottomRight.X, topLeft.Y, zOffset, uvBottomRight.X, 0, mainColor);
+                            CopyVertex(8, 7);
+                            CopyVertex(9, 6);
+                            SetupVertex(10, bottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, mainColor);
+                            SetupVertex(11, bottomRight.X, topLeft.Y, zOffset, tx.UVRatio.X, 0, mainColor);
 
-							CopyVertex(8, 7);
-							CopyVertex(9, 6);
-							SetupVertex(10, bottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, mainColor);
-							SetupVertex(11, bottomRight.X, topLeft.Y, zOffset, tx.UVRatio.X, 0, mainColor);
+                            CopyVertex(12, 1);
+                            SetupVertex(13, topLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, mainColor);
+                            SetupVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, mainColor);
+                            CopyVertex(15, 2);
 
-							CopyVertex(12, 1);
-							SetupVertex(13, topLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, mainColor);
-							SetupVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, mainColor);
-							CopyVertex(15, 2);
+                            CopyVertex(16, 2);
+                            CopyVertex(17, 14);
+                            SetupVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, mainColor);
+                            CopyVertex(19, 6);
 
-							CopyVertex(16, 2);
-							CopyVertex(17, 14);
-							SetupVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, mainColor);
-							CopyVertex(19, 6);
+                            CopyVertex(20, 6);
+                            CopyVertex(21, 18);
+                            SetupVertex(22, bottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, mainColor);
+                            CopyVertex(23, 10);
 
-							CopyVertex(20, 6);
-							CopyVertex(21, 18);
-							SetupVertex(22, bottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, mainColor);
-							CopyVertex(23, 10);
+                            CopyVertex(24, 13);
+                            SetupVertex(25, topLeft.X, bottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
+                            SetupVertex(26, innerTopLeft.X, bottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, mainColor);
+                            CopyVertex(27, 14);
 
-							CopyVertex(24, 13);
-							SetupVertex(25, topLeft.X, bottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
-							SetupVertex(26, innerTopLeft.X, bottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, mainColor);
-							CopyVertex(27, 14);
+                            CopyVertex(28, 14);
+                            CopyVertex(29, 26);
+                            SetupVertex(30, innerBottomRight.X, bottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, mainColor);
+                            CopyVertex(31, 18);
 
-							CopyVertex(28, 14);
-							CopyVertex(29, 26);
-							SetupVertex(30, innerBottomRight.X, bottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, mainColor);
-							CopyVertex(31, 18);
+                            CopyVertex(32, 18);
+                            CopyVertex(33, 30);
+                            SetupVertex(34, bottomRight.X, bottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, mainColor);
+                            CopyVertex(35, 22);
 
-							CopyVertex(32, 18);
-							CopyVertex(33, 30);
-							SetupVertex(34, bottomRight.X, bottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, mainColor);
-							CopyVertex(35, 22);
+                            canvas.State.Reset();
+                            if (_customAppearance != null)
+                                canvas.State.SetMaterial(_customAppearance[this.Status]);
+                            else
+                                canvas.State.SetMaterial(material);
 
-							canvas.State.Reset();
-							if (_customAppearance != null)
-								canvas.State.SetMaterial(_customAppearance[this.Status]);
-							else
-								canvas.State.SetMaterial(material);
+                            canvas.DrawVertices<VertexC1P3T2>(_vertices.Data, VertexMode.Quads, 36);
+                        }
+                    }
+                    else
+                    {
+                        SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, mainColor);
+                        SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 1, mainColor);
+                        SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, mainColor);
+                        SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 1, 0, mainColor);
 
-							canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads, 36);
-						}
-					}
-					else
-					{
-						SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, mainColor);
-						SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 1, mainColor);
-						SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, mainColor);
-						SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 1, 0, mainColor);
+                        canvas.State.Reset();
+                        if (_customAppearance != null)
+                            canvas.State.SetMaterial(_customAppearance[this.Status]);
+                        else
+                            canvas.State.SetMaterial(material);
 
-						canvas.State.Reset();
-						if (_customAppearance != null)
-							canvas.State.SetMaterial(_customAppearance[this.Status]);
-						else
-							canvas.State.SetMaterial(material);
+                        canvas.DrawVertices<VertexC1P3T2>(_vertices.Data, VertexMode.Quads, 4);
+                    }
+                }
+                else
+                {
+                    SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.White);
+                    SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 1, ColorRgba.Red);
+                    SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, ColorRgba.White);
+                    SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 1, 0, ColorRgba.Red);
 
-						canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads, 4);
-					}
-				}
-				else
-				{
-					SetupVertex(0, topLeft.X, topLeft.Y, zOffset, 0, 0, ColorRgba.White);
-					SetupVertex(1, topLeft.X, bottomRight.Y, zOffset, 0, 1, ColorRgba.Red);
-					SetupVertex(2, bottomRight.X, bottomRight.Y, zOffset, 1, 1, ColorRgba.White);
-					SetupVertex(3, bottomRight.X, topLeft.Y, zOffset, 1, 0, ColorRgba.Red);
+                    canvas.State.Reset();
+                    canvas.State.SetMaterial(ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard"));
+                    canvas.DrawVertices<VertexC1P3T2>(_vertices.Data, VertexMode.Quads, 4);
+                }
+            }
+        }
 
-					canvas.State.Reset();
-					canvas.State.SetMaterial(ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard"));
-					canvas.DrawVertices<VertexC1P3T2>(_vertices, VertexMode.Quads, 4);
-				}
-			}
-		}
+		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
+		{ }
+
+		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
+		{ }
 
 		public virtual void OnMouseEnterEvent()
 		{
@@ -318,19 +323,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected void CopyVertex(int destinationIndex, int sourceIndex)
 		{
-			_vertices[destinationIndex].Pos = _vertices[sourceIndex].Pos;
-			_vertices[destinationIndex].TexCoord = _vertices[sourceIndex].TexCoord;
-			_vertices[destinationIndex].Color = _vertices[sourceIndex].Color;
+			_vertices.Data[destinationIndex].Pos = _vertices.Data[sourceIndex].Pos;
+			_vertices.Data[destinationIndex].TexCoord = _vertices.Data[sourceIndex].TexCoord;
+			_vertices.Data[destinationIndex].Color = _vertices.Data[sourceIndex].Color;
 		}
 
 		protected void SetupVertex(int index, float x, float y, float z, float uvX, float uvY, ColorRgba color)
 		{
-			_vertices[index].Pos.X = x;
-			_vertices[index].Pos.Y = y;
-			_vertices[index].Pos.Z = z;
-			_vertices[index].TexCoord.X = uvX;
-			_vertices[index].TexCoord.Y = uvY;
-			_vertices[index].Color = color;
+			_vertices.Data[index].Pos.X = x;
+			_vertices.Data[index].Pos.Y = y;
+			_vertices.Data[index].Pos.Z = z;
+			_vertices.Data[index].TexCoord.X = uvX;
+			_vertices.Data[index].TexCoord.Y = uvY;
+			_vertices.Data[index].Color = color;
 		}
 	}
 }

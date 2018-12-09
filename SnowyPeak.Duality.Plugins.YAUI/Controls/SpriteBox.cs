@@ -17,20 +17,28 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		public ImageFill SpriteFill { get; set; }
 		public Alignment SpriteAlignment { get; set; }
-		public ContentRef<Material> Sprite { get; set; }
+		public BatchInfo Sprite { get; set; }
 		public ColorRgba SpriteTint { get; set; }
 		public bool IsAnimated { get; set; }
 		public int FirstFrame { get; set; }
 		public int AnimationFrames { get; set; }
 		public float FrameDuration { get; set; }
 
-		private float _frameTime;
+        public ShaderParameterCollection SpriteVariables { get; private set; }
+
+        private float _frameTime;
 		private int _currentFrame;
+        private RawList<VertexC1P3T2> _spriteVertices;
 
 		public SpriteBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			SpriteTint = ColorRgba.White;
+            _spriteVertices = new RawList<VertexC1P3T2>(36);
+            this.SpriteTint = ColorRgba.White;
+            this.SpriteVariables = new ShaderParameterCollection();
+            this.SpriteAlignment = Alignment.Center;
+            this.SpriteFill = ImageFill.FitControl;
+
 			ApplySkin(_baseSkin);
 		}
 
@@ -57,110 +65,117 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
-		{
-			base.Draw(canvas, zOffset);
+        public override void Draw(Canvas canvas, float zOffset)
+        {
+            base.Draw(canvas, zOffset);
 
-			if (!Sprite.IsExplicitNull && !Sprite.Res.MainTexture.IsExplicitNull && !Sprite.Res.MainTexture.Res.BasePixmap.IsExplicitNull)
-			{
-				Texture tx = Sprite.Res.MainTexture.Res;
-				Vector2 uv = tx.UVRatio / tx.Size;
+            if (this.Sprite != null)
+            {
+                Border border = (this.Appearance.Res?.Border).GetValueOrDefault();
+                ContentRef<Texture> mainTex = (this.Sprite?.MainTexture).GetValueOrDefault();
 
-				Pixmap pm = tx.BasePixmap.Res;
-				Rect pixelsRect = pm.LookupAtlas(_currentFrame);
-				Vector2 uvTopLeft = pixelsRect.TopLeft * uv;
-				Vector2 uvBottomRight = pixelsRect.BottomRight * uv;
+                Vector2 pixelsTopLeft = AlignElement(Vector2.Zero, border, Alignment.TopLeft);
+                Vector2 pixelsBottomRight = AlignElement(Vector2.Zero, border, Alignment.BottomRight);
+                Vector2 uvTopLeft = Vector2.Zero;
+                Vector2 uvBottomRight = Vector2.One;
 
-				VertexC1P3T2[] vertices = canvas.RequestVertexArray(4);
-				Vector2 pixelsTopLeft = Vector2.Zero;
-				Vector2 pixelsBottomRight = Vector2.Zero;
+                if (mainTex.IsAvailable)
+                {
+                    Texture tx = mainTex.Res;
+                    Vector2 uv = tx.UVRatio / tx.Size;
 
-				Border border = this.Appearance.IsAvailable ? this.Appearance.Res.Border : Border.Zero;
+                    Pixmap pm = tx.BasePixmap.Res;
+                    Rect pixelsRect = pm.LookupAtlas(_currentFrame);
+                    uvTopLeft = pixelsRect.TopLeft * uv;
+                    uvBottomRight = pixelsRect.BottomRight * uv;
 
-				switch (SpriteFill)
-				{
-					case ImageFill.Stretch:
-						pixelsTopLeft = AlignElement((this.ActualSize - border), border, Alignment.Center);
-						pixelsBottomRight = pixelsTopLeft + this.ActualSize;
-						break;
+                    switch (SpriteFill)
+                    {
+                        case ImageFill.Stretch:
+                            pixelsTopLeft = AlignElement((this.ActualSize - border), border, Alignment.Center);
+                            pixelsBottomRight = pixelsTopLeft + this.ActualSize;
+                            break;
 
-					case ImageFill.FitControl:
-						Vector2 ratios = (this.ActualSize - border) / pixelsRect.Size;
-						float ratio = Math.Min(ratios.X, ratios.Y);
-						Vector2 realSize = pixelsRect.Size * ratio;
+                        case ImageFill.FitControl:
+                            Vector2 ratios = (this.ActualSize - border) / pixelsRect.Size;
+                            float ratio = Math.Min(ratios.X, ratios.Y);
+                            Vector2 realSize = pixelsRect.Size * ratio;
 
-						pixelsTopLeft = AlignElement(realSize, border, this.SpriteAlignment);
-						pixelsBottomRight = pixelsTopLeft + realSize;
-						break;
+                            pixelsTopLeft = AlignElement(realSize, border, this.SpriteAlignment);
+                            pixelsBottomRight = pixelsTopLeft + realSize;
+                            break;
 
-					case ImageFill.KeepSize:
-						pixelsTopLeft = AlignElement(pixelsRect.Size, border, this.SpriteAlignment);
-						pixelsBottomRight = pixelsTopLeft + pixelsRect.Size;
+                        case ImageFill.KeepSize:
+                            pixelsTopLeft = AlignElement(pixelsRect.Size, border, this.SpriteAlignment);
+                            pixelsBottomRight = pixelsTopLeft + pixelsRect.Size;
 
-						float delta;
+                            float delta;
 
-						delta = this.ActualPosition.X + border.Left - pixelsTopLeft.X;
-						if (delta > 0)
-						{
-							uvTopLeft.X += (delta * uv.X);
-							pixelsTopLeft.X = this.ActualPosition.X + border.Left;
-						}
+                            delta = this.ActualPosition.X + border.Left - pixelsTopLeft.X;
+                            if (delta > 0)
+                            {
+                                uvTopLeft.X += (delta * uv.X);
+                                pixelsTopLeft.X = this.ActualPosition.X + border.Left;
+                            }
 
-						delta = this.ActualPosition.Y + border.Top - pixelsTopLeft.Y;
-						if (delta > 0)
-						{
-							uvTopLeft.Y += (delta * uv.Y);
-							pixelsTopLeft.Y = this.ActualPosition.Y + border.Top;
-						}
+                            delta = this.ActualPosition.Y + border.Top - pixelsTopLeft.Y;
+                            if (delta > 0)
+                            {
+                                uvTopLeft.Y += (delta * uv.Y);
+                                pixelsTopLeft.Y = this.ActualPosition.Y + border.Top;
+                            }
 
-						delta = this.ActualPosition.X + this.ActualSize.X - border.Right - pixelsBottomRight.X;
-						if (delta < 0)
-						{
-							uvBottomRight.X += (delta * uv.X);
-							pixelsBottomRight.X = this.ActualPosition.X + this.ActualSize.X - border.Right;
-						}
+                            delta = this.ActualPosition.X + this.ActualSize.X - border.Right - pixelsBottomRight.X;
+                            if (delta < 0)
+                            {
+                                uvBottomRight.X += (delta * uv.X);
+                                pixelsBottomRight.X = this.ActualPosition.X + this.ActualSize.X - border.Right;
+                            }
 
-						delta = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom - pixelsBottomRight.Y;
-						if (delta < 0)
-						{
-							uvBottomRight.Y += (delta * uv.Y);
-							pixelsBottomRight.Y = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom;
-						}
-						break;
-				}
+                            delta = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom - pixelsBottomRight.Y;
+                            if (delta < 0)
+                            {
+                                uvBottomRight.Y += (delta * uv.Y);
+                                pixelsBottomRight.Y = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom;
+                            }
+                            break;
+                    }
+                }
 
-				vertices[0].Pos.X = pixelsTopLeft.X;
-				vertices[0].Pos.Y = pixelsTopLeft.Y;
-				vertices[0].Pos.Z = zOffset;
-				vertices[0].TexCoord.X = uvTopLeft.X;
-				vertices[0].TexCoord.Y = uvTopLeft.Y;
-				vertices[0].Color = SpriteTint;
+                this.Sprite.SetVariables(this.SpriteVariables);
 
-				vertices[1].Pos.X = pixelsTopLeft.X;
-				vertices[1].Pos.Y = pixelsBottomRight.Y;
-				vertices[1].Pos.Z = zOffset;
-				vertices[1].TexCoord.X = uvTopLeft.X;
-				vertices[1].TexCoord.Y = uvBottomRight.Y;
-				vertices[1].Color = SpriteTint;
+                _spriteVertices.Data[0].Pos.X = pixelsTopLeft.X;
+                _spriteVertices.Data[0].Pos.Y = pixelsTopLeft.Y;
+                _spriteVertices.Data[0].Pos.Z = zOffset;
+                _spriteVertices.Data[0].TexCoord.X = uvTopLeft.X;
+                _spriteVertices.Data[0].TexCoord.Y = uvTopLeft.Y;
+                _spriteVertices.Data[0].Color = SpriteTint;
 
-				vertices[2].Pos.X = pixelsBottomRight.X;
-				vertices[2].Pos.Y = pixelsBottomRight.Y;
-				vertices[2].Pos.Z = zOffset;
-				vertices[2].TexCoord.X = uvBottomRight.X;
-				vertices[2].TexCoord.Y = uvBottomRight.Y;
-				vertices[2].Color = SpriteTint;
+                _spriteVertices.Data[1].Pos.X = pixelsTopLeft.X;
+                _spriteVertices.Data[1].Pos.Y = pixelsBottomRight.Y;
+                _spriteVertices.Data[1].Pos.Z = zOffset;
+                _spriteVertices.Data[1].TexCoord.X = uvTopLeft.X;
+                _spriteVertices.Data[1].TexCoord.Y = uvBottomRight.Y;
+                _spriteVertices.Data[1].Color = SpriteTint;
 
-				vertices[3].Pos.X = pixelsBottomRight.X;
-				vertices[3].Pos.Y = pixelsTopLeft.Y;
-				vertices[3].Pos.Z = zOffset;
-				vertices[3].TexCoord.X = uvBottomRight.X;
-				vertices[3].TexCoord.Y = uvTopLeft.Y;
-				vertices[3].Color = SpriteTint;
+                _spriteVertices.Data[2].Pos.X = pixelsBottomRight.X;
+                _spriteVertices.Data[2].Pos.Y = pixelsBottomRight.Y;
+                _spriteVertices.Data[2].Pos.Z = zOffset;
+                _spriteVertices.Data[2].TexCoord.X = uvBottomRight.X;
+                _spriteVertices.Data[2].TexCoord.Y = uvBottomRight.Y;
+                _spriteVertices.Data[2].Color = SpriteTint;
 
-				canvas.State.Reset();
-				canvas.State.SetMaterial(Sprite);
-				canvas.DrawVertices<VertexC1P3T2>(vertices, VertexMode.Quads, 4);
-			}
-		}
-	}
+                _spriteVertices.Data[3].Pos.X = pixelsBottomRight.X;
+                _spriteVertices.Data[3].Pos.Y = pixelsTopLeft.Y;
+                _spriteVertices.Data[3].Pos.Z = zOffset;
+                _spriteVertices.Data[3].TexCoord.X = uvBottomRight.X;
+                _spriteVertices.Data[3].TexCoord.Y = uvTopLeft.Y;
+                _spriteVertices.Data[3].Color = SpriteTint;
+
+                canvas.State.Reset();
+                canvas.State.SetMaterial(this.Sprite);
+                canvas.DrawVertices<VertexC1P3T2>(_spriteVertices.Data, VertexMode.Quads, 4);
+            }
+        }
+    }
 }

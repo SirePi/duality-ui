@@ -40,6 +40,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -62,6 +63,8 @@
     <Compile Include="Controls\HorizontalScrollBar.cs" />
     <Compile Include="Controls\TextBlock.cs" />
     <Compile Include="Controls\VerticalScrollBar.cs" />
+    <Compile Include="DefaultSkins\Fonts.cs" />
+    <Compile Include="UILog.cs" />
     <Compile Include="DefaultSkins\Dark.cs" />
     <Compile Include="DefaultSkins\Fathoms.cs" />
     <Compile Include="DefaultSkins\LightRounded.cs" />
@@ -107,9 +110,6 @@
     <EmbeddedResource Include="EmbeddedResources\iconResUI.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DefaultSkins\OpenSans.Font.res" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="DefaultSkins\transparent.png" />
   </ItemGroup>
   <ItemGroup>
@@ -153,16 +153,22 @@
     <EmbeddedResource Include="DefaultSkins\glyph.png" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Duality">
-      <HintPath>..\packages\AdamsLair.Duality.2.10.1\lib\Duality.dll</HintPath>
+    <EmbeddedResource Include="DefaultSkins\Roboto-Regular.Font.res" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\NotoSans-Regular.Font.res" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Duality, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.3.0.0\lib\Duality.dll</HintPath>
     </Reference>
-    <Reference Include="DualityPrimitives">
-      <HintPath>..\packages\AdamsLair.Duality.Primitives.2.0.4\lib\DualityPrimitives.dll</HintPath>
+    <Reference Include="DualityPhysics, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.Physics.3.0.0\lib\DualityPhysics.dll</HintPath>
     </Reference>
-    <Reference Include="FarseerDuality">
-      <HintPath>..\packages\AdamsLair.FarseerDuality.4.1.1\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
+    <Reference Include="DualityPrimitives, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.Primitives.3.0.0\lib\DualityPrimitives.dll</HintPath>
     </Reference>
-    <Reference Include="NVorbis">
+    <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
     </Reference>
   </ItemGroup>
