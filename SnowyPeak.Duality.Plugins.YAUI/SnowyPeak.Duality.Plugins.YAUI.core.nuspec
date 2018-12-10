@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
 	<metadata>
-		<id>$id$</id>
+		<id>SnowyPeak.Duality.Plugins.YAUI.Core</id>
 		<version>$version$</version>
         <title>Yet Another UI Plugin (Core)</title>
         <authors>Pilati Alessandro</authors>
@@ -15,9 +15,4 @@
         <tags>Duality Plugin UI YAUI SnowyPeak</tags>
 		<copyright>Copyright 2018</copyright>
 	</metadata>
-      <files>
-        <file src="bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.dll" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.dll" />
-        <file src="bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.pdb" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.pdb" />
-        <file src="bin\Release\SnowyPeak.Duality.Plugins.YAUI.core.xml" target="lib\SnowyPeak.Duality.Plugins.YAUI.core.XML" />
-    </files>
 </package>

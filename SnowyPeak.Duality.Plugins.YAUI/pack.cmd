@@ -1,1 +1,1 @@
-nuget pack SnowyPeak.Duality.Plugins.YAUI.core.csproj -Properties Configuration=Release -Build
+nuget pack SnowyPeak.Duality.Plugins.YAUI.core.csproj -Properties Configuration=Release -Build -Symbols
