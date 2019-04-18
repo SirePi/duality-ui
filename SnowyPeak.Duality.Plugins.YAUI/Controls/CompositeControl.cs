@@ -13,7 +13,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	public abstract class CompositeControl : Control, ILayout
 	{
 		protected ControlsContainer _container;
-		public Border Margin { get; set; }
 		public bool IsPassthrough { get => false; }
 
 		public CompositeControl(Skin skin = null, string templateName = null)

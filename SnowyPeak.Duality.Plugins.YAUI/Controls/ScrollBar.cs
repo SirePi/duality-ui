@@ -54,8 +54,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_minValue = value;
 				_valueDelta = _maxValue - _minValue;
 
-                this.Value = MathF.Clamp(Value, MinValue, MaxValue);
-            }
+				this.Value = MathF.Clamp(Value, MinValue, MaxValue);
+			}
 		}
 
 		public ScrollBarConfiguration ScrollBarConfiguration
@@ -81,7 +81,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			set
 			{
 				if (_value != value)
-				{ this.OnValueChange.Invoke(this, _value, value); }
+				{ _onValueChange?.Invoke(this, _value, value); }
 
 				_value = value;
 			}
@@ -90,7 +90,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		// Delegates
 		public delegate void ValueChangeEventDelegate(ScrollBar scrollBar, int oldValue, int newValue);
 		// Events
-		public event ValueChangeEventDelegate OnValueChange = delegate { };
+		[DontSerialize]
+		private ValueChangeEventDelegate _onValueChange;
+		public event ValueChangeEventDelegate OnValueChange
+		{
+			add { _onValueChange += value; }
+			remove { _onValueChange -= value; }
+		}
 
 		public ScrollBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)

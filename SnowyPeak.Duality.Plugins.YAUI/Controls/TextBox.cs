@@ -33,7 +33,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			set
 			{
 				if (_text != value)
-				{ this.OnTextChange.Invoke(this, _text, value); }
+				{ _onTextChange?.Invoke(this, _text, value); }
 
 				_text = value;
 			}
@@ -42,8 +42,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		// Delegates
 		public delegate void TextChangeEventDelegate(TextBox textBox, string oldText, string newText);
-		// Events
-		public event TextChangeEventDelegate OnTextChange = delegate { };
+        // Events
+        [DontSerialize]
+        private TextChangeEventDelegate _onTextChange;
+        public event TextChangeEventDelegate OnTextChange
+        {
+            add { _onTextChange += value; }
+            remove { _onTextChange -= value; }
+        }
 
 		public TextBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)

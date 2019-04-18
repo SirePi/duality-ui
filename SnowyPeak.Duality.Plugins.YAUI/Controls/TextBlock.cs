@@ -49,8 +49,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				_fText.SourceText = this.Text;
 				_fText.Fonts[0] = this.TextConfiguration.Font;
 				_fText.UpdateVertexCache();
+                _fText.MaxHeight = (int)(this.ActualSize.Y - this.TextConfiguration.Margin.Vertical);
+                _fText.MaxWidth = (int)(this.ActualSize.X - this.TextConfiguration.Margin.Horizontal);
 
-				canvas.DrawText(_fText,
+                canvas.DrawText(_fText,
 					(int)textPosition.X,
 					(int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),

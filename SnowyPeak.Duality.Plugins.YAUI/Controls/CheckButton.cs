@@ -15,16 +15,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class CheckButton : Button
 	{
-        private RawList<VertexC1P3T2> _glyphVertices;
-        private bool _isChecked;
+		private RawList<VertexC1P3T2> _glyphVertices;
+		private bool _isChecked;
 
 		public bool Checked
 		{
 			get { return _isChecked; }
 			set
 			{
-				this.OnCheckedChange.Invoke(this, _isChecked, value);
-
+				_onCheckedChange?.Invoke(this, _isChecked, value);
 				_isChecked = value;
 			}
 		}
@@ -35,14 +34,20 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public delegate void CheckedChangeEventDelegate(CheckButton checkButton, bool previousValue, bool newValue);
 
 		// Events
-		public event CheckedChangeEventDelegate OnCheckedChange = delegate { };
+		[DontSerialize]
+		private CheckedChangeEventDelegate _onCheckedChange;
+		public event CheckedChangeEventDelegate OnCheckedChange
+		{
+			add { _onCheckedChange += value; }
+			remove { _onCheckedChange -= value; }
+		}
 
 		public CheckButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-            _glyphVertices = new RawList<VertexC1P3T2>(4);
+			_glyphVertices = new RawList<VertexC1P3T2>(4);
 
-            this.OnMouseButton += CheckButton_OnMouseButton;
+			this.OnMouseButton += CheckButton_OnMouseButton;
 			ApplySkin(_baseSkin);
 		}
 
@@ -75,33 +80,33 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				Vector2 glyphTopLeft = AlignElement(tx.Size, this.GlyphConfiguration.Margin, this.GlyphConfiguration.Alignment);
 				Vector2 glyphBottomRight = glyphTopLeft + tx.Size;
 
-                _glyphVertices.Data[0].Pos.X = glyphTopLeft.X;
-                _glyphVertices.Data[0].Pos.Y = glyphTopLeft.Y;
-                _glyphVertices.Data[0].Pos.Z = zOffset + INNER_ZOFFSET;
-                _glyphVertices.Data[0].TexCoord.X = 0;
-                _glyphVertices.Data[0].TexCoord.Y = 0;
-                _glyphVertices.Data[0].Color = material.MainColor;
+				_glyphVertices.Data[0].Pos.X = glyphTopLeft.X;
+				_glyphVertices.Data[0].Pos.Y = glyphTopLeft.Y;
+				_glyphVertices.Data[0].Pos.Z = zOffset + INNER_ZOFFSET;
+				_glyphVertices.Data[0].TexCoord.X = 0;
+				_glyphVertices.Data[0].TexCoord.Y = 0;
+				_glyphVertices.Data[0].Color = material.MainColor;
 
-                _glyphVertices.Data[1].Pos.X = glyphTopLeft.X;
-                _glyphVertices.Data[1].Pos.Y = glyphBottomRight.Y;
-                _glyphVertices.Data[1].Pos.Z = zOffset + INNER_ZOFFSET;
-                _glyphVertices.Data[1].TexCoord.X = 0;
-                _glyphVertices.Data[1].TexCoord.Y = tx.UVRatio.Y;
-                _glyphVertices.Data[1].Color = material.MainColor;
+				_glyphVertices.Data[1].Pos.X = glyphTopLeft.X;
+				_glyphVertices.Data[1].Pos.Y = glyphBottomRight.Y;
+				_glyphVertices.Data[1].Pos.Z = zOffset + INNER_ZOFFSET;
+				_glyphVertices.Data[1].TexCoord.X = 0;
+				_glyphVertices.Data[1].TexCoord.Y = tx.UVRatio.Y;
+				_glyphVertices.Data[1].Color = material.MainColor;
 
-                _glyphVertices.Data[2].Pos.X = glyphBottomRight.X;
-                _glyphVertices.Data[2].Pos.Y = glyphBottomRight.Y;
-                _glyphVertices.Data[2].Pos.Z = zOffset + INNER_ZOFFSET;
-                _glyphVertices.Data[2].TexCoord.X = tx.UVRatio.X;
-                _glyphVertices.Data[2].TexCoord.Y = tx.UVRatio.Y;
-                _glyphVertices.Data[2].Color = material.MainColor;
+				_glyphVertices.Data[2].Pos.X = glyphBottomRight.X;
+				_glyphVertices.Data[2].Pos.Y = glyphBottomRight.Y;
+				_glyphVertices.Data[2].Pos.Z = zOffset + INNER_ZOFFSET;
+				_glyphVertices.Data[2].TexCoord.X = tx.UVRatio.X;
+				_glyphVertices.Data[2].TexCoord.Y = tx.UVRatio.Y;
+				_glyphVertices.Data[2].Color = material.MainColor;
 
-                _glyphVertices.Data[3].Pos.X = glyphBottomRight.X;
-                _glyphVertices.Data[3].Pos.Y = glyphTopLeft.Y;
-                _glyphVertices.Data[3].Pos.Z = zOffset + INNER_ZOFFSET;
-                _glyphVertices.Data[3].TexCoord.X = tx.UVRatio.X;
-                _glyphVertices.Data[3].TexCoord.Y = 0;
-                _glyphVertices.Data[3].Color = material.MainColor;
+				_glyphVertices.Data[3].Pos.X = glyphBottomRight.X;
+				_glyphVertices.Data[3].Pos.Y = glyphTopLeft.Y;
+				_glyphVertices.Data[3].Pos.Z = zOffset + INNER_ZOFFSET;
+				_glyphVertices.Data[3].TexCoord.X = tx.UVRatio.X;
+				_glyphVertices.Data[3].TexCoord.Y = 0;
+				_glyphVertices.Data[3].Color = material.MainColor;
 
 				canvas.State.Reset();
 				canvas.State.SetMaterial(material);

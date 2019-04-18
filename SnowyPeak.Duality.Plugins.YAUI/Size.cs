@@ -46,9 +46,30 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			return (a.X == b.X && a.Y == b.Y);
 		}
 
+		public static Size operator +(Size a, Border b)
+		{
+			return new Size(a.X + b.Left + b.Right, a.Y + b.Top + b.Bottom);
+		}
+
 		public static Size operator -(Size a, Border b)
 		{
 			return new Size(a.X - b.Left - b.Right, a.Y - b.Top - b.Bottom);
+		}
+
+		public static Size operator *(Size a, float value)
+		{
+			return a.Scale(value, value);
+		}
+
+		public static Size operator /(Size a, float value)
+		{
+			value = 1 / value;
+			return a.Scale(value, value);
+		}
+
+		public Size Scale(float x, float y)
+		{
+			return new Size(this.X * x, this.Y * y);
 		}
 
 		public void AtLeast(Size minSize)

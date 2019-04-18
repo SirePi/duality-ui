@@ -12,20 +12,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class ControlsContainer : Control, ILayout
 	{
-		public Rect ChildrenArea
-		{
-			get
-			{
-				return new Rect(
-					this.ActualPosition.X + this.Margin.Left,
-					this.ActualPosition.Y + this.Margin.Top,
-					this.ActualSize.X - this.Margin.Left - this.Margin.Right,
-					this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom);
-			}
-		}
-
-		public Border Margin { get; set; }
-
 		public bool IsPassthrough { get; set; }
 
 		protected List<Control> Children { get; private set; }
@@ -122,10 +108,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			_LayoutControls();
 
 			foreach (Control c in this.Children)
-			{ c.ActualPosition += this.ActualPosition; }
+			{
+                c.ActualPosition += this.ActualPosition + c.Margin.TopLeft;
+                c.ActualSize -= (c.Margin.TopLeft + c.Margin.BottomRight);
 
-			foreach (ILayout c in this.Children.Where(c => c is ILayout))
-			{ c.LayoutControls(); }
+                (c as ILayout)?.LayoutControls();
+            }
 		}
 
 		public override void OnUpdate(float msFrame)

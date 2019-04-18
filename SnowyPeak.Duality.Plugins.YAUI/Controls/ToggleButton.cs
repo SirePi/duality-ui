@@ -23,36 +23,42 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			get { return _isToggled; }
 			set
 			{
-                if (_isToggled != value)
-                { this.OnToggleChange.Invoke(this, _isToggled, value); }
+				if (_isToggled != value)
+				{ _onToggleChange?.Invoke(this, _isToggled, value); }
 
-                _isToggled = value;
+				_isToggled = value;
 			}
 		}
 
-        // Delegates
+		// Delegates
 		public delegate void ToggleChangeEventDelegate(ToggleButton toggleButton, bool previousValue, bool newValue);
 
-        // Events
-        public event ToggleChangeEventDelegate OnToggleChange = delegate { };
+		// Events
+		[DontSerialize]
+		private ToggleChangeEventDelegate _onToggleChange;
+		public event ToggleChangeEventDelegate OnToggleChange
+		{
+			add { _onToggleChange += value; }
+			remove { _onToggleChange += value; }
+		}
 
-        public ToggleButton(Skin skin = null, string templateName = null)
+		public ToggleButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
 			this.OnMouseButton += ToggleButton_OnMouseButton;
 			ApplySkin(_baseSkin);
 		}
 
-        private void ToggleButton_OnMouseButton(Button button, MouseButtonEventArgs args)
-        {
-            if (args.Button == MouseButton.Left)
-            {
-                _isMousePressed = args.IsPressed;
-                if (args.IsPressed) this.Toggled = !this.Toggled;
-            }
-        }
+		private void ToggleButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+		{
+			if (args.Button == MouseButton.Left)
+			{
+				_isMousePressed = args.IsPressed;
+				if (args.IsPressed) this.Toggled = !this.Toggled;
+			}
+		}
 
-        public override void OnMouseEnterEvent()
+		public override void OnMouseEnterEvent()
 		{
 			base.OnMouseEnterEvent();
 
@@ -69,7 +75,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void OnUpdate(float msFrame)
 		{
-            base.OnUpdate(msFrame);
+			base.OnUpdate(msFrame);
 
 			if (!_isMouseOver)
 			{

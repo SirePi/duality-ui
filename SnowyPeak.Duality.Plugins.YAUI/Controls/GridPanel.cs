@@ -11,7 +11,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
-		private static string STAR_CHAR = "*";
+		private static readonly string STAR_CHAR = "*";
 
 		private class Dimension
 		{

@@ -27,7 +27,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			get { return new Vector2(this.Left, this.Top); }
 		}
 
-		public Border(float value)
+        public float Horizontal
+        {
+            get { return this.Left + this.Right; }
+        }
+
+        public float Vertical
+        {
+            get { return this.Top + this.Bottom; }
+        }
+
+        public Border(float value)
 			: this(value, value, value, value)
 		{
 		}

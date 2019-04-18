@@ -18,7 +18,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	[EditorHintCategory(ResNames.CategoryUI)]
 	public abstract class UI : Component, ICmpUpdatable, ICmpRenderer, ICmpInitializable
 	{
-		private static readonly float GLOBAL_ZOFFSET = 0.01f;
+		private const float GLOBAL_ZOFFSET = 0.01f;
 
         [DontSerialize]
         private Canvas _canvas;
@@ -32,6 +32,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		[DontSerialize]
 		private ControlsContainer _rootContainer;
 
+        [DontSerialize]
+        private Size _lastSize;
+
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Control HoveredControl
 		{
@@ -41,7 +44,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		public bool IsFullScreen { get; set; }
 		public int Offset { get; set; }
 
-		protected UI()
+        // Events
+        [DontSerialize]
+        private Action _onResize; 
+        public event Action OnResize
+        {
+            add { _onResize += value; }
+            remove { _onResize += value; }
+        }
+
+        protected UI()
 		{
 			this.Offset = 1;
 		}
@@ -140,8 +152,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				_hoveredControl = currentHoveredControl;
 
-				// Added check because it might have been set to null due to a Deactivation event
-				if (_rootContainer != null) _rootContainer.OnUpdate(Time.DeltaTime * 1000);
+                // Added check because it might have been set to null due to a Deactivation event
+                if (_rootContainer != null)
+                {
+                    _rootContainer.OnUpdate(Time.DeltaTime * 1000);
+                    if (_lastSize != _rootContainer.ActualSize)
+                    { _onResize?.Invoke(); }
+
+                    _lastSize = _rootContainer.ActualSize;
+                }
 			}
 
 			OnUpdate();

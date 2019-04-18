@@ -22,9 +22,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		// Delegates
 		public delegate void MouseButtonEventDelegate(Button button, MouseButtonEventArgs args);
-		
+
 		// Events
-		public event MouseButtonEventDelegate OnMouseButton = delegate { };
+		[DontSerialize]
+		private MouseButtonEventDelegate _onMouseButton;
+		public event MouseButtonEventDelegate OnMouseButton
+		{
+			add { _onMouseButton += value; }
+			remove { _onMouseButton -= value; }
+		}
 
 		public Button(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -80,7 +86,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{ this.Status &= ~Control.ControlStatus.Active; }
 			}
 
-			this.OnMouseButton.Invoke(this, args);
+			_onMouseButton?.Invoke(this, args);
 		}
 
 		public override void OnMouseLeaveEvent()

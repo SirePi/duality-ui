@@ -60,7 +60,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public delegate void SelectionChangeDelegate(ListBox listBox);
 
 		// Events
-		public SelectionChangeDelegate OnSelectionChange = delegate { };
+        [DontSerialize]
+		private SelectionChangeDelegate _onSelectionChange;
+		public event SelectionChangeDelegate OnSelectionChange
+		{
+			add { _onSelectionChange += value; }
+			remove { _onSelectionChange -= value; }
+		}
 
 		public ListBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -100,7 +106,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
-			_itemsInView = (int)MathF.Floor(_stackPanel.ChildrenArea.H / this.ListBoxConfiguration.ItemsSize.Y);
+			_itemsInView = (int)MathF.Floor(_stackPanel.ControlArea.H / this.ListBoxConfiguration.ItemsSize.Y);
 
 			_scrollBar.MinValue = 0;
 			_scrollBar.MaxValue = Math.Max(0, _toggleButtons.Count - _itemsInView);
@@ -152,7 +158,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					}
 
 					if (button == toggle)
-						this.OnSelectionChange.Invoke(this);
+						_onSelectionChange?.Invoke(this);
 				};
 
 				toggle.ApplySkin(_baseSkin);

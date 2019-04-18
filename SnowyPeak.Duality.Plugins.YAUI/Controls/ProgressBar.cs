@@ -36,9 +36,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ProgressBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-            _barVertices = new RawList<VertexC1P3T2>(36);
+			_barVertices = new RawList<VertexC1P3T2>(36);
 
-            ApplySkin(_baseSkin);
+			ApplySkin(_baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
