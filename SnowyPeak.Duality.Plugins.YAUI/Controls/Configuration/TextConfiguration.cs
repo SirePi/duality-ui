@@ -19,12 +19,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 		public ContentRef<Font> Font { get; set; }
 		public Border Margin { get; set; }
 
-		public TextConfiguration()
+		public TextConfiguration(ContentRef<Font>? font = null, ColorRgba? color = null, Alignment alignment = Alignment.Center, Border? margin = null)
 		{
-			this.Font = ContentProvider.RequestContent<Font>(@"Default:Font:GenericMonospace10");
-			this.Color = ColorRgba.Black;
-			this.Alignment = Alignment.Center;
-			this.Margin = Border.Zero;
+			this.Font = font ?? ContentProvider.RequestContent<Font>(@"Default:Font:GenericMonospace10");
+			this.Color = color ?? ColorRgba.Black;
+			this.Alignment = alignment;
+			this.Margin = margin ?? Border.Zero;
 		}
 
 		public TextConfiguration Clone()

@@ -17,13 +17,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			RightToLeft
 		}
 
-		private float _start;
+		private float start;
 		public Direction Direction { get; set; }
 
 		public StackPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		internal override void _LayoutControls()
@@ -31,30 +31,30 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			switch (this.Direction)
 			{
 				case YAUI.Direction.LeftToRight:
-					StackFromLeft();
+					this.StackFromLeft();
 					break;
 
 				case YAUI.Direction.RightToLeft:
-					StackFromRight();
+					this.StackFromRight();
 					break;
 
 				case YAUI.Direction.UpToDown:
-					StackFromTop();
+					this.StackFromTop();
 					break;
 
 				case YAUI.Direction.DownToUp:
-					StackFromBottom();
+					this.StackFromBottom();
 					break;
 			}
 		}
 
 		private void StackFromLeft()
 		{
-			_start = this.Margin.Left;
+			this.start = this.Margin.Left;
 
 			foreach (Control c in this.Children)
 			{
-				c.ActualPosition.X = _start;
+				c.ActualPosition.X = this.start;
 				c.ActualPosition.Y = this.Margin.Top;
 
 				if (c.StretchToFill)
@@ -62,17 +62,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				else
 				{ c.ActualPosition.Y = (this.ActualSize.Y - c.ActualSize.Y) / 2; }
 
-				_start += c.ActualSize.X;
+				this.start += c.ActualSize.X;
 			}
 		}
 
 		private void StackFromRight()
 		{
-			_start = this.ActualSize.X - this.Margin.Right;
+			this.start = this.ActualSize.X - this.Margin.Right;
 
 			foreach (Control c in this.Children)
 			{
-				c.ActualPosition.X = _start - c.ActualSize.X;
+				c.ActualPosition.X = this.start - c.ActualSize.X;
 				c.ActualPosition.Y = this.Margin.Top;
 
 				if (c.StretchToFill)
@@ -80,41 +80,41 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				else
 				{ c.ActualPosition.Y = (this.ActualSize.Y - c.ActualSize.Y) / 2; }
 
-				_start -= c.ActualSize.X;
+				this.start -= c.ActualSize.X;
 			}
 		}
 
 		private void StackFromTop()
 		{
-			_start = this.Margin.Top;
+			this.start = this.Margin.Top;
 			foreach (Control c in this.Children)
 			{
 				c.ActualPosition.X = this.Margin.Left;
-				c.ActualPosition.Y = _start;
+				c.ActualPosition.Y = this.start;
 
 				if (c.StretchToFill)
 				{ c.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right; }
 				else
 				{ c.ActualPosition.X = (this.ActualSize.X - c.ActualSize.X) / 2; }
 
-				_start += c.ActualSize.Y;
+				this.start += c.ActualSize.Y;
 			}
 		}
 
 		private void StackFromBottom()
 		{
-			_start = this.ActualSize.Y - this.Margin.Bottom;
+			this.start = this.ActualSize.Y - this.Margin.Bottom;
 			foreach (Control c in this.Children)
 			{
 				c.ActualPosition.X = this.Margin.Left;
-				c.ActualPosition.Y = _start - c.ActualSize.Y;
+				c.ActualPosition.Y = this.start - c.ActualSize.Y;
 
 				if (c.StretchToFill)
 				{ c.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right; }
 				else
 				{ c.ActualPosition.X = (this.ActualSize.X - c.ActualSize.X) / 2; }
 
-				_start -= c.ActualSize.Y;
+				this.start -= c.ActualSize.Y;
 			}
 		}
 	}

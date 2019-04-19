@@ -24,158 +24,160 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public int AnimationFrames { get; set; }
 		public float FrameDuration { get; set; }
 
-        public ShaderParameterCollection SpriteVariables { get; private set; }
+		public ShaderParameterCollection SpriteVariables { get; private set; }
 
-        private float _frameTime;
-		private int _currentFrame;
-        private RawList<VertexC1P3T2> _spriteVertices;
+		private float frameTime;
+		private int currentFrame;
+		private RawList<VertexC1P3T2> spriteVertices;
 
 		public SpriteBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-            _spriteVertices = new RawList<VertexC1P3T2>(36);
-            this.SpriteTint = ColorRgba.White;
-            this.SpriteVariables = new ShaderParameterCollection();
-            this.SpriteAlignment = Alignment.Center;
-            this.SpriteFill = ImageFill.FitControl;
+			this.spriteVertices = new RawList<VertexC1P3T2>(36);
+			this.SpriteTint = ColorRgba.White;
+			this.SpriteVariables = new ShaderParameterCollection();
+			this.SpriteAlignment = Alignment.Center;
+			this.SpriteFill = ImageFill.FitControl;
 
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void OnUpdate(float msFrame)
 		{
 			base.OnUpdate(msFrame);
 
-			if (_currentFrame < FirstFrame) _currentFrame = FirstFrame;
+			if (this.currentFrame < this.FirstFrame)
+				this.currentFrame = this.FirstFrame;
 
-			if (IsAnimated)
+			if (this.IsAnimated)
 			{
-				_frameTime += msFrame;
-				if (_frameTime > FrameDuration)
+				this.frameTime += msFrame;
+				if (this.frameTime > this.FrameDuration)
 				{
-					_currentFrame++;
-					if (_currentFrame >= FirstFrame + AnimationFrames) _currentFrame = FirstFrame;
+					this.currentFrame++;
+					if (this.currentFrame >= this.FirstFrame + this.AnimationFrames)
+						this.currentFrame = this.FirstFrame;
 
-					_frameTime -= FrameDuration;
+					this.frameTime -= this.FrameDuration;
 				}
 			}
 			else
 			{
-				_frameTime = 0;
+				this.frameTime = 0;
 			}
 		}
 
-        public override void Draw(Canvas canvas, float zOffset)
-        {
-            base.Draw(canvas, zOffset);
+		public override void Draw(Canvas canvas, float zOffset)
+		{
+			base.Draw(canvas, zOffset);
 
-            if (this.Sprite != null)
-            {
-                Border border = (this.Appearance.Res?.Border).GetValueOrDefault();
-                ContentRef<Texture> mainTex = (this.Sprite?.MainTexture).GetValueOrDefault();
+			if (this.Sprite != null)
+			{
+				Border border = (this.Appearance.Res?.Border).GetValueOrDefault();
+				ContentRef<Texture> mainTex = (this.Sprite?.MainTexture).GetValueOrDefault();
 
-                Vector2 pixelsTopLeft = AlignElement(Vector2.Zero, border, Alignment.TopLeft);
-                Vector2 pixelsBottomRight = AlignElement(Vector2.Zero, border, Alignment.BottomRight);
-                Vector2 uvTopLeft = Vector2.Zero;
-                Vector2 uvBottomRight = Vector2.One;
+				Vector2 pixelsTopLeft = this.AlignElement(Vector2.Zero, border, Alignment.TopLeft);
+				Vector2 pixelsBottomRight = this.AlignElement(Vector2.Zero, border, Alignment.BottomRight);
+				Vector2 uvTopLeft = Vector2.Zero;
+				Vector2 uvBottomRight = Vector2.One;
 
-                if (mainTex.IsAvailable)
-                {
-                    Texture tx = mainTex.Res;
-                    Vector2 uv = tx.UVRatio / tx.Size;
+				if (mainTex.IsAvailable)
+				{
+					Texture tx = mainTex.Res;
+					Vector2 uv = tx.UVRatio / tx.Size;
 
-                    Pixmap pm = tx.BasePixmap.Res;
-                    Rect pixelsRect = pm.LookupAtlas(_currentFrame);
-                    uvTopLeft = pixelsRect.TopLeft * uv;
-                    uvBottomRight = pixelsRect.BottomRight * uv;
+					Pixmap pm = tx.BasePixmap.Res;
+					Rect pixelsRect = pm.LookupAtlas(this.currentFrame);
+					uvTopLeft = pixelsRect.TopLeft * uv;
+					uvBottomRight = pixelsRect.BottomRight * uv;
 
-                    switch (SpriteFill)
-                    {
-                        case ImageFill.Stretch:
-                            pixelsTopLeft = AlignElement((this.ActualSize - border), border, Alignment.Center);
-                            pixelsBottomRight = pixelsTopLeft + this.ActualSize;
-                            break;
+					switch (this.SpriteFill)
+					{
+						case ImageFill.Stretch:
+							pixelsTopLeft = this.AlignElement((this.ActualSize - border), border, Alignment.Center);
+							pixelsBottomRight = pixelsTopLeft + this.ActualSize;
+							break;
 
-                        case ImageFill.FitControl:
-                            Vector2 ratios = (this.ActualSize - border) / pixelsRect.Size;
-                            float ratio = Math.Min(ratios.X, ratios.Y);
-                            Vector2 realSize = pixelsRect.Size * ratio;
+						case ImageFill.FitControl:
+							Vector2 ratios = (this.ActualSize - border) / pixelsRect.Size;
+							float ratio = Math.Min(ratios.X, ratios.Y);
+							Vector2 realSize = pixelsRect.Size * ratio;
 
-                            pixelsTopLeft = AlignElement(realSize, border, this.SpriteAlignment);
-                            pixelsBottomRight = pixelsTopLeft + realSize;
-                            break;
+							pixelsTopLeft = this.AlignElement(realSize, border, this.SpriteAlignment);
+							pixelsBottomRight = pixelsTopLeft + realSize;
+							break;
 
-                        case ImageFill.KeepSize:
-                            pixelsTopLeft = AlignElement(pixelsRect.Size, border, this.SpriteAlignment);
-                            pixelsBottomRight = pixelsTopLeft + pixelsRect.Size;
+						case ImageFill.KeepSize:
+							pixelsTopLeft = this.AlignElement(pixelsRect.Size, border, this.SpriteAlignment);
+							pixelsBottomRight = pixelsTopLeft + pixelsRect.Size;
 
-                            float delta;
+							float delta;
 
-                            delta = this.ActualPosition.X + border.Left - pixelsTopLeft.X;
-                            if (delta > 0)
-                            {
-                                uvTopLeft.X += (delta * uv.X);
-                                pixelsTopLeft.X = this.ActualPosition.X + border.Left;
-                            }
+							delta = this.ActualPosition.X + border.Left - pixelsTopLeft.X;
+							if (delta > 0)
+							{
+								uvTopLeft.X += (delta * uv.X);
+								pixelsTopLeft.X = this.ActualPosition.X + border.Left;
+							}
 
-                            delta = this.ActualPosition.Y + border.Top - pixelsTopLeft.Y;
-                            if (delta > 0)
-                            {
-                                uvTopLeft.Y += (delta * uv.Y);
-                                pixelsTopLeft.Y = this.ActualPosition.Y + border.Top;
-                            }
+							delta = this.ActualPosition.Y + border.Top - pixelsTopLeft.Y;
+							if (delta > 0)
+							{
+								uvTopLeft.Y += (delta * uv.Y);
+								pixelsTopLeft.Y = this.ActualPosition.Y + border.Top;
+							}
 
-                            delta = this.ActualPosition.X + this.ActualSize.X - border.Right - pixelsBottomRight.X;
-                            if (delta < 0)
-                            {
-                                uvBottomRight.X += (delta * uv.X);
-                                pixelsBottomRight.X = this.ActualPosition.X + this.ActualSize.X - border.Right;
-                            }
+							delta = this.ActualPosition.X + this.ActualSize.X - border.Right - pixelsBottomRight.X;
+							if (delta < 0)
+							{
+								uvBottomRight.X += (delta * uv.X);
+								pixelsBottomRight.X = this.ActualPosition.X + this.ActualSize.X - border.Right;
+							}
 
-                            delta = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom - pixelsBottomRight.Y;
-                            if (delta < 0)
-                            {
-                                uvBottomRight.Y += (delta * uv.Y);
-                                pixelsBottomRight.Y = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom;
-                            }
-                            break;
-                    }
-                }
+							delta = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom - pixelsBottomRight.Y;
+							if (delta < 0)
+							{
+								uvBottomRight.Y += (delta * uv.Y);
+								pixelsBottomRight.Y = this.ActualPosition.Y + this.ActualSize.Y - border.Bottom;
+							}
+							break;
+					}
+				}
 
-                this.Sprite.SetVariables(this.SpriteVariables);
+				this.Sprite.SetVariables(this.SpriteVariables);
 
-                _spriteVertices.Data[0].Pos.X = pixelsTopLeft.X;
-                _spriteVertices.Data[0].Pos.Y = pixelsTopLeft.Y;
-                _spriteVertices.Data[0].Pos.Z = zOffset;
-                _spriteVertices.Data[0].TexCoord.X = uvTopLeft.X;
-                _spriteVertices.Data[0].TexCoord.Y = uvTopLeft.Y;
-                _spriteVertices.Data[0].Color = SpriteTint;
+				this.spriteVertices.Data[0].Pos.X = pixelsTopLeft.X;
+				this.spriteVertices.Data[0].Pos.Y = pixelsTopLeft.Y;
+				this.spriteVertices.Data[0].Pos.Z = zOffset;
+				this.spriteVertices.Data[0].TexCoord.X = uvTopLeft.X;
+				this.spriteVertices.Data[0].TexCoord.Y = uvTopLeft.Y;
+				this.spriteVertices.Data[0].Color = this.SpriteTint;
 
-                _spriteVertices.Data[1].Pos.X = pixelsTopLeft.X;
-                _spriteVertices.Data[1].Pos.Y = pixelsBottomRight.Y;
-                _spriteVertices.Data[1].Pos.Z = zOffset;
-                _spriteVertices.Data[1].TexCoord.X = uvTopLeft.X;
-                _spriteVertices.Data[1].TexCoord.Y = uvBottomRight.Y;
-                _spriteVertices.Data[1].Color = SpriteTint;
+				this.spriteVertices.Data[1].Pos.X = pixelsTopLeft.X;
+				this.spriteVertices.Data[1].Pos.Y = pixelsBottomRight.Y;
+				this.spriteVertices.Data[1].Pos.Z = zOffset;
+				this.spriteVertices.Data[1].TexCoord.X = uvTopLeft.X;
+				this.spriteVertices.Data[1].TexCoord.Y = uvBottomRight.Y;
+				this.spriteVertices.Data[1].Color = this.SpriteTint;
 
-                _spriteVertices.Data[2].Pos.X = pixelsBottomRight.X;
-                _spriteVertices.Data[2].Pos.Y = pixelsBottomRight.Y;
-                _spriteVertices.Data[2].Pos.Z = zOffset;
-                _spriteVertices.Data[2].TexCoord.X = uvBottomRight.X;
-                _spriteVertices.Data[2].TexCoord.Y = uvBottomRight.Y;
-                _spriteVertices.Data[2].Color = SpriteTint;
+				this.spriteVertices.Data[2].Pos.X = pixelsBottomRight.X;
+				this.spriteVertices.Data[2].Pos.Y = pixelsBottomRight.Y;
+				this.spriteVertices.Data[2].Pos.Z = zOffset;
+				this.spriteVertices.Data[2].TexCoord.X = uvBottomRight.X;
+				this.spriteVertices.Data[2].TexCoord.Y = uvBottomRight.Y;
+				this.spriteVertices.Data[2].Color = this.SpriteTint;
 
-                _spriteVertices.Data[3].Pos.X = pixelsBottomRight.X;
-                _spriteVertices.Data[3].Pos.Y = pixelsTopLeft.Y;
-                _spriteVertices.Data[3].Pos.Z = zOffset;
-                _spriteVertices.Data[3].TexCoord.X = uvBottomRight.X;
-                _spriteVertices.Data[3].TexCoord.Y = uvTopLeft.Y;
-                _spriteVertices.Data[3].Color = SpriteTint;
+				this.spriteVertices.Data[3].Pos.X = pixelsBottomRight.X;
+				this.spriteVertices.Data[3].Pos.Y = pixelsTopLeft.Y;
+				this.spriteVertices.Data[3].Pos.Z = zOffset;
+				this.spriteVertices.Data[3].TexCoord.X = uvBottomRight.X;
+				this.spriteVertices.Data[3].TexCoord.Y = uvTopLeft.Y;
+				this.spriteVertices.Data[3].Color = this.SpriteTint;
 
-                canvas.State.Reset();
-                canvas.State.SetMaterial(this.Sprite);
-                canvas.DrawVertices<VertexC1P3T2>(_spriteVertices.Data, VertexMode.Quads, 4);
-            }
-        }
-    }
+				canvas.State.Reset();
+				canvas.State.SetMaterial(this.Sprite);
+				canvas.DrawVertices<VertexC1P3T2>(this.spriteVertices.Data, VertexMode.Quads, 4);
+			}
+		}
+	}
 }

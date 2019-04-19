@@ -20,8 +20,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			Cutoff
 		}
 
-		private RawList<VertexC1P3T2> _barVertices;
-		private float _value;
+		private RawList<VertexC1P3T2> barVertices;
+		private float value;
 
 		public ProgressConfiguration ProgressConfiguration { get; set; }
 		public string Text { get; set; }
@@ -29,22 +29,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public float Value
 		{
-			get { return _value; }
-			set { _value = MathF.Max(0, MathF.Min(value, 1)); }
+			get => this.value;
+			set => this.value = MathF.Max(0, MathF.Min(value, 1));
 		}
 
 		public ProgressBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			_barVertices = new RawList<VertexC1P3T2>(36);
+			this.barVertices = new RawList<VertexC1P3T2>(36);
 
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			ProgressTemplate template = _baseSkin.GetTemplate<ProgressTemplate>(this);
+			ProgressTemplate template = this.baseSkin.GetTemplate<ProgressTemplate>(this);
 			this.ProgressConfiguration = template.ProgressConfiguration.Clone();
 			this.TextConfiguration = template.TextConfiguration.Clone();
 		}
@@ -111,50 +111,50 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 								innerBottomRight.Y -= halfSize;
 							}
 
-							SetupBarVertex(0, barTopLeft.X, barTopLeft.Y, zOffset, 0, 0, material.MainColor);
-							SetupBarVertex(1, barTopLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(3, innerTopLeft.X, barTopLeft.Y, zOffset, uvTopLeft.X, 0, material.MainColor);
+							this.SetupBarVertex(0, barTopLeft.X, barTopLeft.Y, zOffset, 0, 0, material.MainColor);
+							this.SetupBarVertex(1, barTopLeft.X, innerTopLeft.Y, zOffset, 0, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(3, innerTopLeft.X, barTopLeft.Y, zOffset, uvTopLeft.X, 0, material.MainColor);
 
-							CopyBarVertex(4, 3);
-							CopyBarVertex(5, 2);
-							SetupBarVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(7, innerBottomRight.X, barTopLeft.Y, zOffset, uvBottomRight.X, 0, material.MainColor);
+							this.CopyBarVertex(4, 3);
+							this.CopyBarVertex(5, 2);
+							this.SetupBarVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(7, innerBottomRight.X, barTopLeft.Y, zOffset, uvBottomRight.X, 0, material.MainColor);
 
-							CopyBarVertex(8, 7);
-							CopyBarVertex(9, 6);
-							SetupBarVertex(10, barBottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(11, barBottomRight.X, barTopLeft.Y, zOffset, tx.UVRatio.X, 0, material.MainColor);
+							this.CopyBarVertex(8, 7);
+							this.CopyBarVertex(9, 6);
+							this.SetupBarVertex(10, barBottomRight.X, innerTopLeft.Y, zOffset, tx.UVRatio.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(11, barBottomRight.X, barTopLeft.Y, zOffset, tx.UVRatio.X, 0, material.MainColor);
 
-							CopyBarVertex(12, 1);
-							SetupBarVertex(13, barTopLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, material.MainColor);
-							SetupBarVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(15, 2);
+							this.CopyBarVertex(12, 1);
+							this.SetupBarVertex(13, barTopLeft.X, innerBottomRight.Y, zOffset, 0, uvBottomRight.Y, material.MainColor);
+							this.SetupBarVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(15, 2);
 
-							CopyBarVertex(16, 2);
-							CopyBarVertex(17, 14);
-							SetupBarVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(19, 6);
+							this.CopyBarVertex(16, 2);
+							this.CopyBarVertex(17, 14);
+							this.SetupBarVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(19, 6);
 
-							CopyBarVertex(20, 6);
-							CopyBarVertex(21, 18);
-							SetupBarVertex(22, barBottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(23, 10);
+							this.CopyBarVertex(20, 6);
+							this.CopyBarVertex(21, 18);
+							this.SetupBarVertex(22, barBottomRight.X, innerBottomRight.Y, zOffset, tx.UVRatio.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(23, 10);
 
-							CopyBarVertex(24, 13);
-							SetupBarVertex(25, barTopLeft.X, barBottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
-							SetupBarVertex(26, innerTopLeft.X, barBottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, material.MainColor);
-							CopyBarVertex(27, 14);
+							this.CopyBarVertex(24, 13);
+							this.SetupBarVertex(25, barTopLeft.X, barBottomRight.Y, zOffset, 0, tx.UVRatio.Y, material.MainColor);
+							this.SetupBarVertex(26, innerTopLeft.X, barBottomRight.Y, zOffset, uvTopLeft.X, tx.UVRatio.Y, material.MainColor);
+							this.CopyBarVertex(27, 14);
 
-							CopyBarVertex(28, 14);
-							CopyBarVertex(29, 26);
-							SetupBarVertex(30, innerBottomRight.X, barBottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, material.MainColor);
-							CopyBarVertex(31, 18);
+							this.CopyBarVertex(28, 14);
+							this.CopyBarVertex(29, 26);
+							this.SetupBarVertex(30, innerBottomRight.X, barBottomRight.Y, zOffset, uvBottomRight.X, tx.UVRatio.Y, material.MainColor);
+							this.CopyBarVertex(31, 18);
 
-							CopyBarVertex(32, 18);
-							CopyBarVertex(33, 30);
-							SetupBarVertex(34, barBottomRight.X, barBottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, material.MainColor);
-							CopyBarVertex(35, 22);
+							this.CopyBarVertex(32, 18);
+							this.CopyBarVertex(33, 30);
+							this.SetupBarVertex(34, barBottomRight.X, barBottomRight.Y, zOffset, tx.UVRatio.X, tx.UVRatio.Y, material.MainColor);
+							this.CopyBarVertex(35, 22);
 							break;
 
 						case BarStyle.Cutoff:
@@ -247,62 +247,62 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 									break;
 							}
 
-							SetupBarVertex(0, barTopLeft.X, barTopLeft.Y, zOffset, uvStart.X, uvStart.Y, material.MainColor);
-							SetupBarVertex(1, barTopLeft.X, innerTopLeft.Y, zOffset, uvStart.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(3, innerTopLeft.X, barTopLeft.Y, zOffset, uvTopLeft.X, uvStart.Y, material.MainColor);
+							this.SetupBarVertex(0, barTopLeft.X, barTopLeft.Y, zOffset, uvStart.X, uvStart.Y, material.MainColor);
+							this.SetupBarVertex(1, barTopLeft.X, innerTopLeft.Y, zOffset, uvStart.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(2, innerTopLeft.X, innerTopLeft.Y, zOffset, uvTopLeft.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(3, innerTopLeft.X, barTopLeft.Y, zOffset, uvTopLeft.X, uvStart.Y, material.MainColor);
 
-							CopyBarVertex(4, 3);
-							CopyBarVertex(5, 2);
-							SetupBarVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(7, innerBottomRight.X, barTopLeft.Y, zOffset, uvBottomRight.X, uvStart.Y, material.MainColor);
+							this.CopyBarVertex(4, 3);
+							this.CopyBarVertex(5, 2);
+							this.SetupBarVertex(6, innerBottomRight.X, innerTopLeft.Y, zOffset, uvBottomRight.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(7, innerBottomRight.X, barTopLeft.Y, zOffset, uvBottomRight.X, uvStart.Y, material.MainColor);
 
-							CopyBarVertex(8, 7);
-							CopyBarVertex(9, 6);
-							SetupBarVertex(10, barBottomRight.X, innerTopLeft.Y, zOffset, uvEnd.X, uvTopLeft.Y, material.MainColor);
-							SetupBarVertex(11, barBottomRight.X, barTopLeft.Y, zOffset, uvEnd.X, uvStart.Y, material.MainColor);
+							this.CopyBarVertex(8, 7);
+							this.CopyBarVertex(9, 6);
+							this.SetupBarVertex(10, barBottomRight.X, innerTopLeft.Y, zOffset, uvEnd.X, uvTopLeft.Y, material.MainColor);
+							this.SetupBarVertex(11, barBottomRight.X, barTopLeft.Y, zOffset, uvEnd.X, uvStart.Y, material.MainColor);
 
-							CopyBarVertex(12, 1);
-							SetupBarVertex(13, barTopLeft.X, innerBottomRight.Y, zOffset, uvStart.X, uvBottomRight.Y, material.MainColor);
-							SetupBarVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(15, 2);
+							this.CopyBarVertex(12, 1);
+							this.SetupBarVertex(13, barTopLeft.X, innerBottomRight.Y, zOffset, uvStart.X, uvBottomRight.Y, material.MainColor);
+							this.SetupBarVertex(14, innerTopLeft.X, innerBottomRight.Y, zOffset, uvTopLeft.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(15, 2);
 
-							CopyBarVertex(16, 2);
-							CopyBarVertex(17, 14);
-							SetupBarVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(19, 6);
+							this.CopyBarVertex(16, 2);
+							this.CopyBarVertex(17, 14);
+							this.SetupBarVertex(18, innerBottomRight.X, innerBottomRight.Y, zOffset, uvBottomRight.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(19, 6);
 
-							CopyBarVertex(20, 6);
-							CopyBarVertex(21, 18);
-							SetupBarVertex(22, barBottomRight.X, innerBottomRight.Y, zOffset, uvEnd.X, uvBottomRight.Y, material.MainColor);
-							CopyBarVertex(23, 10);
+							this.CopyBarVertex(20, 6);
+							this.CopyBarVertex(21, 18);
+							this.SetupBarVertex(22, barBottomRight.X, innerBottomRight.Y, zOffset, uvEnd.X, uvBottomRight.Y, material.MainColor);
+							this.CopyBarVertex(23, 10);
 
-							CopyBarVertex(24, 13);
-							SetupBarVertex(25, barTopLeft.X, barBottomRight.Y, zOffset, uvStart.X, uvEnd.Y, material.MainColor);
-							SetupBarVertex(26, innerTopLeft.X, barBottomRight.Y, zOffset, uvTopLeft.X, uvEnd.Y, material.MainColor);
-							CopyBarVertex(27, 14);
+							this.CopyBarVertex(24, 13);
+							this.SetupBarVertex(25, barTopLeft.X, barBottomRight.Y, zOffset, uvStart.X, uvEnd.Y, material.MainColor);
+							this.SetupBarVertex(26, innerTopLeft.X, barBottomRight.Y, zOffset, uvTopLeft.X, uvEnd.Y, material.MainColor);
+							this.CopyBarVertex(27, 14);
 
-							CopyBarVertex(28, 14);
-							CopyBarVertex(29, 26);
-							SetupBarVertex(30, innerBottomRight.X, barBottomRight.Y, zOffset, uvBottomRight.X, uvEnd.Y, material.MainColor);
-							CopyBarVertex(31, 18);
+							this.CopyBarVertex(28, 14);
+							this.CopyBarVertex(29, 26);
+							this.SetupBarVertex(30, innerBottomRight.X, barBottomRight.Y, zOffset, uvBottomRight.X, uvEnd.Y, material.MainColor);
+							this.CopyBarVertex(31, 18);
 
-							CopyBarVertex(32, 18);
-							CopyBarVertex(33, 30);
-							SetupBarVertex(34, barBottomRight.X, barBottomRight.Y, zOffset, uvEnd.X, uvEnd.Y, material.MainColor);
-							CopyBarVertex(35, 22);
+							this.CopyBarVertex(32, 18);
+							this.CopyBarVertex(33, 30);
+							this.SetupBarVertex(34, barBottomRight.X, barBottomRight.Y, zOffset, uvEnd.X, uvEnd.Y, material.MainColor);
+							this.CopyBarVertex(35, 22);
 							break;
 					}
 
 					canvas.State.Reset();
 					canvas.State.SetMaterial(material);
-					canvas.DrawVertices<VertexC1P3T2>(_barVertices.Data, VertexMode.Quads, 36);
+					canvas.DrawVertices<VertexC1P3T2>(this.barVertices.Data, VertexMode.Quads, 36);
 				}
 			}
 
-			Vector2 textPosition = AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
+			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 
-			if (!String.IsNullOrWhiteSpace(this.Text))
+			if (!string.IsNullOrWhiteSpace(this.Text))
 			{
 				canvas.State.Reset();
 				canvas.State.ColorTint = this.TextConfiguration.Color;
@@ -318,19 +318,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected void CopyBarVertex(int destinationIndex, int sourceIndex)
 		{
-			_barVertices.Data[destinationIndex].Pos = _barVertices.Data[sourceIndex].Pos;
-			_barVertices.Data[destinationIndex].TexCoord = _barVertices.Data[sourceIndex].TexCoord;
-			_barVertices.Data[destinationIndex].Color = _barVertices.Data[sourceIndex].Color;
+			this.barVertices.Data[destinationIndex].Pos = this.barVertices.Data[sourceIndex].Pos;
+			this.barVertices.Data[destinationIndex].TexCoord = this.barVertices.Data[sourceIndex].TexCoord;
+			this.barVertices.Data[destinationIndex].Color = this.barVertices.Data[sourceIndex].Color;
 		}
 
 		private void SetupBarVertex(int index, float x, float y, float z, float uvX, float uvY, ColorRgba color)
 		{
-			_barVertices.Data[index].Pos.X = x;
-			_barVertices.Data[index].Pos.Y = y;
-			_barVertices.Data[index].Pos.Z = z;
-			_barVertices.Data[index].TexCoord.X = uvX;
-			_barVertices.Data[index].TexCoord.Y = uvY;
-			_barVertices.Data[index].Color = color;
+			this.barVertices.Data[index].Pos.X = x;
+			this.barVertices.Data[index].Pos.Y = y;
+			this.barVertices.Data[index].Pos.Z = z;
+			this.barVertices.Data[index].TexCoord.X = uvX;
+			this.barVertices.Data[index].TexCoord.Y = uvY;
+			this.barVertices.Data[index].Color = color;
 		}
 	}
 }

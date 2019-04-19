@@ -18,5 +18,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 		{
 			this.GlyphConfiguration = GlyphConfiguration.DEFAULT;
 		}
+
+		public GlyphTemplate(ControlTemplate source)
+			: base(source)
+		{
+			if (source is GlyphTemplate gt)
+			{
+				this.GlyphConfiguration = gt.GlyphConfiguration.Clone();
+			}
+		}
 	}
 }

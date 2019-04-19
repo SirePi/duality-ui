@@ -14,19 +14,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class ToggleButton : Button
 	{
-		private bool _isMouseOver;
-		private bool _isMousePressed;
-		private bool _isToggled;
+		private bool isMouseOver;
+		private bool isMousePressed;
+		private bool isToggled;
 
 		public bool Toggled
 		{
-			get { return _isToggled; }
+			get => this.isToggled;
 			set
 			{
-				if (_isToggled != value)
-				{ _onToggleChange?.Invoke(this, _isToggled, value); }
+				if (this.isToggled != value)
+				{ this.onToggleChange?.Invoke(this, this.isToggled, value); }
 
-				_isToggled = value;
+				this.isToggled = value;
 			}
 		}
 
@@ -35,25 +35,25 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		// Events
 		[DontSerialize]
-		private ToggleChangeEventDelegate _onToggleChange;
+		private ToggleChangeEventDelegate onToggleChange;
 		public event ToggleChangeEventDelegate OnToggleChange
 		{
-			add { _onToggleChange += value; }
-			remove { _onToggleChange += value; }
+			add { this.onToggleChange += value; }
+			remove { this.onToggleChange += value; }
 		}
 
 		public ToggleButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.OnMouseButton += ToggleButton_OnMouseButton;
-			ApplySkin(_baseSkin);
+			this.OnMouseButton += this.ToggleButton_OnMouseButton;
+			this.ApplySkin(this.baseSkin);
 		}
 
 		private void ToggleButton_OnMouseButton(Button button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{
-				_isMousePressed = args.IsPressed;
+				this.isMousePressed = args.IsPressed;
 				if (args.IsPressed) this.Toggled = !this.Toggled;
 			}
 		}
@@ -62,22 +62,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.OnMouseEnterEvent();
 
-			_isMouseOver = true;
+			this.isMouseOver = true;
 		}
 
 		public override void OnMouseLeaveEvent()
 		{
 			base.OnMouseLeaveEvent();
 
-			_isMouseOver = false;
-			_isMousePressed = false;
+			this.isMouseOver = false;
+			this.isMousePressed = false;
 		}
 
 		public override void OnUpdate(float msFrame)
 		{
 			base.OnUpdate(msFrame);
 
-			if (!_isMouseOver)
+			if (!this.isMouseOver)
 			{
 				if (this.Toggled)
 				{ this.Status |= ControlStatus.Active; }
@@ -86,7 +86,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 			else
 			{
-				if (_isMousePressed)
+				if (this.isMousePressed)
 				{
 					this.Status &= ~ControlStatus.Hover;
 

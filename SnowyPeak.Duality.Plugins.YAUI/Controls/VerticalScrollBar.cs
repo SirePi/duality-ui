@@ -21,23 +21,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			ControlsContainer scrollBar = base.BuildControl();
 
-			_btnDecrease.Docking = Dock.Top;
-			_btnIncrease.Docking = Dock.Bottom;
+			this.btnDecrease.Docking = Dock.Top;
+			this.btnIncrease.Docking = Dock.Bottom;
 
 			return scrollBar;
 		}
 
 		protected override float ApplyMouseMovement(Vector2 mouseDelta)
 		{
-			float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
+			float delta = (this.canvas.ActualSize.Y - this.btnCursor.ActualSize.Y) / this.valueDelta;
 			return mouseDelta.Y / delta;
 		}
 
 		protected override void UpdateCursor()
 		{
-			float delta = (_canvas.ActualSize.Y - _btnCursor.ActualSize.Y) / _valueDelta;
-			_btnCursor.Position.Y = (delta * (this.Value - this.MinValue));
-			_btnCursor.Position.X = (_canvas.ActualSize.X - _btnCursor.ActualSize.X) / 2;
+			float delta = (this.canvas.ActualSize.Y - this.btnCursor.ActualSize.Y) / this.valueDelta;
+			this.btnCursor.Position.Y = (delta * (this.Value - this.MinValue));
+			this.btnCursor.Position.X = (this.canvas.ActualSize.X - this.btnCursor.ActualSize.X) / 2;
 		}
 	}
 }

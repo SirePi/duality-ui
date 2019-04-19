@@ -13,15 +13,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class RadioButton : CheckButton
 	{
-		private string _radioGroup;
+		private string radioGroup;
 
 		public string RadioGroup
 		{
-			get { return _radioGroup; }
+			get => this.radioGroup;
 			set
 			{
 				UIHelper.UnregisterRadioButton(this);
-				_radioGroup = value;
+				this.radioGroup = value;
 				UIHelper.RegisterRadioButton(this);
 			}
 		}
@@ -29,8 +29,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public RadioButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.OnMouseButton += RadioButton_OnMouseButton;
-			ApplySkin(_baseSkin);
+			this.OnMouseButton += this.RadioButton_OnMouseButton;
+			this.ApplySkin(this.baseSkin);
 		}
 
 		private void RadioButton_OnMouseButton(Button button, MouseButtonEventArgs args)

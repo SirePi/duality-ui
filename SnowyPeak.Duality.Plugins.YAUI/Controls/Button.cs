@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class Button : InteractiveControl
 	{
-		private FormattedText _fText;
+		private readonly FormattedText fText;
 
 		public string Text { get; set; }
 		public TextConfiguration TextConfiguration { get; set; }
@@ -25,47 +25,47 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		// Events
 		[DontSerialize]
-		private MouseButtonEventDelegate _onMouseButton;
+		private MouseButtonEventDelegate onMouseButton;
 		public event MouseButtonEventDelegate OnMouseButton
 		{
-			add { _onMouseButton += value; }
-			remove { _onMouseButton -= value; }
+			add { this.onMouseButton += value; }
+			remove { this.onMouseButton -= value; }
 		}
 
 		public Button(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.Text = String.Empty;
-			_fText = new FormattedText();
+			this.Text = string.Empty;
+			this.fText = new FormattedText();
 
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.TextConfiguration = _baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
+			this.TextConfiguration = this.baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
 			base.Draw(canvas, zOffset);
 
-			Vector2 textPosition = AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
+			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 
-			if (!String.IsNullOrWhiteSpace(this.Text))
+			if (!string.IsNullOrWhiteSpace(this.Text))
 			{
 				canvas.State.Reset();
 				canvas.State.ColorTint = this.TextConfiguration.Color;
 
-				_fText.SourceText = this.Text;
-				if (_fText.Fonts[0] != this.TextConfiguration.Font)
+				this.fText.SourceText = this.Text;
+				if (this.fText.Fonts[0] != this.TextConfiguration.Font)
 				{
-					_fText.Fonts[0] = this.TextConfiguration.Font;
-					_fText.UpdateVertexCache();
+					this.fText.Fonts[0] = this.TextConfiguration.Font;
+					this.fText.UpdateVertexCache();
 				}
 
-				canvas.DrawText(_fText,
+				canvas.DrawText(this.fText,
 					(int)textPosition.X,
 					(int)textPosition.Y,
 					zOffset + (INNER_ZOFFSET * 2),
@@ -86,7 +86,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{ this.Status &= ~Control.ControlStatus.Active; }
 			}
 
-			_onMouseButton?.Invoke(this, args);
+			this.onMouseButton?.Invoke(this, args);
 		}
 
 		public override void OnMouseLeaveEvent()

@@ -20,12 +20,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 		public Direction Direction { get; set; }
 		public Border Margin { get; set; }
 
-		public ProgressConfiguration()
+		public ProgressConfiguration(ContentRef<Appearance>? barAppearance = null, Direction direction = Direction.LeftToRight, ProgressBar.BarStyle style = ProgressBar.BarStyle.Stretching, Border? margin = null)
 		{
-			this.BarAppearance = Appearance.DEFAULT;
-			this.Direction = Direction.LeftToRight;
-			this.BarStyle = ProgressBar.BarStyle.Stretching;
-			this.Margin = Border.Zero;
+			this.BarAppearance = barAppearance ?? Appearance.DEFAULT;
+			this.Direction = direction;
+			this.BarStyle = style;
+			this.Margin = margin ?? Border.Zero;
 		}
 
 		public ProgressConfiguration Clone()

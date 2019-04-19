@@ -17,8 +17,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public Size(float value)
 			: this(value, value)
-		{
-		}
+		{ }
 
 		public Size(float x, float y)
 		{
@@ -93,7 +92,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public override string ToString()
 		{
-			return String.Format("({0:0.00}, {1:0.00})", this.X, this.Y);
+			return string.Format("({0:0.00}, {1:0.00})", this.X, this.Y);
 		}
 	}
 }

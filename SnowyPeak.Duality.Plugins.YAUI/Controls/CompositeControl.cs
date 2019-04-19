@@ -12,13 +12,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class CompositeControl : Control, ILayout
 	{
-		protected ControlsContainer _container;
-		public bool IsPassthrough { get => false; }
+		protected ControlsContainer container;
+		public bool IsPassthrough => false;
 
 		public CompositeControl(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			_container = BuildControl();
+			this.container = this.BuildControl();
 		}
 
 		public abstract ControlsContainer BuildControl();
@@ -26,34 +26,32 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override void Draw(Canvas canvas, float zOffset)
 		{
 			base.Draw(canvas, zOffset);
-
-			if (_container != null)
-			{ _container.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
+			this.container?.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
-			return _container.FindHoveredControl(position);
+			return this.container.FindHoveredControl(position);
 		}
 
 		public void LayoutControls()
 		{
-			if (_container != null)
+			if (this.container != null)
 			{
-				_container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
-				_container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
+				this.container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
+				this.container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
 
-				_container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
-				_container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
+				this.container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
+				this.container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
 
-				_container.LayoutControls();
+				this.container.LayoutControls();
 			}
 		}
 
 		public override void OnUpdate(float msFrame)
 		{
 			base.OnUpdate(msFrame);
-			_container.OnUpdate(msFrame);
+			this.container.OnUpdate(msFrame);
 		}
 	}
 }

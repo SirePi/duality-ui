@@ -21,34 +21,39 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public static Skin DEFAULT = YAUI_DARK;
 
-		private Dictionary<string, ControlTemplate> _customTemplates;
-		private Dictionary<Type, ControlTemplate> _defaultTemplates;
+		private Dictionary<string, ControlTemplate> customTemplates;
+		private Dictionary<Type, ControlTemplate> defaultTemplates;
 
 		protected Skin()
 		{
-			_customTemplates = new Dictionary<string, ControlTemplate>();
-			_defaultTemplates = new Dictionary<Type, ControlTemplate>();
+			this.customTemplates = new Dictionary<string, ControlTemplate>();
+			this.defaultTemplates = new Dictionary<Type, ControlTemplate>();
 
-			Initialize();
+			this.Initialize();
 		}
 
 		public void AddCustomTemplate(string templateName, ControlTemplate template)
 		{
-			_customTemplates[templateName] = template;
+			this.customTemplates[templateName] = template;
 		}
 
 		public void AddDefaultTemplate(Type type, ControlTemplate template)
 		{
-			_defaultTemplates[type] = template;
+			this.defaultTemplates[type] = template;
 		}
 
 		public T GetTemplate<T>(Control c) where T : ControlTemplate, new()
 		{
 			T template = null;
 
-			if (_customTemplates.ContainsKey(c.TemplateName)) template = _customTemplates[c.TemplateName] as T;
-			if (template == null && _defaultTemplates.ContainsKey(c.GetType())) template = _defaultTemplates[c.GetType()] as T;
-			if (template == null) template = new T();
+			if (this.customTemplates.ContainsKey(c.TemplateName))
+				template = this.customTemplates[c.TemplateName] as T;
+
+			if (template == null && this.defaultTemplates.ContainsKey(c.GetType()))
+				template = this.defaultTemplates[c.GetType()] as T;
+
+			if (template == null)
+				template = new T();
 
 			return template;
 		}

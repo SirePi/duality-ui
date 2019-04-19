@@ -102,12 +102,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = null
 			};
-			AddDefaultTemplate(typeof(Separator), emptyTemplate);
-			AddDefaultTemplate(typeof(ControlsContainer), emptyTemplate);
-			AddDefaultTemplate(typeof(CanvasPanel), emptyTemplate);
-			AddDefaultTemplate(typeof(DockPanel), emptyTemplate);
-			AddDefaultTemplate(typeof(GridPanel), emptyTemplate);
-			AddDefaultTemplate(typeof(StackPanel), emptyTemplate);
+			this.AddDefaultTemplate(typeof(Separator), emptyTemplate);
+			this.AddDefaultTemplate(typeof(ControlsContainer), emptyTemplate);
+			this.AddDefaultTemplate(typeof(CanvasPanel), emptyTemplate);
+			this.AddDefaultTemplate(typeof(DockPanel), emptyTemplate);
+			this.AddDefaultTemplate(typeof(GridPanel), emptyTemplate);
+			this.AddDefaultTemplate(typeof(StackPanel), emptyTemplate);
 
 			TextTemplate baseTemplate = new TextTemplate()
 			{
@@ -121,8 +121,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					Margin = new Border(5)
 				}
 			};
-			AddDefaultTemplate(typeof(TextBlock), baseTemplate);
-			AddDefaultTemplate(typeof(SpriteBox), baseTemplate);
+			this.AddDefaultTemplate(typeof(TextBlock), baseTemplate);
+			this.AddDefaultTemplate(typeof(SpriteBox), baseTemplate);
 
 			TextTemplate buttonTemplate = new TextTemplate()
 			{
@@ -136,9 +136,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					Margin = new Border(5)
 				}
 			};
-			AddDefaultTemplate(typeof(Button), buttonTemplate);
-			AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
-			AddDefaultTemplate(typeof(TextBox), buttonTemplate);
+			this.AddDefaultTemplate(typeof(Button), buttonTemplate);
+			this.AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
+			this.AddDefaultTemplate(typeof(TextBox), buttonTemplate);
 
 			GlyphTemplate glyphTemplate = new GlyphTemplate()
 			{
@@ -152,8 +152,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				},
 				TextConfiguration = buttonTemplate.TextConfiguration
 			};
-			AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
-			AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
+			this.AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
+			this.AddDefaultTemplate(typeof(RadioButton), glyphTemplate);
 
 			ScrollBarTemplate vScrollBarTemplate = new ScrollBarTemplate()
 			{
@@ -169,7 +169,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					CursorSize = new Size(16, 24)
 				}
 			};
-			AddDefaultTemplate(typeof(VerticalScrollBar), vScrollBarTemplate);
+			this.AddDefaultTemplate(typeof(VerticalScrollBar), vScrollBarTemplate);
 
 			ScrollBarTemplate hScrollBarTemplate = new ScrollBarTemplate()
 			{
@@ -185,7 +185,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					CursorSize = new Size(24, 16)
 				}
 			};
-			AddDefaultTemplate(typeof(HorizontalScrollBar), hScrollBarTemplate);
+			this.AddDefaultTemplate(typeof(HorizontalScrollBar), hScrollBarTemplate);
 
 			ListBoxTemplate listBoxTemplate = new ListBoxTemplate()
 			{
@@ -199,7 +199,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				TextConfiguration = buttonTemplate.TextConfiguration,
 				ListBoxMargin = new Border(2)
 			};
-			AddDefaultTemplate(typeof(ListBox), listBoxTemplate);
+			this.AddDefaultTemplate(typeof(ListBox), listBoxTemplate);
 
 			ProgressTemplate progressTemplate = new ProgressTemplate()
 			{
@@ -214,7 +214,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				},
 				TextConfiguration = buttonTemplate.TextConfiguration
 			};
-			AddDefaultTemplate(typeof(ProgressBar), progressTemplate);
+			this.AddDefaultTemplate(typeof(ProgressBar), progressTemplate);
 		}
 	}
 }

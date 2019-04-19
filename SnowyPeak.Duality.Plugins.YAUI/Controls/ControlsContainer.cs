@@ -1,4 +1,4 @@
-﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
+// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
 using Duality.Drawing;
 using SnowyPeak.Duality.Plugins.YAUI.Templates;
@@ -19,16 +19,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected ControlsContainer(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.Margin = Border.Zero;
 			this.Children = new List<Control>();
 			this.IsPassthrough = true;
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public ControlsContainer Add(Control child)
 		{
 			if (this.Children.Contains(child))
-			{ throw new Exception(String.Format("Duplicate control {0} in parent {1}", child, this)); }
+			{ throw new Exception(string.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
 				// check that I am not introducing a circular ancestry
@@ -36,7 +35,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				while (cc != null)
 				{
 					if (cc == child)
-					{ throw new Exception(String.Format("Circular ancestry between {0} and {1}", child, this)); }
+					{ throw new Exception(string.Format("Circular ancestry between {0} and {1}", child, this)); }
 
 					cc = cc.Parent;
 				}
@@ -61,7 +60,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			if (this.Children != null)
 			{
 				foreach (Control c in this.Children)
-				{ c.ApplySkin(_baseSkin); }
+				{ c.ApplySkin(this.baseSkin); }
 			}
 		}
 
@@ -74,46 +73,46 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.Draw(canvas, zOffset);
 
-			foreach (Control c in this.Children.Where(c => c.Visibility == Control.ControlVisibility.Visible))
+			foreach (Control c in this.Children)
 			{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
 			Control result = this.Children.FirstOrDefault(c =>
-                (c is ILayout || c is InteractiveControl) &&
+				(c is ILayout || c is InteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
 				c.ControlArea.Contains(position));
 
-			if (result is ILayout)
-			{ result = (result as ILayout).FindHoveredControl(position); }
+			if (result is ILayout il)
+			{ result = il.FindHoveredControl(position); }
 
-			if(result == null && !this.IsPassthrough)
+			if (result == null && !this.IsPassthrough)
 			{ result = this; }
 
 			return result;
 		}
 
-        public IEnumerable<T> GetChildren<T>() where T: Control
-        {
-            return this.Children.Where(c => c is T).Cast<T>();
-        }
+		public IEnumerable<T> GetChildren<T>() where T : Control
+		{
+			return this.Children.Where(c => c is T).Cast<T>();
+		}
 
 		public void LayoutControls()
 		{
 			foreach (Control c in this.Children)
 			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
 
-			_LayoutControls();
+			this._LayoutControls();
 
 			foreach (Control c in this.Children)
 			{
-                c.ActualPosition += this.ActualPosition + c.Margin.TopLeft;
-                c.ActualSize -= (c.Margin.TopLeft + c.Margin.BottomRight);
+				c.ActualPosition += this.ActualPosition + c.Margin.TopLeft;
+				c.ActualSize -= (c.Margin.TopLeft + c.Margin.BottomRight);
 
-                (c as ILayout)?.LayoutControls();
-            }
+				(c as ILayout)?.LayoutControls();
+			}
 		}
 
 		public override void OnUpdate(float msFrame)
@@ -130,12 +129,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			return this;
 		}
 
-        public ControlsContainer RemoveAll<T>() where T : Control
-        {
-            this.Children.RemoveAll(c => c is T);
-            return this;
-        }
+		public ControlsContainer RemoveAll<T>() where T : Control
+		{
+			this.Children.RemoveAll(c => c is T);
+			return this;
+		}
 
-        internal abstract void _LayoutControls();
+		internal abstract void _LayoutControls();
 	}
 }

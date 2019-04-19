@@ -18,10 +18,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 		public ContentRef<Material> Glyph { get; set; }
 		public Border Margin { get; set; }
 
-		public GlyphConfiguration()
+		public GlyphConfiguration(ContentRef<Material>? glyph = null, Alignment alignment = Alignment.Center, Border? margin = null)
 		{
-			this.Alignment = Alignment.Center;
-			this.Margin = Border.Zero;
+			this.Glyph = glyph ?? null;
+			this.Alignment = alignment;
+			this.Margin = margin ?? Border.Zero;
 		}
 
 		public GlyphConfiguration Clone()

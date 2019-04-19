@@ -20,5 +20,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 			this.ScrollBarMargin = Border.Zero;
 			this.ScrollBarConfiguration = ScrollBarConfiguration.DEFAULT;
 		}
+
+		public ScrollBarTemplate(ControlTemplate source)
+			: base(source)
+		{
+			if (source is ScrollBarTemplate sbt)
+			{
+				this.ScrollBarMargin = sbt.ScrollBarMargin;
+				this.ScrollBarConfiguration = sbt.ScrollBarConfiguration.Clone();
+			}
+		}
 	}
 }

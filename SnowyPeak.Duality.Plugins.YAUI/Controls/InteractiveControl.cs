@@ -19,11 +19,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		// Events
 		[DontSerialize]
-		private FocusChangeDelegate _onFocusChange;
+		private FocusChangeDelegate onFocusChange;
 		public event FocusChangeDelegate OnFocusChange
 		{
-			add { _onFocusChange += value; }
-			remove { _onFocusChange -= value; }
+			add { this.onFocusChange += value; }
+			remove { this.onFocusChange -= value; }
 		}
 
 		protected InteractiveControl(Skin skin = null, string templateName = null)
@@ -32,12 +32,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public virtual void OnBlur()
 		{
-			_onFocusChange?.Invoke(this, false);
+			this.onFocusChange?.Invoke(this, false);
 		}
 
 		public virtual void OnFocus()
 		{
-			_onFocusChange?.Invoke(this, true);
+			this.onFocusChange?.Invoke(this, true);
 		}
 	}
 }

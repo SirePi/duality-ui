@@ -20,166 +20,162 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	{
 		private const float GLOBAL_ZOFFSET = 0.01f;
 
-        [DontSerialize]
-        private Canvas _canvas;
+		[DontSerialize]
+		private Canvas canvas;
 
 		[DontSerialize]
-		private Control _focusedControl;
+		private Control focusedControl;
 
 		[DontSerialize]
-		private Control _hoveredControl;
+		private Control hoveredControl;
 
 		[DontSerialize]
-		private ControlsContainer _rootContainer;
+		private ControlsContainer rootContainer;
 
-        [DontSerialize]
-        private Size _lastSize;
+		[DontSerialize]
+		private Size lastSize;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public Control HoveredControl
-		{
-			get { return _hoveredControl; }
-		}
+		public Control HoveredControl => this.hoveredControl;
 
 		public bool IsFullScreen { get; set; }
 		public int Offset { get; set; }
 
-        // Events
-        [DontSerialize]
-        private Action _onResize; 
-        public event Action OnResize
-        {
-            add { _onResize += value; }
-            remove { _onResize += value; }
-        }
+		// Events
+		[DontSerialize]
+		private Action onResize;
+		public event Action OnResize
+		{
+			add { this.onResize += value; }
+			remove { this.onResize += value; }
+		}
 
-        protected UI()
+		protected UI()
 		{
 			this.Offset = 1;
 		}
 
 		void ICmpInitializable.OnActivate()
 		{
-			_rootContainer = CreateUI();
-            OnUpdate();
+			this.rootContainer = this.CreateUI();
+			this.OnUpdate();
 		}
 
 		void ICmpInitializable.OnDeactivate()
 		{
-			_rootContainer = null;
+			this.rootContainer = null;
 		}
 
 		void ICmpRenderer.Draw(IDrawDevice device)
 		{
-			if (_rootContainer != null)
+			if (this.rootContainer != null)
 			{
 				if (this.IsFullScreen)
 				{
-					_rootContainer.ActualSize.X = DualityApp.TargetViewSize.X;
-					_rootContainer.ActualSize.Y = DualityApp.TargetViewSize.Y;
-					_rootContainer.ActualPosition = Vector2.Zero;
+					this.rootContainer.ActualSize.X = DualityApp.TargetViewSize.X;
+					this.rootContainer.ActualSize.Y = DualityApp.TargetViewSize.Y;
+					this.rootContainer.ActualPosition = Vector2.Zero;
 				}
 				else
 				{
-					_rootContainer.ActualSize = _rootContainer.Size;
-					_rootContainer.ActualPosition = _rootContainer.Position;
+					this.rootContainer.ActualSize = this.rootContainer.Size;
+					this.rootContainer.ActualPosition = this.rootContainer.Position;
 				}
 
-				_rootContainer.LayoutControls();
+				this.rootContainer.LayoutControls();
 
-                if (_canvas == null)
-                    _canvas = new Canvas();
+				if (this.canvas == null)
+					this.canvas = new Canvas();
 
-                _canvas.Begin(device);
-                try
-                {
-                    _rootContainer.Draw(_canvas, this.Offset * GLOBAL_ZOFFSET);
-                }
-                catch (Exception ex)
-                {
-                    Logs.Get<UILog>().WriteError("Exception {0} while drawing", ex.Message);
-                    Logs.Get<UILog>().WriteError(ex.StackTrace);
-                }
-                _canvas.End();
+				this.canvas.Begin(device);
+				try
+				{
+					this.rootContainer.Draw(this.canvas, this.Offset * GLOBAL_ZOFFSET);
+				}
+				catch (Exception ex)
+				{
+					Logs.Get<UILog>().WriteError("Exception {0} while drawing", ex.Message);
+					Logs.Get<UILog>().WriteError(ex.StackTrace);
+				}
+				this.canvas.End();
 			}
 		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
-			if (_rootContainer != null)
+			if (this.rootContainer != null)
 			{
-				Control currentHoveredControl = _rootContainer.FindHoveredControl(DualityApp.Mouse.Pos);
+				Control currentHoveredControl = this.rootContainer.FindHoveredControl(DualityApp.Mouse.Pos);
 
 				// Check if the hovered control changed
-				if (_hoveredControl != currentHoveredControl)
+				if (this.hoveredControl != currentHoveredControl)
 				{
 					if (currentHoveredControl != null)
 					{ currentHoveredControl.OnMouseEnterEvent(); }
 
-					if (_hoveredControl != null)
-					{ _hoveredControl.OnMouseLeaveEvent(); }
+					if (this.hoveredControl != null)
+					{ this.hoveredControl.OnMouseLeaveEvent(); }
 				}
 
 				// check if the focused control changed
 				if (YAUICorePlugin.LastFrameMouseButtonEventArgs.Count > 0)
 				{
-					if (currentHoveredControl != _focusedControl && _focusedControl != null)
+					if (currentHoveredControl != this.focusedControl && this.focusedControl != null)
 					{
-                        (_focusedControl as InteractiveControl)?.OnBlur();
-						_focusedControl = null;
+						(this.focusedControl as InteractiveControl)?.OnBlur();
+						this.focusedControl = null;
 					}
 
-					if (currentHoveredControl != null && currentHoveredControl != _focusedControl)
+					if (currentHoveredControl != null && currentHoveredControl != this.focusedControl)
 					{
-						_focusedControl = currentHoveredControl;
-                        (_focusedControl as InteractiveControl)?.OnFocus();
+						this.focusedControl = currentHoveredControl;
+						(this.focusedControl as InteractiveControl)?.OnFocus();
 					}
 				}
 
 				// send events to the focused control
-				if (_focusedControl != null)
+				if (this.focusedControl != null)
 				{
 					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
 					{
-						_focusedControl.OnMouseButtonEvent(e);
+						this.focusedControl.OnMouseButtonEvent(e);
 					}
 
 					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
 					{
-						_focusedControl.OnKeyboardKeyEvent(e);
+						this.focusedControl.OnKeyboardKeyEvent(e);
 					}
 				}
 
-				_hoveredControl = currentHoveredControl;
+				this.hoveredControl = currentHoveredControl;
 
-                // Added check because it might have been set to null due to a Deactivation event
-                if (_rootContainer != null)
-                {
-                    _rootContainer.OnUpdate(Time.DeltaTime * 1000);
-                    if (_lastSize != _rootContainer.ActualSize)
-                    { _onResize?.Invoke(); }
+				// Added check because it might have been set to null due to a Deactivation event
+				if (this.rootContainer != null)
+				{
+					this.rootContainer.OnUpdate(Time.DeltaTime * 1000);
+					if (this.lastSize != this.rootContainer.ActualSize)
+					{ this.onResize?.Invoke(); }
 
-                    _lastSize = _rootContainer.ActualSize;
-                }
+					this.lastSize = this.rootContainer.ActualSize;
+				}
 			}
 
-			OnUpdate();
+			this.OnUpdate();
 		}
 
 
 		protected abstract ControlsContainer CreateUI();
 
 		protected virtual void OnUpdate()
-		{
-		}
+		{ }
 
-        void ICmpRenderer.GetCullingInfo(out CullingInfo info)
-        {
-            info = new CullingInfo()
-            {
-                Radius = 0,
-                Visibility = VisibilityFlag.Group30 | VisibilityFlag.ScreenOverlay
-            };
-        }
-    }
+		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
+		{
+			info = new CullingInfo()
+			{
+				Radius = 0,
+				Visibility = VisibilityFlag.Group30 | VisibilityFlag.ScreenOverlay
+			};
+		}
+	}
 }

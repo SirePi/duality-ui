@@ -11,14 +11,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 	public sealed class ListBoxConfiguration
 	{
 		public static readonly ListBoxConfiguration DEFAULT = new ListBoxConfiguration();
+		public static readonly Size DEFAULT_ITEMS_SIZE = new Size(20);
 
 		public ContentRef<Appearance> ItemAppearance { get; set; }
 		public Size ItemsSize { get; set; }
 
-		public ListBoxConfiguration()
+		public ListBoxConfiguration(ContentRef<Appearance>? itemAppearance = null, Size? itemsSize = null)
 		{
-			this.ItemsSize = new Size(20);
-			this.ItemAppearance = Appearance.DEFAULT;
+			this.ItemsSize = itemsSize ?? DEFAULT_ITEMS_SIZE;
+			this.ItemAppearance = itemAppearance ?? Appearance.DEFAULT;
 		}
 
 		public ListBoxConfiguration Clone()

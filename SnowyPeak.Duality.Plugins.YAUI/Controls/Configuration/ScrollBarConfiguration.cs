@@ -11,6 +11,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 	public sealed class ScrollBarConfiguration
 	{
 		public static readonly ScrollBarConfiguration DEFAULT = new ScrollBarConfiguration();
+		public static readonly Size DEFAULT_BUTTON_SIZE = new Size(10);
+		public static readonly Size DEFAULT_CURSOR_SIZE = new Size(10);
 
 		public ContentRef<Appearance> ButtonDecreaseAppearance { get; set; }
 		public ContentRef<Appearance> ButtonIncreaseAppearance { get; set; }
@@ -19,14 +21,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 		public ContentRef<Appearance> CursorAppearance { get; set; }
 		public Size CursorSize { get; set; }
 
-		public ScrollBarConfiguration()
+		public ScrollBarConfiguration(ContentRef<Appearance>? buttonIncreaseAppearance = null, ContentRef<Appearance>? buttonDecreaseAppearance = null, ContentRef<Appearance>? cursorAppearance = null, Size? buttonsSize = null, Size? cursorSize = null)
 		{
-			this.ButtonsSize = new Size(10);
-			this.CursorSize = new Size(10);
+			this.ButtonsSize = buttonsSize ?? DEFAULT_BUTTON_SIZE;
+			this.CursorSize = cursorSize ?? DEFAULT_CURSOR_SIZE;
 
-			this.ButtonIncreaseAppearance = Appearance.DEFAULT;
-			this.ButtonDecreaseAppearance = Appearance.DEFAULT;
-			this.CursorAppearance = Appearance.DEFAULT;
+			this.ButtonIncreaseAppearance = buttonIncreaseAppearance ?? Appearance.DEFAULT;
+			this.ButtonDecreaseAppearance = buttonDecreaseAppearance ?? Appearance.DEFAULT;
+			this.CursorAppearance = cursorAppearance ?? Appearance.DEFAULT;
 		}
 
 		public ScrollBarConfiguration Clone()

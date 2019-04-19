@@ -15,72 +15,72 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class TextBox : InteractiveControl
 	{
-		private static readonly string ELLIPSIS = "...";
-		private static readonly string WQ = "Wq";
+		private const string ELLIPSIS = "...";
+		private const string WQ = "Wq";
 
-		private int _caretPosition;
-		private Vector2 _caretTopLeft;
-		private bool _caretVisible;
-		private float _seconds;
-		private string _text;
+		private int caretPosition;
+		private Vector2 caretTopLeft;
+		private bool caretVisible;
+		private float seconds;
+		private string text;
 
 		public float CaretSpeed { get; set; }
 		public bool IsPassword { get; set; }
 		public int MaxLength { get; set; }
 		public string Text
 		{
-			get { return _text; }
+			get => this.text;
 			set
 			{
-				if (_text != value)
-				{ _onTextChange?.Invoke(this, _text, value); }
+				if (this.text != value)
+				{ this.onTextChange?.Invoke(this, this.text, value); }
 
-				_text = value;
+				this.text = value;
 			}
 		}
 		public TextConfiguration TextConfiguration { get; set; }
 
 		// Delegates
 		public delegate void TextChangeEventDelegate(TextBox textBox, string oldText, string newText);
-        // Events
-        [DontSerialize]
-        private TextChangeEventDelegate _onTextChange;
-        public event TextChangeEventDelegate OnTextChange
-        {
-            add { _onTextChange += value; }
-            remove { _onTextChange -= value; }
-        }
+		// Events
+		[DontSerialize]
+		private TextChangeEventDelegate onTextChange;
+		public event TextChangeEventDelegate OnTextChange
+		{
+			add { this.onTextChange += value; }
+			remove { this.onTextChange -= value; }
+		}
 
 		public TextBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			this.Text = String.Empty;
+			this.Text = string.Empty;
 			this.CaretSpeed = .5f;
 			this.MaxLength = int.MaxValue;
 
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.TextConfiguration = _baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
+			this.TextConfiguration = this.baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
 			base.Draw(canvas, zOffset);
 
-			Vector2 textPosition = AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
+			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 
 			canvas.State.Reset();
 			canvas.State.ColorTint = this.TextConfiguration.Color;
 			canvas.State.TextFont = this.TextConfiguration.Font;
 
-			string textToDraw = this.IsPassword ? new String('*', this.Text.Length) : this.Text;
+			string textToDraw = this.IsPassword ? new string('*', this.Text.Length) : this.Text;
 			Vector2 textSize = canvas.MeasureText(textToDraw);
 
-			if (!String.IsNullOrWhiteSpace(this.Text))
+			if (!string.IsNullOrWhiteSpace(this.Text))
 			{
 				float availableWidth = this.ActualSize.X - this.TextConfiguration.Margin.Left - this.TextConfiguration.Margin.Right;
 				if (textSize.X > availableWidth)
@@ -102,62 +102,62 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					this.TextConfiguration.Alignment);
 			}
 
-			if (_caretVisible)
+			if (this.caretVisible)
 			{
-				Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, MathF.Clamp(_caretPosition, 0, textToDraw.Length)));
+				Vector2 preCaretSize = canvas.MeasureText(textToDraw.Substring(0, MathF.Clamp(this.caretPosition, 0, textToDraw.Length)));
 
 				if (textSize.Y == 0)
 				{ textSize.Y = canvas.MeasureText(WQ).Y; }
 
-				_caretTopLeft = textPosition;
+				this.caretTopLeft = textPosition;
 
 				switch (this.TextConfiguration.Alignment)
 				{
 					case Alignment.TopLeft:
-						_caretTopLeft.X += preCaretSize.X;
+						this.caretTopLeft.X += preCaretSize.X;
 						break;
 
 					case Alignment.Left:
-						_caretTopLeft.X += preCaretSize.X;
-						_caretTopLeft.Y -= (textSize.Y / 2);
+						this.caretTopLeft.X += preCaretSize.X;
+						this.caretTopLeft.Y -= (textSize.Y / 2);
 						break;
 
 					case Alignment.BottomLeft:
-						_caretTopLeft.X += preCaretSize.X;
-						_caretTopLeft.Y -= textSize.Y;
+						this.caretTopLeft.X += preCaretSize.X;
+						this.caretTopLeft.Y -= textSize.Y;
 						break;
 
 					case Alignment.Top:
-						_caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
+						this.caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
 						break;
 
 					case Alignment.Center:
-						_caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
-						_caretTopLeft.Y -= (textSize.Y / 2);
+						this.caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
+						this.caretTopLeft.Y -= (textSize.Y / 2);
 						break;
 
 					case Alignment.Bottom:
-						_caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
-						_caretTopLeft.Y -= textSize.Y;
+						this.caretTopLeft.X += preCaretSize.X - (textSize.X / 2);
+						this.caretTopLeft.Y -= textSize.Y;
 						break;
 
 					case Alignment.TopRight:
-						_caretTopLeft.X += preCaretSize.X - textSize.X;
+						this.caretTopLeft.X += preCaretSize.X - textSize.X;
 						break;
 
 					case Alignment.Right:
-						_caretTopLeft.X += preCaretSize.X - textSize.X;
-						_caretTopLeft.Y -= (textSize.Y / 2);
+						this.caretTopLeft.X += preCaretSize.X - textSize.X;
+						this.caretTopLeft.Y -= (textSize.Y / 2);
 						break;
 
 					case Alignment.BottomRight:
-						_caretTopLeft.X += preCaretSize.X - textSize.X;
-						_caretTopLeft.Y -= textSize.Y;
+						this.caretTopLeft.X += preCaretSize.X - textSize.X;
+						this.caretTopLeft.Y -= textSize.Y;
 						break;
 				}
 
-				canvas.DrawLine(_caretTopLeft.X, _caretTopLeft.Y, zOffset + INNER_ZOFFSET,
-					_caretTopLeft.X, _caretTopLeft.Y + textSize.Y, zOffset + INNER_ZOFFSET);
+				canvas.DrawLine(this.caretTopLeft.X, this.caretTopLeft.Y, zOffset + INNER_ZOFFSET,
+					this.caretTopLeft.X, this.caretTopLeft.Y + textSize.Y, zOffset + INNER_ZOFFSET);
 			}
 		}
 
@@ -174,32 +174,32 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			if ((this.Status & ControlStatus.Active) != ControlStatus.None && args.IsPressed)
 			{
-				if (DualityApp.Keyboard.CharInput.Length > 0 && this.Text.Length < MaxLength)
+				if (DualityApp.Keyboard.CharInput.Length > 0 && this.Text.Length < this.MaxLength)
 				{
-					this.Text = this.Text.Insert(_caretPosition, DualityApp.Keyboard.CharInput);
-					_caretPosition += DualityApp.Keyboard.CharInput.Length;
+					this.Text = this.Text.Insert(this.caretPosition, DualityApp.Keyboard.CharInput);
+					this.caretPosition += DualityApp.Keyboard.CharInput.Length;
 				}
-				if (args.Key == Key.BackSpace && _caretPosition > 0)
+				if (args.Key == Key.BackSpace && this.caretPosition > 0)
 				{
-					this.Text = this.Text.Remove(_caretPosition - 1, 1);
-					_caretPosition--;
+					this.Text = this.Text.Remove(this.caretPosition - 1, 1);
+					this.caretPosition--;
 				}
-				if (args.Key == Key.Delete && _caretPosition < this.Text.Length)
-				{ this.Text = this.Text.Remove(_caretPosition, 1); }
+				if (args.Key == Key.Delete && this.caretPosition < this.Text.Length)
+				{ this.Text = this.Text.Remove(this.caretPosition, 1); }
 
 				if (args.Key == Key.Enter || args.Key == Key.KeypadEnter)
 				{ this.OnBlur(); }
 
 				if (args.Key == Key.Left)
-				{ _caretPosition--; }
+				{ this.caretPosition--; }
 				if (args.Key == Key.Right)
-				{ _caretPosition++; }
+				{ this.caretPosition++; }
 				if (args.Key == Key.Home)
-				{ _caretPosition = 0; }
+				{ this.caretPosition = 0; }
 				if (args.Key == Key.End)
-				{ _caretPosition = this.Text.Length; }
+				{ this.caretPosition = this.Text.Length; }
 
-				_caretPosition = MathF.Clamp(_caretPosition, 0, this.Text.Length);
+				this.caretPosition = MathF.Clamp(this.caretPosition, 0, this.Text.Length);
 			}
 		}
 
@@ -210,7 +210,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			if (args.Button == MouseButton.Left && args.IsPressed)
 			{
 				if ((this.Status & Control.ControlStatus.Active) == Control.ControlStatus.None)
-				{ _caretPosition = this.Text.Length; }
+				{ this.caretPosition = this.Text.Length; }
 
 				this.Status |= Control.ControlStatus.Active;
 			}
@@ -222,16 +222,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			if ((this.Status & ControlStatus.Active) != ControlStatus.None)
 			{
-				_seconds += (msFrame / 1000);
+				this.seconds += (msFrame / 1000);
 
-				if (_seconds > CaretSpeed)
+				if (this.seconds > this.CaretSpeed)
 				{
-					_caretVisible = !_caretVisible;
-					_seconds -= CaretSpeed;
+					this.caretVisible = !this.caretVisible;
+					this.seconds -= this.CaretSpeed;
 				}
 			}
 			else
-			{ _caretVisible = false; }
+			{ this.caretVisible = false; }
 		}
 	}
 }

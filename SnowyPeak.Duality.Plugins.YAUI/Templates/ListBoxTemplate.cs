@@ -22,5 +22,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 			this.ListBoxConfiguration = ListBoxConfiguration.DEFAULT;
 			this.TextConfiguration = TextConfiguration.DEFAULT;
 		}
+
+		public ListBoxTemplate(ControlTemplate source)
+			: base(source)
+		{
+			if (source is ListBoxTemplate lbt)
+			{
+				this.ListBoxMargin = lbt.ListBoxMargin;
+				this.ListBoxConfiguration = lbt.ListBoxConfiguration.Clone();
+				this.TextConfiguration = lbt.TextConfiguration.Clone();
+			}
+		}
 	}
 }

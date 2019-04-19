@@ -11,7 +11,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class GridPanel : ControlsContainer
 	{
-		private static readonly string STAR_CHAR = "*";
+		private const string STAR_CHAR = "*";
 
 		private class Dimension
 		{
@@ -22,7 +22,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			public override string ToString()
 			{
-				return String.Format("{0}{1}", Value, IsVariable ? STAR_CHAR : String.Empty);
+				return string.Format("{0}{1}", this.Value, this.IsVariable ? STAR_CHAR : string.Empty);
 			}
 		}
 
@@ -30,19 +30,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private IEnumerable<int> rowsSize;
 
 		// these are arrays to avoid multiple iterations over the set values
-		private Dimension[] _columns = new[] { Dimension.STAR_DIMENSION };
-		private Dimension[] _rows = new[] { Dimension.STAR_DIMENSION };
+		private Dimension[] columns = new[] { Dimension.STAR_DIMENSION };
+		private Dimension[] rows = new[] { Dimension.STAR_DIMENSION };
 
 		public IEnumerable<string> Columns
 		{
-			get { return _columns.Select(x => x.ToString()); }
-			set { _columns = ParseDimensions(value).ToArray(); }
+			get => this.columns.Select(x => x.ToString());
+			set => this.columns = this.ParseDimensions(value).ToArray();
 		}
 
 		public IEnumerable<string> Rows
 		{
-			get { return _rows.Select(x => x.ToString()); }
-			set { _rows = ParseDimensions(value).ToArray(); }
+			get => this.rows.Select(x => x.ToString());
+			set => this.rows = this.ParseDimensions(value).ToArray();
 		}
 
 		private IEnumerable<Dimension> ParseDimensions(IEnumerable<string> value)
@@ -61,23 +61,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			});
 		}
 
-        public GridPanel(Skin skin = null, string templateName = null)
-            : base(skin, templateName)
-        { }
+		public GridPanel(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{ }
 
 		internal override void _LayoutControls()
 		{
-			float preallocatedRows = _rows.Where(y => !y.IsVariable).Sum(y => y.Value);
-			float preallocatedColumns = _columns.Where(x => !x.IsVariable).Sum(x => x.Value);
+			float preallocatedRows = this.rows.Where(y => !y.IsVariable).Sum(y => y.Value);
+			float preallocatedColumns = this.columns.Where(x => !x.IsVariable).Sum(x => x.Value);
 
-			float variableRows = _rows.Where(y => y.IsVariable).Sum(y => y.Value);
-			float variableColumns = _columns.Where(x => x.IsVariable).Sum(x => x.Value);
+			float variableRows = this.rows.Where(y => y.IsVariable).Sum(y => y.Value);
+			float variableColumns = this.columns.Where(x => x.IsVariable).Sum(x => x.Value);
 
 			Size innerSize = this.ActualSize;
 			innerSize.X -= (this.Margin.Left + this.Margin.Right + preallocatedColumns);
 			innerSize.Y -= (this.Margin.Top + this.Margin.Bottom + preallocatedRows);
 
-			rowsSize = _rows.Select(y =>
+			this.rowsSize = this.rows.Select(y =>
 			{
 				int result = y.Value;
 				if (y.IsVariable)
@@ -85,7 +85,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 				return result;
 			});
-			columnsSize = _columns.Select(x =>
+			this.columnsSize = this.columns.Select(x =>
 			{
 				int result = x.Value;
 				if (x.IsVariable)
@@ -96,15 +96,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			foreach (Control c in this.Children)
 			{
-				int row = c.Cell.Row < _rows.Length ? c.Cell.Row : _rows.Length - 1;
-				int col = c.Cell.Column < _columns.Length ? c.Cell.Column : _columns.Length - 1;
+				int row = c.Cell.Row < this.rows.Length ? c.Cell.Row : this.rows.Length - 1;
+				int col = c.Cell.Column < this.columns.Length ? c.Cell.Column : this.columns.Length - 1;
 				int rspan = c.Cell.RowSpan != 0 ? c.Cell.RowSpan : 1;
 				int cspan = c.Cell.ColSpan != 0 ? c.Cell.ColSpan : 1;
 
-				int cellX = columnsSize.Take(col).Sum();
-				int cellY = rowsSize.Take(row).Sum();
-				int cellW = columnsSize.Skip(col).Take(cspan).Sum();
-				int cellH = rowsSize.Skip(row).Take(rspan).Sum();
+				int cellX = this.columnsSize.Take(col).Sum();
+				int cellY = this.rowsSize.Take(row).Sum();
+				int cellW = this.columnsSize.Skip(col).Take(cspan).Sum();
+				int cellH = this.rowsSize.Skip(row).Take(rspan).Sum();
 
 				if (c.StretchToFill)
 				{

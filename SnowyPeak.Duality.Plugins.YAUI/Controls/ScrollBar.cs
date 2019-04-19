@@ -18,72 +18,72 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public static readonly string DECREASE_TEMPLATE = ".Decrease";
 		public static readonly string INCREASE_TEMPLATE = ".Increase";
 
-		protected Button _btnCursor;
-		protected Button _btnDecrease;
-		protected Button _btnIncrease;
-		protected CanvasPanel _canvas;
-		protected int _valueDelta;
+		protected Button btnCursor;
+		protected Button btnDecrease;
+		protected Button btnIncrease;
+		protected CanvasPanel canvas;
+		protected int valueDelta;
 
-		private Vector2? _cursorDragPosition;
-		private bool _isDecreasing;
-		private bool _isIncreasing;
-		private int _maxValue;
-		private int _minValue;
-		private float _mseconds;
-		private ScrollBarConfiguration _scrollBarConfiguration;
-		private float _tempValue;
-		private int _value;
+		private Vector2? cursorDragPosition;
+		private bool isDecreasing;
+		private bool isIncreasing;
+		private int maxValue;
+		private int minValue;
+		private float mseconds;
+		private ScrollBarConfiguration scrollBarConfiguration;
+		private float tempValue;
+		private int value;
 
 		public int MaxValue
 		{
-			get { return _maxValue; }
+			get => this.maxValue;
 			set
 			{
-				_maxValue = value;
-				_valueDelta = _maxValue - _minValue;
+				this.maxValue = value;
+				this.valueDelta = this.maxValue - this.minValue;
 
-				this.Value = MathF.Clamp(Value, MinValue, MaxValue);
+				this.Value = MathF.Clamp(this.Value, this.MinValue, this.MaxValue);
 			}
 		}
 
 		public int MinValue
 		{
-			get { return _minValue; }
+			get => this.minValue;
 			set
 			{
-				_minValue = value;
-				_valueDelta = _maxValue - _minValue;
+				this.minValue = value;
+				this.valueDelta = this.maxValue - this.minValue;
 
-				this.Value = MathF.Clamp(Value, MinValue, MaxValue);
+				this.Value = MathF.Clamp(this.Value, this.MinValue, this.MaxValue);
 			}
 		}
 
 		public ScrollBarConfiguration ScrollBarConfiguration
 		{
-			get { return _scrollBarConfiguration; }
+			get => this.scrollBarConfiguration;
 			set
 			{
-				_scrollBarConfiguration = value;
+				this.scrollBarConfiguration = value;
 
-				_btnDecrease.Size = _scrollBarConfiguration.ButtonsSize;
-				_btnIncrease.Size = _scrollBarConfiguration.ButtonsSize;
-				_btnCursor.Size = _scrollBarConfiguration.CursorSize;
+				this.btnDecrease.Size = this.scrollBarConfiguration.ButtonsSize;
+				this.btnIncrease.Size = this.scrollBarConfiguration.ButtonsSize;
+				this.btnCursor.Size = this.scrollBarConfiguration.CursorSize;
 
-				_btnIncrease.Appearance = _scrollBarConfiguration.ButtonIncreaseAppearance;
-				_btnDecrease.Appearance = _scrollBarConfiguration.ButtonDecreaseAppearance;
-				_btnCursor.Appearance = _scrollBarConfiguration.CursorAppearance;
+				this.btnIncrease.Appearance = this.scrollBarConfiguration.ButtonIncreaseAppearance;
+				this.btnDecrease.Appearance = this.scrollBarConfiguration.ButtonDecreaseAppearance;
+				this.btnCursor.Appearance = this.scrollBarConfiguration.CursorAppearance;
 			}
 		}
 
 		public int Value
 		{
-			get { return _value; }
+			get => this.value;
 			set
 			{
-				if (_value != value)
-				{ _onValueChange?.Invoke(this, _value, value); }
+				if (this.value != value)
+				{ this.onValueChange?.Invoke(this, this.value, value); }
 
-				_value = value;
+				this.value = value;
 			}
 		}
 
@@ -91,11 +91,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public delegate void ValueChangeEventDelegate(ScrollBar scrollBar, int oldValue, int newValue);
 		// Events
 		[DontSerialize]
-		private ValueChangeEventDelegate _onValueChange;
+		private ValueChangeEventDelegate onValueChange;
 		public event ValueChangeEventDelegate OnValueChange
 		{
-			add { _onValueChange += value; }
-			remove { _onValueChange -= value; }
+			add { this.onValueChange += value; }
+			remove { this.onValueChange -= value; }
 		}
 
 		public ScrollBar(Skin skin = null, string templateName = null)
@@ -105,14 +105,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.Value = 0;
 			this.MaxValue = 100;
 
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
 
-			ScrollBarTemplate template = _baseSkin.GetTemplate<ScrollBarTemplate>(this);
+			ScrollBarTemplate template = this.baseSkin.GetTemplate<ScrollBarTemplate>(this);
 			this.ScrollBarConfiguration = template.ScrollBarConfiguration.Clone();
 			this.Margin = template.ScrollBarMargin;
 		}
@@ -120,118 +120,118 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override ControlsContainer BuildControl()
 		{
 			DockPanel scrollBar = new DockPanel();
-			_btnDecrease = new Button(_baseSkin, this.TemplateName + DECREASE_TEMPLATE)
+			this.btnDecrease = new Button(this.baseSkin, this.TemplateName + DECREASE_TEMPLATE)
 			{
 				StretchToFill = false
 			};
-			_btnDecrease.OnMouseButton += _btnDecrease_OnMouseButton;
-			_btnDecrease.OnFocusChange += _btnDecrease_OnFocusChange;
+			this.btnDecrease.OnMouseButton += this.BtnDecrease_OnMouseButton;
+			this.btnDecrease.OnFocusChange += this.BtnDecrease_OnFocusChange;
 
-			_btnIncrease = new Button(_baseSkin, this.TemplateName + INCREASE_TEMPLATE)
+			this.btnIncrease = new Button(this.baseSkin, this.TemplateName + INCREASE_TEMPLATE)
 			{
 				StretchToFill = false
 			};
-			_btnIncrease.OnMouseButton += _btnIncrease_OnMouseButton;
-			_btnIncrease.OnFocusChange += _btnIncrease_OnFocusChange;
+			this.btnIncrease.OnMouseButton += this.BtnIncrease_OnMouseButton;
+			this.btnIncrease.OnFocusChange += this.BtnIncrease_OnFocusChange;
 
-			_btnCursor = new Button(_baseSkin, this.TemplateName + CURSOR_TEMPLATE)
+			this.btnCursor = new Button(this.baseSkin, this.TemplateName + CURSOR_TEMPLATE)
 			{
 				StretchToFill = false
 			};
-			_btnCursor.OnMouseButton += _btnCursor_OnMouseButton;
-			_btnCursor.OnFocusChange += _btnCursor_OnFocusChange;
+			this.btnCursor.OnMouseButton += this.BtnCursor_OnMouseButton;
+			this.btnCursor.OnFocusChange += this.BtnCursor_OnFocusChange;
 
-			_canvas = new CanvasPanel(_baseSkin)
+			this.canvas = new CanvasPanel(this.baseSkin)
 			{
 				Docking = Dock.Center
 			};
-			_canvas.Add(_btnCursor);
+			this.canvas.Add(this.btnCursor);
 
 			scrollBar
-				.Add(_btnDecrease)
-				.Add(_btnIncrease)
-				.Add(_canvas);
+				.Add(this.btnDecrease)
+				.Add(this.btnIncrease)
+				.Add(this.canvas);
 
 			return scrollBar;
 		}
 
-		private void _btnCursor_OnFocusChange(Control control, bool isFocused)
+		private void BtnCursor_OnFocusChange(Control control, bool isFocused)
 		{
 			if (!isFocused)
-			{ _cursorDragPosition = null; }
+			{ this.cursorDragPosition = null; }
 		}
 
-		private void _btnCursor_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnCursor_OnMouseButton(Button button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{
-				_tempValue = this.Value;
+				this.tempValue = this.Value;
 
 				if (args.IsPressed)
-				{ _cursorDragPosition = args.Pos; }
+				{ this.cursorDragPosition = args.Pos; }
 				else
-				{ _cursorDragPosition = null; }
+				{ this.cursorDragPosition = null; }
 			}
 		}
 
-		private void _btnIncrease_OnFocusChange(Control control, bool isFocused)
+		private void BtnIncrease_OnFocusChange(Control control, bool isFocused)
 		{
 			if (!isFocused)
-			{ _isIncreasing = false; }
+			{ this.isIncreasing = false; }
 		}
 
-		private void _btnIncrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnIncrease_OnMouseButton(Button button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
-			{ _isIncreasing = args.IsPressed; }
+			{ this.isIncreasing = args.IsPressed; }
 		}
 
-		private void _btnDecrease_OnFocusChange(Control control, bool isFocused)
+		private void BtnDecrease_OnFocusChange(Control control, bool isFocused)
 		{
 			if (!isFocused)
-			{ _isDecreasing = false; }
+			{ this.isDecreasing = false; }
 		}
 
-		private void _btnDecrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnDecrease_OnMouseButton(Button button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
-			{ _isDecreasing = args.IsPressed; }
+			{ this.isDecreasing = args.IsPressed; }
 		}
 
 		public override void OnUpdate(float msFrame)
 		{
 			base.OnUpdate(msFrame);
 
-			if (_isIncreasing || _isDecreasing)
+			if (this.isIncreasing || this.isDecreasing)
 			{
-				_mseconds += msFrame;
+				this.mseconds += msFrame;
 
-				if (_mseconds > 100)
+				if (this.mseconds > 100)
 				{
-					if (_isIncreasing)
+					if (this.isIncreasing)
 					{ this.Value += 1; }
 
-					if (_isDecreasing)
+					if (this.isDecreasing)
 					{ this.Value -= 1; }
 
-					this.Value = MathF.Clamp(Value, MinValue, MaxValue);
-					_mseconds -= 100;
+					this.Value = MathF.Clamp(this.Value, this.MinValue, this.MaxValue);
+					this.mseconds -= 100;
 				}
 			}
-			else if (_cursorDragPosition.HasValue)
+			else if (this.cursorDragPosition.HasValue)
 			{
-				Vector2 mouseDelta = DualityApp.Mouse.Pos - _cursorDragPosition.Value;
+				Vector2 mouseDelta = DualityApp.Mouse.Pos - this.cursorDragPosition.Value;
 
 				if (mouseDelta.Length > 0)
 				{
-					_tempValue += ApplyMouseMovement(mouseDelta);
+					this.tempValue += this.ApplyMouseMovement(mouseDelta);
 
-					this.Value = MathF.Clamp((int)MathF.Round(_tempValue, MidpointRounding.AwayFromZero), MinValue, MaxValue);
-					_cursorDragPosition = DualityApp.Mouse.Pos;
+					this.Value = MathF.Clamp((int)MathF.Round(this.tempValue, MidpointRounding.AwayFromZero), this.MinValue, this.MaxValue);
+					this.cursorDragPosition = DualityApp.Mouse.Pos;
 				}
 			}
 
-			UpdateCursor();
+			this.UpdateCursor();
 		}
 
 		protected abstract float ApplyMouseMovement(Vector2 mouseDelta);

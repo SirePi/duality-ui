@@ -27,25 +27,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			get { return new Vector2(this.Left, this.Top); }
 		}
 
-        public float Horizontal
-        {
-            get { return this.Left + this.Right; }
-        }
-
-        public float Vertical
-        {
-            get { return this.Top + this.Bottom; }
-        }
-
-        public Border(float value)
-			: this(value, value, value, value)
+		public float Horizontal
 		{
+			get { return this.Left + this.Right; }
 		}
+
+		public float Vertical
+		{
+			get { return this.Top + this.Bottom; }
+		}
+
+		public Border(float value)
+			: this(value, value, value, value)
+		{ }
 
 		public Border(float horizontal, float vertical)
 			: this(horizontal, vertical, horizontal, vertical)
-		{
-		}
+		{ }
 
 		public Border(float left, float top, float right, float bottom)
 		{
@@ -57,7 +55,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public override string ToString()
 		{
-			return String.Format("({0:0.00}, {1:0.00}, {2:0.00}, {3:0.00})", this.Left, this.Top, this.Right, this.Bottom);
+			return string.Format("({0:0.00}, {1:0.00}, {2:0.00}, {3:0.00})", this.Left, this.Top, this.Right, this.Bottom);
 		}
 	}
 }

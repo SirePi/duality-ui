@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
-    class UILog : CustomLogInfo
-    {
-        public UILog() 
-            : base("UILog", "YAUI")
-        { }
-    }
+	class UILog : CustomLogInfo
+	{
+		public UILog()
+			: base("UILog", "YAUI")
+		{ }
+	}
 }

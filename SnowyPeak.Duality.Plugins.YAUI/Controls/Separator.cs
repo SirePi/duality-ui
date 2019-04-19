@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public Separator(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{
-			ApplySkin(_baseSkin);
+			this.ApplySkin(this.baseSkin);
 		}
 	}
 }

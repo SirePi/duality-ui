@@ -11,32 +11,32 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 {
 	internal static class UIHelper
 	{
-		private static Dictionary<string, List<RadioButton>> _radioGroups = new Dictionary<string, List<RadioButton>>();
+		private static readonly Dictionary<string, List<RadioButton>> radioGroups = new Dictionary<string, List<RadioButton>>();
 
 		internal static IEnumerable<RadioButton> GetRadioButtonsInGroup(string group)
 		{
-			if (!String.IsNullOrWhiteSpace(group))
+			if (!string.IsNullOrWhiteSpace(group))
 			{
-				foreach (RadioButton rb in _radioGroups[group])
+				foreach (RadioButton rb in radioGroups[group])
 				{ yield return rb; }
 			}
 		}
 
 		internal static void RegisterRadioButton(RadioButton radio)
 		{
-			if (!String.IsNullOrWhiteSpace(radio.RadioGroup))
+			if (!string.IsNullOrWhiteSpace(radio.RadioGroup))
 			{
-				if (!_radioGroups.ContainsKey(radio.RadioGroup))
-				{ _radioGroups.Add(radio.RadioGroup, new List<RadioButton>()); }
+				if (!radioGroups.ContainsKey(radio.RadioGroup))
+				{ radioGroups.Add(radio.RadioGroup, new List<RadioButton>()); }
 
-				_radioGroups[radio.RadioGroup].Add(radio);
+				radioGroups[radio.RadioGroup].Add(radio);
 			}
 		}
 
 		internal static void UnregisterRadioButton(RadioButton radio)
 		{
-			if (!String.IsNullOrWhiteSpace(radio.RadioGroup) && _radioGroups.ContainsKey(radio.RadioGroup))
-			{ _radioGroups[radio.RadioGroup].Remove(radio); }
+			if (!string.IsNullOrWhiteSpace(radio.RadioGroup) && radioGroups.ContainsKey(radio.RadioGroup))
+			{ radioGroups[radio.RadioGroup].Remove(radio); }
 		}
 	}
 }

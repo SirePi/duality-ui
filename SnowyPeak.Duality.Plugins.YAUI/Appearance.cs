@@ -28,11 +28,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public Appearance()
 		{
-			Normal = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-			Hover = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-			Active = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-			Disabled = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
-			Border = Border.Zero;
+			this.Normal = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			this.Hover = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			this.Active = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			this.Disabled = ContentProvider.RequestContent<Material>(@"Default:Material:Checkerboard");
+			this.Border = Border.Zero;
 		}
 
 		public Material this[Control.ControlStatus status]
