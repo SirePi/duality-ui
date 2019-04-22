@@ -21,8 +21,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		public static Skin DEFAULT = YAUI_DARK;
 
-		private Dictionary<string, ControlTemplate> customTemplates;
-		private Dictionary<Type, ControlTemplate> defaultTemplates;
+		private readonly Dictionary<string, ControlTemplate> customTemplates;
+		private readonly Dictionary<Type, ControlTemplate> defaultTemplates;
 
 		protected Skin()
 		{

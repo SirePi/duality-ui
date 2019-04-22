@@ -163,7 +163,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			this.OnUpdate();
 		}
 
-
 		protected abstract ControlsContainer CreateUI();
 
 		protected virtual void OnUpdate()
