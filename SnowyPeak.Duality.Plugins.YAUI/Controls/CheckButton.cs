@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class CheckButton : Button
+	public class CheckButton : Button<GlyphTemplate>
 	{
 		private RawList<VertexC1P3T2> glyphVertices;
 		private bool isChecked;
 
 		public bool Checked
 		{
-			get { return this.isChecked; }
+			get => this.isChecked;
 			set
 			{
 				this.onCheckedChange?.Invoke(this, this.isChecked, value);
@@ -44,14 +44,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public CheckButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
-		{
-			this.glyphVertices = new RawList<VertexC1P3T2>(4);
+		{ }
 
+		protected override void Init()
+		{
+			base.Init();
+			this.glyphVertices = new RawList<VertexC1P3T2>(4);
 			this.OnMouseButton += this.CheckButton_OnMouseButton;
-			this.ApplySkin(this.baseSkin);
 		}
 
-		private void CheckButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void CheckButton_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{
@@ -63,7 +65,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.GlyphConfiguration = this.baseSkin.GetTemplate<GlyphTemplate>(this).GlyphConfiguration.Clone();
+			this.GlyphConfiguration = this.Template.GlyphConfiguration.Clone();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)

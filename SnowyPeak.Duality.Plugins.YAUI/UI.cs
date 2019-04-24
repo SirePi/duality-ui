@@ -58,6 +58,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		void ICmpInitializable.OnActivate()
 		{
 			this.rootContainer = this.CreateUI();
+			this.canvas = new Canvas();
 			this.OnUpdate();
 		}
 
@@ -84,9 +85,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 				this.rootContainer.LayoutControls();
 
-				if (this.canvas == null)
-					this.canvas = new Canvas();
-
 				this.canvas.Begin(device);
 				try
 				{
@@ -110,11 +108,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				// Check if the hovered control changed
 				if (this.hoveredControl != currentHoveredControl)
 				{
-					if (currentHoveredControl != null)
-					{ currentHoveredControl.OnMouseEnterEvent(); }
+					if (currentHoveredControl is IInteractiveControl ic1)
+					{ ic1.OnMouseEnterEvent(); }
 
-					if (this.hoveredControl != null)
-					{ this.hoveredControl.OnMouseLeaveEvent(); }
+					if (this.hoveredControl is IInteractiveControl ic2)
+					{ ic2.OnMouseLeaveEvent(); }
 				}
 
 				// check if the focused control changed
@@ -122,28 +120,28 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				{
 					if (currentHoveredControl != this.focusedControl && this.focusedControl != null)
 					{
-						(this.focusedControl as InteractiveControl)?.OnBlur();
+						(this.focusedControl as IInteractiveControl)?.OnBlur();
 						this.focusedControl = null;
 					}
 
 					if (currentHoveredControl != null && currentHoveredControl != this.focusedControl)
 					{
 						this.focusedControl = currentHoveredControl;
-						(this.focusedControl as InteractiveControl)?.OnFocus();
+						(this.focusedControl as IInteractiveControl)?.OnFocus();
 					}
 				}
 
 				// send events to the focused control
-				if (this.focusedControl != null)
+				if (this.focusedControl is IInteractiveControl ic3)
 				{
 					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
 					{
-						this.focusedControl.OnMouseButtonEvent(e);
+						ic3.OnMouseButtonEvent(e);
 					}
 
 					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
 					{
-						this.focusedControl.OnKeyboardKeyEvent(e);
+						ic3.OnKeyboardKeyEvent(e);
 					}
 				}
 

@@ -32,14 +32,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public SpriteBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
+
 			this.spriteVertices = new RawList<VertexC1P3T2>(36);
 			this.SpriteTint = ColorRgba.White;
 			this.SpriteVariables = new ShaderParameterCollection();
 			this.SpriteAlignment = Alignment.Center;
 			this.SpriteFill = ImageFill.FitControl;
-
-			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void OnUpdate(float msFrame)

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public abstract class ScrollBar : CompositeControl
+	public abstract class ScrollBar : CompositeControl<ScrollBarTemplate>
 	{
 		public static readonly string CURSOR_TEMPLATE = ".Cursor";
 		public static readonly string DECREASE_TEMPLATE = ".Decrease";
@@ -100,51 +100,45 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public ScrollBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
+
 			this.MinValue = 0;
 			this.Value = 0;
 			this.MaxValue = 100;
-
-			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
 
-			ScrollBarTemplate template = this.baseSkin.GetTemplate<ScrollBarTemplate>(this);
-			this.ScrollBarConfiguration = template.ScrollBarConfiguration.Clone();
-			this.Margin = template.ScrollBarMargin;
+			this.ScrollBarConfiguration = this.Template.ScrollBarConfiguration.Clone();
+			this.Margin = this.Template.ScrollBarMargin;
 		}
 
 		public override ControlsContainer BuildControl()
 		{
 			DockPanel scrollBar = new DockPanel();
-			this.btnDecrease = new Button(this.baseSkin, this.TemplateName + DECREASE_TEMPLATE)
-			{
-				StretchToFill = false
-			};
+			this.btnDecrease = new Button(this.baseSkin, this.TemplateName + DECREASE_TEMPLATE);
+			this.btnDecrease.StretchToFill = false;
 			this.btnDecrease.OnMouseButton += this.BtnDecrease_OnMouseButton;
 			this.btnDecrease.OnFocusChange += this.BtnDecrease_OnFocusChange;
 
-			this.btnIncrease = new Button(this.baseSkin, this.TemplateName + INCREASE_TEMPLATE)
-			{
-				StretchToFill = false
-			};
+			this.btnIncrease = new Button(this.baseSkin, this.TemplateName + INCREASE_TEMPLATE);
+			this.btnDecrease.StretchToFill = false;
 			this.btnIncrease.OnMouseButton += this.BtnIncrease_OnMouseButton;
 			this.btnIncrease.OnFocusChange += this.BtnIncrease_OnFocusChange;
 
-			this.btnCursor = new Button(this.baseSkin, this.TemplateName + CURSOR_TEMPLATE)
-			{
-				StretchToFill = false
-			};
+			this.btnCursor = new Button(this.baseSkin, this.TemplateName + CURSOR_TEMPLATE);
+			this.btnCursor.StretchToFill = false;
 			this.btnCursor.OnMouseButton += this.BtnCursor_OnMouseButton;
 			this.btnCursor.OnFocusChange += this.BtnCursor_OnFocusChange;
 
-			this.canvas = new CanvasPanel(this.baseSkin)
-			{
-				Docking = Dock.Center
-			};
+			this.canvas = new CanvasPanel(this.baseSkin);
+			this.canvas.Docking = Dock.Center;
 			this.canvas.Add(this.btnCursor);
 
 			scrollBar
@@ -161,7 +155,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{ this.cursorDragPosition = null; }
 		}
 
-		private void BtnCursor_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnCursor_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{
@@ -180,7 +174,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{ this.isIncreasing = false; }
 		}
 
-		private void BtnIncrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnIncrease_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{ this.isIncreasing = args.IsPressed; }
@@ -192,7 +186,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{ this.isDecreasing = false; }
 		}
 
-		private void BtnDecrease_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void BtnDecrease_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left)
 			{ this.isDecreasing = args.IsPressed; }

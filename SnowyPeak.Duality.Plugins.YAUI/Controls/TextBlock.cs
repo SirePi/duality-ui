@@ -15,17 +15,29 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class TextBlock : Control
 	{
-		private readonly FormattedText fText;
+		private FormattedText fText;
 
-		public string Text { get; set; }
+		private string text;
+		public string Text {
+			get => this.text;
+			set
+			{
+				if (this.text != value)
+				{
+					this.text = value;
+				}
+			}
+		}
 		public TextConfiguration TextConfiguration { get; set; }
 
 		public TextBlock(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
-		{
-			this.fText = new FormattedText();
+		{ }
 
-			this.ApplySkin(this.baseSkin);
+		protected override void Init()
+		{
+			base.Init();
+			this.fText = new FormattedText();
 		}
 
 		public override void ApplySkin(Skin skin)

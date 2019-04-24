@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public sealed class ListBox : CompositeControl
+	public sealed class ListBox : CompositeControl<ListBoxTemplate>
 	{
 		public const string PANEL_TEMPLATE = ".Panel";
 		public const string SCROLLBAR_TEMPLATE = ".ScrollBar";
@@ -20,7 +20,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private VerticalScrollBar scrollBar;
 		private StackPanel stackPanel;
 		private TextConfiguration textConfiguration;
-		private readonly List<ToggleButton> toggleButtons;
+		private List<ToggleButton> toggleButtons;
 
 		public ListBoxConfiguration ListBoxConfiguration { get; set; }
 		public bool MultiSelection { get; set; }
@@ -67,9 +67,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public ListBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
 			this.toggleButtons = new List<ToggleButton>();
-			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
@@ -80,25 +83,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				this.scrollBar.ApplySkin(this.baseSkin);
 
-				ListBoxTemplate template = this.baseSkin.GetTemplate<ListBoxTemplate>(this);
-
-				this.ListBoxConfiguration = template.ListBoxConfiguration.Clone();
-				this.TextConfiguration = template.TextConfiguration.Clone();
+				this.ListBoxConfiguration = this.Template.ListBoxConfiguration.Clone();
+				this.TextConfiguration = this.Template.TextConfiguration.Clone();
 			}
 		}
 
 		public override ControlsContainer BuildControl()
 		{
-			return new DockPanel()
-			.Add(this.scrollBar = new VerticalScrollBar(this.baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE)
-			{
-				Docking = Dock.Right
-			})
-			.Add(this.stackPanel = new StackPanel(this.baseSkin, this.TemplateName + PANEL_TEMPLATE)
-			{
-				Docking = Dock.Center,
-				Direction = Direction.UpToDown
-			});
+			this.scrollBar = new VerticalScrollBar(this.baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE);
+			this.scrollBar.Docking = Dock.Right;
+			this.stackPanel = new StackPanel(this.baseSkin, this.TemplateName + PANEL_TEMPLATE);
+			this.stackPanel.Docking = Dock.Center;
+			this.stackPanel.Direction = Direction.UpToDown;
+
+			return new DockPanel(this.baseSkin)
+				.Add(this.scrollBar)
+				.Add(this.stackPanel);
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)

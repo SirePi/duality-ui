@@ -10,14 +10,18 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public abstract class CompositeControl : Control, ILayout
+	public abstract class CompositeControl<T> : Control<T>, ILayout where T : ControlTemplate, new()
 	{
 		protected ControlsContainer container;
 		public bool IsPassthrough => false;
 
-		public CompositeControl(Skin skin = null, string templateName = null)
+		protected CompositeControl(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
 			this.container = this.BuildControl();
 		}
 
@@ -25,8 +29,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
-			this.container?.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
+			if (this.Visibility == ControlVisibility.Visible)
+			{
+				base.Draw(canvas, zOffset);
+				this.container?.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
+			}
 		}
 
 		public Control FindHoveredControl(Vector2 position)

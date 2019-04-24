@@ -15,9 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public CanvasPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
-		{
-			this.ApplySkin(this.baseSkin);
-		}
+		{ }
 
 		internal override void _LayoutControls()
 		{

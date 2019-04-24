@@ -112,6 +112,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected Control(Skin skin, string templateName)
 		{
+			this.TemplateName = templateName ?? this.GetType().Name;
+
+			this.Init();
+			this.ApplySkin(skin ?? Skin.DEFAULT);
+		}
+
+		protected virtual void Init()
+		{
 			this.vertices = new RawList<VertexC1P3T2>(36);
 
 			this.StretchToFill = true;
@@ -119,21 +127,14 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.Status = ControlStatus.Normal;
 
 			this.ControlVariables = new ShaderParameterCollection();
-
-			this.TemplateName = templateName ?? this.GetType().Name;
-			this.baseSkin = skin ?? Skin.DEFAULT;
 		}
 
 		public virtual void ApplySkin(Skin skin)
 		{
-			if (skin == null) return;
+			if (skin == null)
+				return;
 
 			this.baseSkin = skin;
-			ControlTemplate template = this.baseSkin.GetTemplate<ControlTemplate>(this);
-
-			this.Appearance = template.Appearance;
-			this.Margin = template.Margin;
-			this.Size.AtLeast(template.MinSize);
 		}
 
 		public virtual void Draw(Canvas canvas, float zOffset)
@@ -258,22 +259,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
-		{ }
-
-		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
-		{ }
-
-		public virtual void OnMouseEnterEvent()
-		{
-			this.Status |= Control.ControlStatus.Hover;
-		}
-
-		public virtual void OnMouseLeaveEvent()
-		{
-			this.Status &= ~Control.ControlStatus.Hover;
-		}
-
 		public virtual void OnUpdate(float msFrame)
 		{
 			this.onGameUpdate?.Invoke(this, msFrame);
@@ -354,6 +339,26 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.vertices.Data[index].TexCoord.X = uvX;
 			this.vertices.Data[index].TexCoord.Y = uvY;
 			this.vertices.Data[index].Color = color;
+		}
+	}
+
+	public abstract class Control<T> : Control where T : ControlTemplate, new()
+	{
+		protected T Template { get; private set; }
+
+		public Control(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{ }
+
+		public override void ApplySkin(Skin skin)
+		{
+			base.ApplySkin(skin);
+
+			this.Template = this.baseSkin.GetTemplate<T>(this);
+
+			this.Appearance = this.Template.Appearance;
+			this.Margin = this.Template.Margin;
+			this.Size.AtLeast(this.Template.MinSize);
 		}
 	}
 }

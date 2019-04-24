@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class Button : InteractiveControl
+	public abstract class Button<T> : InteractiveControl<T> where T : TextTemplate, new()
 	{
-		private readonly FormattedText fText;
+		private FormattedText fText;
 
 		public string Text { get; set; }
 		public TextConfiguration TextConfiguration { get; set; }
 
 		// Delegates
-		public delegate void MouseButtonEventDelegate(Button button, MouseButtonEventArgs args);
+		public delegate void MouseButtonEventDelegate(IInteractiveControl button, MouseButtonEventArgs args);
 
 		// Events
 		[DontSerialize]
@@ -32,19 +32,21 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			remove { this.onMouseButton -= value; }
 		}
 
-		public Button(Skin skin = null, string templateName = null)
+		public Button(Skin skin, string templateName)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
 			this.Text = string.Empty;
 			this.fText = new FormattedText();
-
-			this.ApplySkin(this.baseSkin);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.TextConfiguration = this.baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
+			this.TextConfiguration = this.Template.TextConfiguration.Clone();
 		}
 
 		public override void Draw(Canvas canvas, float zOffset)
@@ -95,5 +97,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			this.Status &= ~Control.ControlStatus.Active;
 		}
+	}
+
+	public class Button : Button<TextTemplate>
+	{
+		public Button(Skin skin = null, string templateName = null)
+			: base(skin, templateName)
+		{ }
 	}
 }

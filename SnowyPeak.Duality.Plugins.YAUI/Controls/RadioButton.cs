@@ -3,6 +3,7 @@ using Duality;
 using Duality.Drawing;
 using Duality.Input;
 using Duality.Resources;
+using SnowyPeak.Duality.Plugins.YAUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +29,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public RadioButton(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
 			this.OnMouseButton += this.RadioButton_OnMouseButton;
-			this.ApplySkin(this.baseSkin);
 		}
 
-		private void RadioButton_OnMouseButton(Button button, MouseButtonEventArgs args)
+		private void RadioButton_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
 			if (args.Button == MouseButton.Left && args.IsPressed)
 			{

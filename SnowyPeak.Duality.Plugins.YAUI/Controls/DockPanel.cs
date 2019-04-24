@@ -13,9 +13,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		public DockPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
-		{
-			this.ApplySkin(this.baseSkin);
-		}
+		{ }
 
 		internal override void _LayoutControls()
 		{

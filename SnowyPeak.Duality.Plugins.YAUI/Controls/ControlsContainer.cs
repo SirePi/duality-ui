@@ -18,10 +18,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected ControlsContainer(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
+		{ }
+
+		protected override void Init()
 		{
+			base.Init();
 			this.Children = new List<Control>();
 			this.IsPassthrough = true;
-			this.ApplySkin(this.baseSkin);
 		}
 
 		public ControlsContainer Add(Control child)
@@ -71,16 +74,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override void Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			if (this.Visibility == ControlVisibility.Visible)
+			{
+				base.Draw(canvas, zOffset);
 
-			foreach (Control c in this.Children)
-			{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
+				foreach (Control c in this.Children)
+				{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
+			}
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
 			Control result = this.Children.FirstOrDefault(c =>
-				(c is ILayout || c is InteractiveControl) &&
+				(c is ILayout || c is IInteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
 				c.ControlArea.Contains(position));

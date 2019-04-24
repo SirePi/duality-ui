@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public abstract class InteractiveControl : Control
+	public abstract class InteractiveControl<T> : Control<T>, IInteractiveControl where T : ControlTemplate, new()
 	{
 		// Delegates
 		public delegate void FocusChangeDelegate(Control control, bool isFocused);
@@ -38,6 +38,22 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public virtual void OnFocus()
 		{
 			this.onFocusChange?.Invoke(this, true);
+		}
+
+		public virtual void OnKeyboardKeyEvent(KeyboardKeyEventArgs args)
+		{ }
+
+		public virtual void OnMouseButtonEvent(MouseButtonEventArgs args)
+		{ }
+
+		public virtual void OnMouseEnterEvent()
+		{
+			this.Status |= Control.ControlStatus.Hover;
+		}
+
+		public virtual void OnMouseLeaveEvent()
+		{
+			this.Status &= ~Control.ControlStatus.Hover;
 		}
 	}
 }
