@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected ControlsContainer container;
 		public bool IsPassthrough => false;
 
-		protected CompositeControl(Skin skin = null, string templateName = null)
+		protected CompositeControl(Skin skin, string templateName)
 			: base(skin, templateName)
 		{ }
 
@@ -25,15 +25,18 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.container = this.BuildControl();
 		}
 
+		public override void ApplySkin(Skin skin)
+		{
+			base.ApplySkin(skin);
+			this.container.ApplySkin(skin);
+		}
+
 		public abstract ControlsContainer BuildControl();
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			if (this.Visibility == ControlVisibility.Visible)
-			{
-				base.Draw(canvas, zOffset);
-				this.container?.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
-			}
+			base._Draw(canvas, zOffset);
+			this.container?.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
 		}
 
 		public Control FindHoveredControl(Vector2 position)

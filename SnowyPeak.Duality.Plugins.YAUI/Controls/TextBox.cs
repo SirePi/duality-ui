@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class TextBox : InteractiveControl<TextTemplate>
+	public sealed class TextBox : InteractiveControl<TextTemplate>
 	{
 		private const string ELLIPSIS = "...";
 		private const string WQ = "Wq";
@@ -58,7 +58,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
-
+		
 			this.Text = string.Empty;
 			this.CaretSpeed = .5f;
 			this.MaxLength = int.MaxValue;
@@ -67,12 +67,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.TextConfiguration = this.baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
+
+			this.TextConfiguration = this.Template.TextConfiguration.Clone();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 

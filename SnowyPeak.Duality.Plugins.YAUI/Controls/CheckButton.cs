@@ -49,6 +49,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
+		
 			this.glyphVertices = new RawList<VertexC1P3T2>(4);
 			this.OnMouseButton += this.CheckButton_OnMouseButton;
 		}
@@ -68,9 +69,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.GlyphConfiguration = this.Template.GlyphConfiguration.Clone();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			if (this.GlyphConfiguration.Glyph.IsAvailable &&
 				this.GlyphConfiguration.Glyph.Res.MainTexture.IsAvailable &&

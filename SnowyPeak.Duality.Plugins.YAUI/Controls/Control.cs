@@ -31,14 +31,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			Collapsed
 		}
 
+		//Required to allow direct modification of single fields
+#pragma warning disable S1104 // Fields should not have public accessibility
 		public Vector2 ActualPosition;
 		public Size ActualSize;
 		public Vector2 Position;
 		public Size Size;
+#pragma warning restore S1104 // Fields should not have public accessibility
 
 		protected const float INNER_ZOFFSET = -0.00001f;
 		protected const float LAYOUT_ZOFFSET = -0.0001f;
-		protected Skin baseSkin;
+		protected Skin skin;
 		protected RawList<VertexC1P3T2> vertices;
 
 		public ContentRef<Appearance> Appearance { get; set; }
@@ -114,8 +117,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			this.TemplateName = templateName ?? this.GetType().Name;
 
+			// Bad coding practice, but simplest way to allow the use of new instead of
+			// having to rely on Builder patterns for no other gains
+#pragma warning disable S1699 // Constructors should only call non-overridable methods
 			this.Init();
 			this.ApplySkin(skin ?? Skin.DEFAULT);
+#pragma warning restore S1699 // Constructors should only call non-overridable methods
 		}
 
 		protected virtual void Init()
@@ -134,12 +141,18 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			if (skin == null)
 				return;
 
-			this.baseSkin = skin;
+			this.skin = skin;
 		}
 
-		public virtual void Draw(Canvas canvas, float zOffset)
+		public void Draw(Canvas canvas, float zOffset)
 		{
-			if (this.Visibility == ControlVisibility.Visible && !this.Appearance.IsExplicitNull)
+			if (this.Visibility == ControlVisibility.Visible)
+				this._Draw(canvas, zOffset);
+		}
+
+		protected virtual void _Draw(Canvas canvas, float zOffset)
+		{
+			if (this.Appearance.IsAvailable)
 			{
 				Border border = (this.Appearance.Res?.Border).GetValueOrDefault();
 				Material material = this.Appearance.Res?[this.Status];
@@ -346,7 +359,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		protected T Template { get; private set; }
 
-		public Control(Skin skin = null, string templateName = null)
+		protected Control(Skin skin, string templateName)
 			: base(skin, templateName)
 		{ }
 
@@ -354,7 +367,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			this.Template = this.baseSkin.GetTemplate<T>(this);
+			this.Template = this.skin.GetTemplate<T>(this);
 
 			this.Appearance = this.Template.Appearance;
 			this.Margin = this.Template.Margin;

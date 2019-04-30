@@ -14,45 +14,50 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	public sealed class Renderer : Control
 	{
 		private Canvas mycanvas = new Canvas();
-		private DrawDevice dDevice = new DrawDevice();
+		private DrawDevice dDevice;
 		private Texture tx;
+		private RenderTarget rt;
 		private BatchInfo bi;
 
 		public Renderer(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
-		{ }
-
-		protected override void Init()
-		{
-			base.Init();
-			this.tx = new Texture(200, 200);
+		{ 
+			this.tx = new Texture(100, 100, sizeMode: TextureSizeMode.NonPowerOfTwo);
 			this.bi = new BatchInfo(DrawTechnique.Alpha, this.tx);
+			this.rt = new RenderTarget(AAQuality.Off, true, this.tx);
 
 			this.dDevice = new DrawDevice
 			{
-				Projection = ProjectionMode.Orthographic,
+				Projection = ProjectionMode.Screen,
 				VisibilityMask = VisibilityFlag.AllGroups | VisibilityFlag.ScreenOverlay,
-				Target = new RenderTarget(AAQuality.Off, false, this.tx),
-				TargetSize = new Vector2(200, 200),
-				ViewportRect = new Rect(200, 200)
+				Target = this.rt,
+				TargetSize = this.rt.Size,
+				ViewportRect = new Rect(this.rt.Size)
 			};
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
+			canvas.State.ColorTint = ColorRgba.Green;
+			canvas.DrawRect(this.ActualPosition.X, this.ActualPosition.Y, 50, 50);
+
+			this.dDevice.PrepareForDrawcalls();
 			this.mycanvas.Begin(this.dDevice);
 			this.mycanvas.State.ColorTint = ColorRgba.Red;
-			this.mycanvas.DrawRect(0, 0, 200, 200);
+			this.mycanvas.FillRect(0, 0, 200, 50);
+			this.mycanvas.State.ColorTint = ColorRgba.Blue;
+			this.mycanvas.FillRect(0, 50, 200, 50);
 			this.mycanvas.End();
-
 			this.dDevice.Render();
+
+			this.tx.ReloadData();
 
 			canvas.State.Reset();
 			canvas.State.SetMaterial(this.bi);
 			canvas.State.ColorTint = ColorRgba.White;
-			canvas.DrawRect(0, 0, this.tx.Size.X, this.tx.Size.Y);
+			canvas.FillRect(this.ActualPosition.X, this.ActualPosition.Y, this.tx.Size.X, this.tx.Size.Y);
 		}
 	}
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class SpriteBox : Control
+	public sealed class SpriteBox : Control
 	{
 		public ImageFill SpriteFill { get; set; }
 		public Alignment SpriteAlignment { get; set; }
@@ -37,7 +37,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
-
+		
 			this.spriteVertices = new RawList<VertexC1P3T2>(36);
 			this.SpriteTint = ColorRgba.White;
 			this.SpriteVariables = new ShaderParameterCollection();
@@ -70,9 +70,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			if (this.Sprite != null)
 			{

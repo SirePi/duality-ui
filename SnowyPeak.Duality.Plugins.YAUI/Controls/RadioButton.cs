@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class RadioButton : CheckButton
+	public sealed class RadioButton : CheckButton
 	{
 		private string radioGroup;
 

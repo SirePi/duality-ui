@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class StackPanel : ControlsContainer
+	public sealed class StackPanel : ControlsContainer
 	{
 		public enum Stacking
 		{

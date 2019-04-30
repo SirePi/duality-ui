@@ -168,11 +168,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 
 		void ICmpRenderer.GetCullingInfo(out CullingInfo info)
 		{
-			info = new CullingInfo()
-			{
-				Radius = 0,
-				Visibility = VisibilityFlag.Group30 | VisibilityFlag.ScreenOverlay
-			};
+			info.Radius = 0;
+			info.Visibility = VisibilityFlag.Group30 | VisibilityFlag.ScreenOverlay;
+			info.Position = Vector3.Zero;
 		}
 	}
 }

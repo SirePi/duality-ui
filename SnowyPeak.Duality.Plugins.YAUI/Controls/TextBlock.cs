@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class TextBlock : Control
+	public sealed class TextBlock : Control<TextTemplate>
 	{
 		private FormattedText fText;
 
@@ -37,18 +37,20 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
+		
 			this.fText = new FormattedText();
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.TextConfiguration = this.baseSkin.GetTemplate<TextTemplate>(this).TextConfiguration.Clone();
+
+			this.TextConfiguration = this.Template.TextConfiguration.Clone();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 

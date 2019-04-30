@@ -38,5 +38,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			if (!string.IsNullOrWhiteSpace(radio.RadioGroup) && radioGroups.ContainsKey(radio.RadioGroup))
 			{ radioGroups[radio.RadioGroup].Remove(radio); }
 		}
+
+		private static readonly int[] POWER_OF_TWO = new[] { 64, 128, 256, 512, 1024, 2048 };
+		internal static int NextPowerOfTwo(float value)
+		{
+			foreach (int pot in POWER_OF_TWO)
+				if (pot >= value)
+					return pot;
+
+			return 4096;
+		}
 	}
 }

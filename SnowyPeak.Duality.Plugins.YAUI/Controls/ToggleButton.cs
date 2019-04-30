@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class ToggleButton : Button
+	public sealed class ToggleButton : Button
 	{
 		private bool isMouseOver;
 		private bool isMousePressed;

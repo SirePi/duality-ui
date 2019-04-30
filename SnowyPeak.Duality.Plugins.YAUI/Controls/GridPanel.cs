@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class GridPanel : ControlsContainer
+	public sealed class GridPanel : ControlsContainer
 	{
 		private const string STAR_CHAR = "*";
 
 		private class Dimension
 		{
-			public static Dimension STAR_DIMENSION = new Dimension() { Value = 1, IsVariable = true };
+			public static readonly Dimension STAR_DIMENSION = new Dimension() { Value = 1, IsVariable = true };
 
 			public int Value { get; set; }
 			public bool IsVariable { get; set; }
@@ -26,8 +26,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		private IEnumerable<int> columnsSize;
-		private IEnumerable<int> rowsSize;
+		private int[] columnsSize;
+		private int[] rowsSize;
 
 		// these are arrays to avoid multiple iterations over the set values
 		private Dimension[] columns = new[] { Dimension.STAR_DIMENSION };
@@ -67,11 +67,27 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		internal override void _LayoutControls()
 		{
-			float preallocatedRows = this.rows.Where(y => !y.IsVariable).Sum(y => y.Value);
-			float preallocatedColumns = this.columns.Where(x => !x.IsVariable).Sum(x => x.Value);
+			float preallocatedRows = 0;
+			float preallocatedColumns = 0;
 
-			float variableRows = this.rows.Where(y => y.IsVariable).Sum(y => y.Value);
-			float variableColumns = this.columns.Where(x => x.IsVariable).Sum(x => x.Value);
+			float variableRows = 0;
+			float variableColumns = 0;
+
+			foreach(Dimension row in this.rows)
+			{
+				if (row.IsVariable)
+					variableRows += row.Value;
+				else
+					preallocatedRows += row.Value;
+			}
+
+			foreach (Dimension col in this.columns)
+			{
+				if (col.IsVariable)
+					variableColumns += col.Value;
+				else
+					preallocatedColumns += col.Value;
+			}
 
 			Size innerSize = this.ActualSize;
 			innerSize.X -= (this.Margin.Left + this.Margin.Right + preallocatedColumns);
@@ -84,7 +100,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{ result = MathF.RoundToInt(innerSize.Y * y.Value / variableRows, MidpointRounding.AwayFromZero); }
 
 				return result;
-			});
+			}).ToArray();
 			this.columnsSize = this.columns.Select(x =>
 			{
 				int result = x.Value;
@@ -92,7 +108,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				{ result = MathF.RoundToInt(innerSize.X * x.Value / variableColumns, MidpointRounding.AwayFromZero); }
 
 				return result;
-			});
+			}).ToArray();
 
 			foreach (Control c in this.Children)
 			{

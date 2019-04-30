@@ -15,6 +15,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		public float X;
 		public float Y;
 
+		public bool IsVisible => this.X > 0 && this.Y > 0;
+
 		public Size(float value)
 			: this(value, value)
 		{ }

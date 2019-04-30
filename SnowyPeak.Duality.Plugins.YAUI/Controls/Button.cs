@@ -32,7 +32,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			remove { this.onMouseButton -= value; }
 		}
 
-		public Button(Skin skin, string templateName)
+		protected Button(Skin skin, string templateName)
 			: base(skin, templateName)
 		{ }
 
@@ -49,9 +49,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.TextConfiguration = this.Template.TextConfiguration.Clone();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			Vector2 textPosition = this.AlignElement(Vector2.Zero, this.TextConfiguration.Margin, this.TextConfiguration.Alignment);
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class DockPanel : ControlsContainer
+	public sealed class DockPanel : ControlsContainer
 	{
 		public DockPanel(Skin skin = null, string templateName = null)
 			: base(skin, templateName)

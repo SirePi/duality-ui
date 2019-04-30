@@ -47,7 +47,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				this.textConfiguration = value;
 				foreach (ToggleButton tb in this.toggleButtons)
 				{
-					tb.ApplySkin(this.baseSkin);
+					tb.ApplySkin(this.skin);
 					tb.TextConfiguration = this.textConfiguration.Clone();
 				}
 			}
@@ -72,6 +72,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
+		
 			this.toggleButtons = new List<ToggleButton>();
 		}
 
@@ -81,7 +82,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			if (this.scrollBar != null)
 			{
-				this.scrollBar.ApplySkin(this.baseSkin);
+				this.scrollBar.ApplySkin(this.skin);
 
 				this.ListBoxConfiguration = this.Template.ListBoxConfiguration.Clone();
 				this.TextConfiguration = this.Template.TextConfiguration.Clone();
@@ -90,18 +91,18 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public override ControlsContainer BuildControl()
 		{
-			this.scrollBar = new VerticalScrollBar(this.baseSkin, this.TemplateName + SCROLLBAR_TEMPLATE);
+			this.scrollBar = new VerticalScrollBar(this.skin, this.TemplateName + SCROLLBAR_TEMPLATE);
 			this.scrollBar.Docking = Dock.Right;
-			this.stackPanel = new StackPanel(this.baseSkin, this.TemplateName + PANEL_TEMPLATE);
+			this.stackPanel = new StackPanel(this.skin, this.TemplateName + PANEL_TEMPLATE);
 			this.stackPanel.Docking = Dock.Center;
 			this.stackPanel.Direction = Direction.UpToDown;
 
-			return new DockPanel(this.baseSkin)
+			return new DockPanel(this.skin)
 				.Add(this.scrollBar)
 				.Add(this.stackPanel);
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
 			this.itemsInView = (int)MathF.Floor(this.stackPanel.ControlArea.H / this.ListBoxConfiguration.ItemsSize.Y);
 
@@ -124,7 +125,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				i++;
 			}
 
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 		}
 
 		public void SetItems(IEnumerable<object> items)
@@ -136,15 +137,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 			foreach (object obj in items)
 			{
-				ToggleButton toggle = new ToggleButton()
-				{
-					Text = obj.ToString(),
-					Tag = obj,
-					Visibility = ControlVisibility.Collapsed,
-					Toggled = selectedItems.Contains(obj),
-					Size = this.ListBoxConfiguration.ItemsSize,
-					TextConfiguration = this.TextConfiguration
-				};
+				ToggleButton toggle = new ToggleButton(this.skin);
+				toggle.Text = obj.ToString();
+				toggle.Tag = obj;
+				toggle.Visibility = ControlVisibility.Collapsed;
+				toggle.Toggled = selectedItems.Contains(obj);
+				toggle.Size = this.ListBoxConfiguration.ItemsSize;
+				toggle.TextConfiguration = this.TextConfiguration;
 
 				toggle.OnToggleChange += (button, wasToggled, isToggled) =>
 				{
@@ -157,8 +156,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					if (button == toggle)
 						this.onSelectionChange?.Invoke(this);
 				};
-
-				toggle.ApplySkin(this.baseSkin);
 
 				this.toggleButtons.Add(toggle);
 				this.stackPanel.Add(toggle);

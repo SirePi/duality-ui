@@ -26,7 +26,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			remove { this.onFocusChange -= value; }
 		}
 
-		protected InteractiveControl(Skin skin = null, string templateName = null)
+		protected InteractiveControl(Skin skin, string templateName)
 			: base(skin, templateName)
 		{ }
 

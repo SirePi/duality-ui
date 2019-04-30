@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public class ProgressBar : Control
+	public class ProgressBar : Control<ProgressTemplate>
 	{
 		public enum BarStyle
 		{
@@ -40,20 +40,21 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
+		
 			this.barVertices = new RawList<VertexC1P3T2>(36);
 		}
 
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			ProgressTemplate template = this.baseSkin.GetTemplate<ProgressTemplate>(this);
-			this.ProgressConfiguration = template.ProgressConfiguration.Clone();
-			this.TextConfiguration = template.TextConfiguration.Clone();
+			
+			this.ProgressConfiguration = this.Template.ProgressConfiguration.Clone();
+			this.TextConfiguration = this.Template.TextConfiguration.Clone();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			base.Draw(canvas, zOffset);
+			base._Draw(canvas, zOffset);
 
 			if (this.ProgressConfiguration.BarAppearance.IsAvailable)
 			{

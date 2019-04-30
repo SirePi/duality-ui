@@ -16,21 +16,35 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected List<Control> Children { get; private set; }
 
-		protected ControlsContainer(Skin skin = null, string templateName = null)
+		protected ControlsContainer(Skin skin, string templateName)
 			: base(skin, templateName)
 		{ }
 
 		protected override void Init()
 		{
 			base.Init();
+
 			this.Children = new List<Control>();
 			this.IsPassthrough = true;
+		}
+
+		public override void ApplySkin(Skin skin)
+		{
+			base.ApplySkin(skin);
+
+			foreach (Control c in this.Children)
+				c.ApplySkin(skin);
+		}
+
+		public void ApplySkinSingle(Skin skin)
+		{
+			base.ApplySkin(skin);
 		}
 
 		public ControlsContainer Add(Control child)
 		{
 			if (this.Children.Contains(child))
-			{ throw new Exception(string.Format("Duplicate control {0} in parent {1}", child, this)); }
+			{ throw new InvalidOperationException(string.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
 				// check that I am not introducing a circular ancestry
@@ -38,7 +52,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				while (cc != null)
 				{
 					if (cc == child)
-					{ throw new Exception(string.Format("Circular ancestry between {0} and {1}", child, this)); }
+					{ throw new InvalidOperationException(string.Format("Circular ancestry between {0} and {1}", child, this)); }
 
 					cc = cc.Parent;
 				}
@@ -56,31 +70,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		public override void ApplySkin(Skin skin)
-		{
-			base.ApplySkin(skin);
-
-			if (this.Children != null)
-			{
-				foreach (Control c in this.Children)
-				{ c.ApplySkin(this.baseSkin); }
-			}
-		}
-
 		public void Clear()
 		{
 			this.Children.Clear();
 		}
 
-		public override void Draw(Canvas canvas, float zOffset)
+		protected override void _Draw(Canvas canvas, float zOffset)
 		{
-			if (this.Visibility == ControlVisibility.Visible)
-			{
-				base.Draw(canvas, zOffset);
-
-				foreach (Control c in this.Children)
-				{ c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET); }
-			}
+			base._Draw(canvas, zOffset);
+			foreach (Control c in this.Children)
+				c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
 		}
 
 		public Control FindHoveredControl(Vector2 position)
