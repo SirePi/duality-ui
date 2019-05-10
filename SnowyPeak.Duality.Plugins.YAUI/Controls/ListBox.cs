@@ -20,7 +20,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private VerticalScrollBar scrollBar;
 		private StackPanel stackPanel;
 		private TextConfiguration textConfiguration;
-		private List<ToggleButton> toggleButtons;
+		private readonly List<ToggleButton> toggleButtons = new List<ToggleButton>();
 
 		public ListBoxConfiguration ListBoxConfiguration { get; set; }
 		public bool MultiSelection { get; set; }
@@ -68,13 +68,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ListBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{ }
-
-		protected override void Init()
-		{
-			base.Init();
-		
-			this.toggleButtons = new List<ToggleButton>();
-		}
 
 		public override void ApplySkin(Skin skin)
 		{

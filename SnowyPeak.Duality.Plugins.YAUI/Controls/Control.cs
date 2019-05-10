@@ -18,10 +18,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public enum ControlStatus
 		{
 			None = 0x00,
-			Disabled = 0x0001,
-			Normal = 0x0010,
-			Active = 0x0100,
-			Hover = 0x1000
+			Disabled = 0x01,
+			Normal = 0x02,
+			Active = 0x04,
+			Hover = 0x08
 		}
 
 		public enum ControlVisibility
@@ -41,8 +41,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected const float INNER_ZOFFSET = -0.00001f;
 		protected const float LAYOUT_ZOFFSET = -0.0001f;
+		protected readonly RawList<VertexC1P3T2> vertices = new RawList<VertexC1P3T2>(36);
 		protected Skin skin;
-		protected RawList<VertexC1P3T2> vertices;
 
 		public ContentRef<Appearance> Appearance { get; set; }
 		public CellInfo Cell { get; set; }
@@ -67,7 +67,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ShaderParameterCollection ControlVariables { get; private set; }
 		public ControlVisibility Visibility
 		{
-			get { return this.visibility; }
+			get => this.visibility;
 			set
 			{
 				if (this.visibility != value)
@@ -80,8 +80,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		internal string TemplateName { get; private set; }
 
 		private Dictionary<ControlStatus, BatchInfo> customAppearance;
-		private ControlVisibility visibility;
-		private ControlStatus status;
+		private ControlVisibility visibility = ControlVisibility.Visible;
+		private ControlStatus status = ControlStatus.Normal;
 		private ContentRef<Texture> mainTex;
 		private ColorRgba mainColor;
 
@@ -127,12 +127,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		protected virtual void Init()
 		{
-			this.vertices = new RawList<VertexC1P3T2>(36);
-
 			this.StretchToFill = true;
-			this.Visibility = ControlVisibility.Visible;
-			this.Status = ControlStatus.Normal;
-
 			this.ControlVariables = new ShaderParameterCollection();
 		}
 
@@ -329,8 +324,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 					break;
 
 				case Alignment.BottomRight:
-					topLeft.X = this.ActualPosition.X + this.ActualSize.X - margin.Right - elementSize.X;
-					topLeft.Y = this.ActualPosition.Y + this.ActualSize.Y - margin.Bottom - elementSize.Y;
+					topLeft.X += this.ActualSize.X - margin.Right - elementSize.X;
+					topLeft.Y += this.ActualSize.Y - margin.Bottom - elementSize.Y;
 					break;
 			}
 

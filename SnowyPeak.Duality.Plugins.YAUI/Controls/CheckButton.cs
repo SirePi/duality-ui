@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public class CheckButton : Button<GlyphTemplate>
 	{
-		private RawList<VertexC1P3T2> glyphVertices;
+		private readonly RawList<VertexC1P3T2> glyphVertices = new RawList<VertexC1P3T2>();
 		private bool isChecked;
 
 		public bool Checked
@@ -50,7 +50,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.Init();
 		
-			this.glyphVertices = new RawList<VertexC1P3T2>(4);
 			this.OnMouseButton += this.CheckButton_OnMouseButton;
 		}
 

@@ -28,7 +28,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		private float frameTime;
 		private int currentFrame;
-		private RawList<VertexC1P3T2> spriteVertices;
+		private readonly RawList<VertexC1P3T2> spriteVertices = new RawList<VertexC1P3T2>(36);
 
 		public SpriteBox(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
@@ -38,7 +38,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.Init();
 		
-			this.spriteVertices = new RawList<VertexC1P3T2>(36);
 			this.SpriteTint = ColorRgba.White;
 			this.SpriteVariables = new ShaderParameterCollection();
 			this.SpriteAlignment = Alignment.Center;

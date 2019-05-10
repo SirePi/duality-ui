@@ -22,7 +22,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		internal override void _LayoutControls()
 		{
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{ c.ActualPosition = c.Position + this.Offset + this.Margin.TopLeft; }
 		}
 	}

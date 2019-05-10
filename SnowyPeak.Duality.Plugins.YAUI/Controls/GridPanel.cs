@@ -26,9 +26,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
-		private int[] columnsSize;
-		private int[] rowsSize;
-
 		// these are arrays to avoid multiple iterations over the set values
 		private Dimension[] columns = new[] { Dimension.STAR_DIMENSION };
 		private Dimension[] rows = new[] { Dimension.STAR_DIMENSION };
@@ -93,7 +90,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			innerSize.X -= (this.Margin.Left + this.Margin.Right + preallocatedColumns);
 			innerSize.Y -= (this.Margin.Top + this.Margin.Bottom + preallocatedRows);
 
-			this.rowsSize = this.rows.Select(y =>
+			int[] rowsSize = this.rows.Select(y =>
 			{
 				int result = y.Value;
 				if (y.IsVariable)
@@ -101,7 +98,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 				return result;
 			}).ToArray();
-			this.columnsSize = this.columns.Select(x =>
+			int[] columnsSize = this.columns.Select(x =>
 			{
 				int result = x.Value;
 				if (x.IsVariable)
@@ -110,17 +107,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				return result;
 			}).ToArray();
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				int row = c.Cell.Row < this.rows.Length ? c.Cell.Row : this.rows.Length - 1;
 				int col = c.Cell.Column < this.columns.Length ? c.Cell.Column : this.columns.Length - 1;
 				int rspan = c.Cell.RowSpan != 0 ? c.Cell.RowSpan : 1;
 				int cspan = c.Cell.ColSpan != 0 ? c.Cell.ColSpan : 1;
 
-				int cellX = this.columnsSize.Take(col).Sum();
-				int cellY = this.rowsSize.Take(row).Sum();
-				int cellW = this.columnsSize.Skip(col).Take(cspan).Sum();
-				int cellH = this.rowsSize.Skip(row).Take(rspan).Sum();
+				int cellX = columnsSize.Take(col).Sum();
+				int cellY = rowsSize.Take(row).Sum();
+				int cellW = columnsSize.Skip(col).Take(cspan).Sum();
+				int cellH = rowsSize.Skip(row).Take(rspan).Sum();
 
 				if (c.StretchToFill)
 				{

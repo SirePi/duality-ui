@@ -19,7 +19,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			Border centralArea = this.Margin;
 
-			foreach (Control c in this.Children.Where(c => c.Docking != Dock.Center))
+			foreach (Control c in this.children.Where(c => c.Docking != Dock.Center))
 			{
 				switch (c.Docking)
 				{
@@ -73,7 +73,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 			}
 
-			foreach (Control c in this.Children.Where(c => c.Docking == Dock.Center))
+			foreach (Control c in this.children.Where(c => c.Docking == Dock.Center))
 			{
 				if (c.StretchToFill)
 				{

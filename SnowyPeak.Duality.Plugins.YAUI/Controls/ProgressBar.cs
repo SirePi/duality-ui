@@ -20,7 +20,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			Cutoff
 		}
 
-		private RawList<VertexC1P3T2> barVertices;
+		private readonly RawList<VertexC1P3T2> barVertices = new RawList<VertexC1P3T2>(36);
 		private float value;
 
 		public ProgressConfiguration ProgressConfiguration { get; set; }
@@ -36,13 +36,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ProgressBar(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{ }
-
-		protected override void Init()
-		{
-			base.Init();
-		
-			this.barVertices = new RawList<VertexC1P3T2>(36);
-		}
 
 		public override void ApplySkin(Skin skin)
 		{

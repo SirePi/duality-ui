@@ -87,6 +87,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			}
 		}
 
+		public bool AllowDrag { get; set; }
+
 		// Delegates
 		public delegate void ValueChangeEventDelegate(ScrollBar scrollBar, int oldValue, int newValue);
 		// Events
@@ -109,6 +111,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.MinValue = 0;
 			this.Value = 0;
 			this.MaxValue = 100;
+
+			this.AllowDrag = true;
 		}
 
 		public override void ApplySkin(Skin skin)
@@ -157,7 +161,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		private void BtnCursor_OnMouseButton(IInteractiveControl button, MouseButtonEventArgs args)
 		{
-			if (args.Button == MouseButton.Left)
+			if (args.Button == MouseButton.Left && this.AllowDrag)
 			{
 				this.tempValue = this.Value;
 

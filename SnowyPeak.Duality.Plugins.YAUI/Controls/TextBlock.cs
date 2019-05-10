@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public sealed class TextBlock : Control<TextTemplate>
 	{
-		private FormattedText fText;
+		private readonly FormattedText fText = new FormattedText();
 
 		private string text;
 		public string Text {
@@ -33,13 +33,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public TextBlock(Skin skin = null, string templateName = null)
 			: base(skin, templateName)
 		{ }
-
-		protected override void Init()
-		{
-			base.Init();
-		
-			this.fText = new FormattedText();
-		}
 
 		public override void ApplySkin(Skin skin)
 		{

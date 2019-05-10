@@ -14,7 +14,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 	{
 		public bool IsPassthrough { get; set; }
 
-		protected List<Control> Children { get; private set; }
+		protected readonly List<Control> children = new List<Control>();
 
 		protected ControlsContainer(Skin skin, string templateName)
 			: base(skin, templateName)
@@ -23,8 +23,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
-
-			this.Children = new List<Control>();
 			this.IsPassthrough = true;
 		}
 
@@ -32,7 +30,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 				c.ApplySkin(skin);
 		}
 
@@ -43,7 +41,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public ControlsContainer Add(Control child)
 		{
-			if (this.Children.Contains(child))
+			if (this.children.Contains(child))
 			{ throw new InvalidOperationException(string.Format("Duplicate control {0} in parent {1}", child, this)); }
 			else
 			{
@@ -64,7 +62,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 
 				child.Parent = this;
-				this.Children.Add(child);
+				this.children.Add(child);
 
 				return this;
 			}
@@ -72,19 +70,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public void Clear()
 		{
-			this.Children.Clear();
+			this.children.Clear();
 		}
 
 		protected override void _Draw(Canvas canvas, float zOffset)
 		{
 			base._Draw(canvas, zOffset);
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 				c.Draw(canvas, zOffset + Control.LAYOUT_ZOFFSET);
 		}
 
 		public Control FindHoveredControl(Vector2 position)
 		{
-			Control result = this.Children.FirstOrDefault(c =>
+			Control result = this.children.FirstOrDefault(c =>
 				(c is ILayout || c is IInteractiveControl) &&
 				(c.Status & Control.ControlStatus.Disabled) == Control.ControlStatus.None &&
 				c.Visibility == Control.ControlVisibility.Visible &&
@@ -101,17 +99,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public IEnumerable<T> GetChildren<T>() where T : Control
 		{
-			return this.Children.Where(c => c is T).Cast<T>();
+			return this.children.Where(c => c is T).Cast<T>();
 		}
 
 		public void LayoutControls()
 		{
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
 
 			this._LayoutControls();
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				c.ActualPosition += this.ActualPosition + c.Margin.TopLeft;
 				c.ActualSize -= (c.Margin.TopLeft + c.Margin.BottomRight);
@@ -124,19 +122,19 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.OnUpdate(msFrame);
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{ c.OnUpdate(msFrame); }
 		}
 
 		public ControlsContainer Remove(Control child)
 		{
-			this.Children.Remove(child);
+			this.children.Remove(child);
 			return this;
 		}
 
 		public ControlsContainer RemoveAll<T>() where T : Control
 		{
-			this.Children.RemoveAll(c => c is T);
+			this.children.RemoveAll(c => c is T);
 			return this;
 		}
 

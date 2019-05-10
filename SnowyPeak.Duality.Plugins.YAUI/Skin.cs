@@ -19,7 +19,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		public static readonly Skin YAUI_FATHOMS = new DefaultSkins.Fathoms();
 		public static readonly Skin YAUI_ROUNDED = new DefaultSkins.LightRounded();
 
-		public static Skin DEFAULT = YAUI_DARK;
+		public static Skin DEFAULT { get; set; } = YAUI_DARK;
 
 		private readonly Dictionary<string, ControlTemplate> customTemplates;
 		private readonly Dictionary<Type, ControlTemplate> defaultTemplates;

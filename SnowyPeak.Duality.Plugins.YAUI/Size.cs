@@ -47,6 +47,16 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			return (a.X == b.X && a.Y == b.Y);
 		}
 
+		public static bool operator !=(Size a, Point2 b)
+		{
+			return !(a == b);
+		}
+
+		public static bool operator ==(Size a, Point2 b)
+		{
+			return (a.X == b.X && a.Y == b.Y);
+		}
+
 		public static Size operator +(Size a, Border b)
 		{
 			return new Size(a.X + b.Left + b.Right, a.Y + b.Top + b.Bottom);

@@ -15,7 +15,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public abstract class Button<T> : InteractiveControl<T> where T : TextTemplate, new()
 	{
-		private FormattedText fText;
+		private readonly FormattedText fText = new FormattedText();
 
 		public string Text { get; set; }
 		public TextConfiguration TextConfiguration { get; set; }
@@ -39,8 +39,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		protected override void Init()
 		{
 			base.Init();
+
 			this.Text = string.Empty;
-			this.fText = new FormattedText();
 		}
 
 		public override void ApplySkin(Skin skin)

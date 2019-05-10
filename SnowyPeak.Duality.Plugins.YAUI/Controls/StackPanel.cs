@@ -50,7 +50,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			this.start = this.Margin.Left;
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				c.ActualPosition.X = this.start;
 				c.ActualPosition.Y = this.Margin.Top;
@@ -68,7 +68,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			this.start = this.ActualSize.X - this.Margin.Right;
 
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				c.ActualPosition.X = this.start - c.ActualSize.X;
 				c.ActualPosition.Y = this.Margin.Top;
@@ -85,7 +85,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private void StackFromTop()
 		{
 			this.start = this.Margin.Top;
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				c.ActualPosition.X = this.Margin.Left;
 				c.ActualPosition.Y = this.start;
@@ -102,7 +102,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		private void StackFromBottom()
 		{
 			this.start = this.ActualSize.Y - this.Margin.Bottom;
-			foreach (Control c in this.Children)
+			foreach (Control c in this.children)
 			{
 				c.ActualPosition.X = this.Margin.Left;
 				c.ActualPosition.Y = this.start - c.ActualSize.Y;
