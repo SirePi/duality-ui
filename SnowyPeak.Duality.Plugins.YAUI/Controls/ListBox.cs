@@ -39,6 +39,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 
 		public IEnumerable<object> SelectedItems => this.toggleButtons.Where(tb => tb.Toggled).Select(tb => tb.Tag);
 
+		public int ItemsCount => this.toggleButtons.Count;
+
 		public TextConfiguration TextConfiguration
 		{
 			get => this.textConfiguration;
@@ -126,35 +128,89 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			object[] selectedItems = this.SelectedItems.ToArray();
 
 			this.toggleButtons.Clear();
-			this.stackPanel.Clear();
 
 			foreach (object obj in items)
 			{
-				ToggleButton toggle = new ToggleButton(this.skin);
-				toggle.Text = obj.ToString();
-				toggle.Tag = obj;
-				toggle.Visibility = ControlVisibility.Collapsed;
-				toggle.Toggled = selectedItems.Contains(obj);
-				toggle.Size = this.ListBoxConfiguration.ItemsSize;
-				toggle.TextConfiguration = this.TextConfiguration;
-
-				toggle.OnToggleChange += (button, wasToggled, isToggled) =>
-				{
-					if (isToggled && !this.MultiSelection)
-					{
-						foreach (ToggleButton tb in this.toggleButtons.Where(tb => tb != button))
-						{ tb.Toggled = false; }
-					}
-
-					if (button == toggle)
-						this.onSelectionChange?.Invoke(this);
-				};
-
+				ToggleButton toggle = this.AddButton(obj, selectedItems.Contains(obj));
 				this.toggleButtons.Add(toggle);
-				this.stackPanel.Add(toggle);
 			}
 
-			this.OnUpdate(0);
+			this.RefreshStackPanel();
+		}
+
+		public void AddItem(object item)
+		{
+			this.InsertItem(item, this.toggleButtons.Count);
+		}
+
+		public void InsertItem(object item, int position)
+		{
+			if (position < 0 || position > this.toggleButtons.Count + 1)
+				throw new ArgumentOutOfRangeException("position");
+			if (this.toggleButtons.Any(tb => tb.Tag == item))
+				throw new ArgumentException("item already present in list");
+
+			ToggleButton toggle = this.AddButton(item, false);
+			this.toggleButtons.Insert(position, toggle);
+
+			this.RefreshStackPanel();
+		}
+
+		public void RemoveItem(object item)
+		{
+			ToggleButton button = this.toggleButtons.FirstOrDefault(tb => tb.Tag == item);
+			if (button != null)
+			{
+				this.toggleButtons.Remove(button);
+				this.RefreshStackPanel();
+			}
+		}
+
+		public void SelectItem(object item)
+		{
+			ToggleButton button = this.toggleButtons.FirstOrDefault(tb => tb.Tag == item);
+			if (button != null)
+				button.Toggled = true;
+		}
+
+		public void DeselectItem(object item)
+		{
+			ToggleButton button = this.toggleButtons.FirstOrDefault(tb => tb.Tag == item);
+			if (button != null)
+				button.Toggled = false;
+		}
+
+		private void RefreshStackPanel()
+		{
+			this.stackPanel.Clear();
+
+			foreach (ToggleButton tb in this.toggleButtons)
+				this.stackPanel.Add(tb);
+		}
+
+		private ToggleButton AddButton(object item, bool toggled)
+		{
+			ToggleButton toggle = new ToggleButton(this.skin);
+			toggle.Text = item.ToString();
+			toggle.Tag = item;
+			toggle.Visibility = ControlVisibility.Collapsed;
+			toggle.Toggled = toggled;
+			toggle.Size = this.ListBoxConfiguration.ItemsSize;
+			toggle.TextConfiguration = this.TextConfiguration;
+
+			toggle.OnToggleChange += (button, wasToggled, isToggled) =>
+			{
+				if (isToggled && !this.MultiSelection)
+				{
+					foreach (ToggleButton tb in this.toggleButtons.Where(tb => tb != button))
+					{ tb.Toggled = false; }
+				}
+
+				if (button == toggle)
+					this.onSelectionChange?.Invoke(this);
+			};
+
+			return toggle;
 		}
 	}
 }

@@ -23,9 +23,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			set
 			{
 				if (this.text != value)
-				{
 					this.text = value;
-				}
 			}
 		}
 		public TextConfiguration TextConfiguration { get; set; }
