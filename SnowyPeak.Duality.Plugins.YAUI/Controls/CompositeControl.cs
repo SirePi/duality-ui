@@ -48,11 +48,18 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			if (this.container != null)
 			{
+				/*
 				this.container.ActualSize.X = this.ActualSize.X - this.Margin.Left - this.Margin.Right;
 				this.container.ActualSize.Y = this.ActualSize.Y - this.Margin.Top - this.Margin.Bottom;
 
 				this.container.ActualPosition.X = this.ActualPosition.X + this.Margin.Left;
 				this.container.ActualPosition.Y = this.ActualPosition.Y + this.Margin.Top;
+				*/
+				this.container.ActualSize.X = this.ActualSize.X;
+				this.container.ActualSize.Y = this.ActualSize.Y;
+
+				this.container.ActualPosition.X = this.ActualPosition.X;
+				this.container.ActualPosition.Y = this.ActualPosition.Y;
 
 				this.container.LayoutControls();
 			}
