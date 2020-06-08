@@ -4,6 +4,7 @@ using Duality.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
@@ -13,8 +14,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	/// </summary>
 	public class YAUICorePlugin : CorePlugin
 	{
-		internal static List<KeyboardKeyEventArgs> LastFrameKeyboardKeyEventArgs { get; private set; } = new List<KeyboardKeyEventArgs>();
-		internal static List<MouseButtonEventArgs> LastFrameMouseButtonEventArgs { get; private set; } = new List<MouseButtonEventArgs>();
+		internal static readonly Assembly YAUIAssembly = typeof(YAUICorePlugin).GetTypeInfo().Assembly;
+		internal static readonly List<KeyboardKeyEventArgs> LastFrameKeyboardKeyEventArgs = new List<KeyboardKeyEventArgs>();
+		internal static readonly List<MouseButtonEventArgs> LastFrameMouseButtonEventArgs = new List<MouseButtonEventArgs>();
 
 		// Override methods here for global logic
 		protected override void InitPlugin()

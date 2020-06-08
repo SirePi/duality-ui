@@ -1,14 +1,10 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
 using Duality.Drawing;
-using Duality.Input;
 using Duality.Resources;
 using SnowyPeak.Duality.Plugins.YAUI.Templates;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
@@ -39,8 +35,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public Size Size;
 #pragma warning restore S1104 // Fields should not have public accessibility
 
-		protected const float INNER_ZOFFSET = -0.00001f;
-		protected const float LAYOUT_ZOFFSET = -0.0001f;
+		protected const float INNER_ZOFFSET = -0.001f;
+		protected const float LAYOUT_ZOFFSET = -0.01f;
 		protected readonly RawList<VertexC1P3T2> vertices = new RawList<VertexC1P3T2>(36);
 		protected Skin skin;
 

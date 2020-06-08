@@ -1,15 +1,17 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 {
 	public class ControlTemplate
 	{
+		public static readonly ControlTemplate Empty = new ControlTemplate
+		{
+			Appearance = null,
+			Margin = Border.Zero,
+			MinSize = Size.Zero
+		};
+
 		public ContentRef<Appearance> Appearance { get; set; }
 		public Border Margin { get; set; }
 		public Size MinSize { get; set; }

@@ -65,6 +65,7 @@
     <Compile Include="Controls\HorizontalScrollBar.cs" />
     <Compile Include="Controls\TextBlock.cs" />
     <Compile Include="Controls\VerticalScrollBar.cs" />
+    <Compile Include="DefaultSkins\Figma.cs" />
     <Compile Include="DefaultSkins\Fonts.cs" />
     <Compile Include="UILog.cs" />
     <Compile Include="DefaultSkins\Dark.cs" />
@@ -176,6 +177,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Figma\form.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Figma\button-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\button-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\button-hover.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\button-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-check-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-check-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-check-hover.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-check-normal.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-radio-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-radio-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-radio-hover.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\glyph-radio-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Manrope-Regular.Font.res" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-cursor-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-cursor-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-cursor-hover.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-cursor-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-horizontal-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-horizontal-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-horizontal-normal.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-vertical-active.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-vertical-disabled.png" />
+    <EmbeddedResource Include="DefaultSkins\Figma\scrollbar-vertical-normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>

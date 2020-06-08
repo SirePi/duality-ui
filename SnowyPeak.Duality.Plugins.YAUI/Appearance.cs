@@ -1,16 +1,9 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
 using SnowyPeak.Duality.Plugins.YAUI.Controls;
 using SnowyPeak.Duality.Plugins.YAUI.Properties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
@@ -20,10 +13,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	{
 		public static readonly Appearance DEFAULT = new Appearance();
 
-		public ContentRef<Material> Active;
-		public ContentRef<Material> Disabled;
-		public ContentRef<Material> Hover;
-		public ContentRef<Material> Normal;
+		public ContentRef<Material> Active { get; set; }
+		public ContentRef<Material> Disabled { get; set; }
+		public ContentRef<Material> Hover { get; set; }
+		public ContentRef<Material> Normal { get; set; }
 		public Border Border { get; set; }
 
 		public Appearance()
@@ -39,11 +32,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		{
 			get
 			{
-				if ((status & Control.ControlStatus.Disabled) != Control.ControlStatus.None)
+				if (status.HasFlag(Control.ControlStatus.Disabled))
 				{ return this.Disabled.Res; }
-				else if ((status & Control.ControlStatus.Active) != Control.ControlStatus.None)
+				else if (status.HasFlag(Control.ControlStatus.Active))
 				{ return this.Active.Res; }
-				else if ((status & Control.ControlStatus.Hover) != Control.ControlStatus.None)
+				else if (status.HasFlag(Control.ControlStatus.Hover))
 				{ return this.Hover.Res; }
 				else
 				{ return this.Normal.Res; }

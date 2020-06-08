@@ -1,16 +1,11 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using Duality.Components;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Input;
 using SnowyPeak.Duality.Plugins.YAUI.Controls;
 using SnowyPeak.Duality.Plugins.YAUI.Properties;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
@@ -18,8 +13,6 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	[EditorHintCategory(ResNames.CategoryUI)]
 	public abstract class UI : Component, ICmpUpdatable, ICmpRenderer, ICmpInitializable
 	{
-		private const float GLOBAL_ZOFFSET = 0.01f;
-
 		[DontSerialize]
 		private Canvas canvas;
 
@@ -88,7 +81,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				this.canvas.Begin(device);
 				try
 				{
-					this.rootContainer.Draw(this.canvas, this.Offset * GLOBAL_ZOFFSET);
+					this.rootContainer.Draw(this.canvas, this.Offset);
 				}
 				catch (Exception ex)
 				{
@@ -109,10 +102,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				if (this.hoveredControl != currentHoveredControl)
 				{
 					if (currentHoveredControl is IInteractiveControl ic1)
-					{ ic1.OnMouseEnterEvent(); }
+						ic1.OnMouseEnterEvent();
 
 					if (this.hoveredControl is IInteractiveControl ic2)
-					{ ic2.OnMouseLeaveEvent(); }
+						ic2.OnMouseLeaveEvent();
 				}
 
 				// check if the focused control changed
@@ -135,14 +128,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				if (this.focusedControl is IInteractiveControl ic3)
 				{
 					foreach (MouseButtonEventArgs e in YAUICorePlugin.LastFrameMouseButtonEventArgs)
-					{
 						ic3.OnMouseButtonEvent(e);
-					}
 
 					foreach (KeyboardKeyEventArgs e in YAUICorePlugin.LastFrameKeyboardKeyEventArgs)
-					{
 						ic3.OnKeyboardKeyEvent(e);
-					}
 				}
 
 				this.hoveredControl = currentHoveredControl;
@@ -152,7 +141,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 				{
 					this.rootContainer.OnUpdate(Time.DeltaTime * 1000);
 					if (this.lastSize != this.rootContainer.ActualSize)
-					{ this.onResize?.Invoke(); }
+						this.onResize?.Invoke();
 
 					this.lastSize = this.rootContainer.ActualSize;
 				}

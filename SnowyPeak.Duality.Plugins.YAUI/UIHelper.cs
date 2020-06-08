@@ -1,25 +1,20 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using SnowyPeak.Duality.Plugins.YAUI.Controls;
-using SnowyPeak.Duality.Plugins.YAUI.Templates;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
 	internal static class UIHelper
 	{
 		private static readonly Dictionary<string, List<RadioButton>> radioGroups = new Dictionary<string, List<RadioButton>>();
+		private static readonly RadioButton[] emptyGroup = new RadioButton[0];
 
 		internal static IEnumerable<RadioButton> GetRadioButtonsInGroup(string group)
 		{
-			if (!string.IsNullOrWhiteSpace(group))
-			{
-				foreach (RadioButton rb in radioGroups[group])
-				{ yield return rb; }
-			}
+			if (!string.IsNullOrWhiteSpace(group) && radioGroups.ContainsKey(group))
+				return radioGroups[group];
+			else
+				return emptyGroup;
 		}
 
 		internal static void RegisterRadioButton(RadioButton radio)
@@ -27,7 +22,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 			if (!string.IsNullOrWhiteSpace(radio.RadioGroup))
 			{
 				if (!radioGroups.ContainsKey(radio.RadioGroup))
-				{ radioGroups.Add(radio.RadioGroup, new List<RadioButton>()); }
+					radioGroups.Add(radio.RadioGroup, new List<RadioButton>());
 
 				radioGroups[radio.RadioGroup].Add(radio);
 			}
@@ -36,17 +31,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 		internal static void UnregisterRadioButton(RadioButton radio)
 		{
 			if (!string.IsNullOrWhiteSpace(radio.RadioGroup) && radioGroups.ContainsKey(radio.RadioGroup))
-			{ radioGroups[radio.RadioGroup].Remove(radio); }
-		}
-
-		private static readonly int[] POWER_OF_TWO = new[] { 64, 128, 256, 512, 1024, 2048 };
-		internal static int NextPowerOfTwo(float value)
-		{
-			foreach (int pot in POWER_OF_TWO)
-				if (pot >= value)
-					return pot;
-
-			return 4096;
+				radioGroups[radio.RadioGroup].Remove(radio);
 		}
 	}
 }

@@ -5,20 +5,21 @@ using SnowyPeak.Duality.Plugins.YAUI.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
-	public abstract class ControlsContainer : Control, ILayout
+	public abstract class ControlsContainer : Control<ControlTemplate>, ILayout
 	{
 		public bool IsPassthrough { get; set; }
 
 		protected readonly List<Control> children = new List<Control>();
 
-		protected ControlsContainer(Skin skin, string templateName)
+		protected ControlsContainer(Skin skin, string templateName, bool drawSelf)
 			: base(skin, templateName)
-		{ }
+		{
+			if (!drawSelf)
+				this.Appearance = null;
+		}
 
 		protected override void Init()
 		{
@@ -42,7 +43,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public ControlsContainer Add(Control child)
 		{
 			if (this.children.Contains(child))
-			{ throw new InvalidOperationException(string.Format("Duplicate control {0} in parent {1}", child, this)); }
+				throw new InvalidOperationException(string.Format("Duplicate control {0} in parent {1}", child, this));
 			else
 			{
 				// check that I am not introducing a circular ancestry
@@ -50,7 +51,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				while (cc != null)
 				{
 					if (cc == child)
-					{ throw new InvalidOperationException(string.Format("Circular ancestry between {0} and {1}", child, this)); }
+						throw new InvalidOperationException(string.Format("Circular ancestry between {0} and {1}", child, this));
 
 					cc = cc.Parent;
 				}
@@ -89,10 +90,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				c.ControlArea.Contains(position));
 
 			if (result is ILayout il)
-			{ result = il.FindHoveredControl(position); }
+				result = il.FindHoveredControl(position);
 
 			if (result == null && !this.IsPassthrough)
-			{ result = this; }
+				result = this;
 
 			return result;
 		}
@@ -105,7 +106,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public void LayoutControls()
 		{
 			foreach (Control c in this.children)
-			{ c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size; }
+				c.ActualSize = c.Visibility == ControlVisibility.Collapsed ? Size.Zero : c.Size;
 
 			this._LayoutControls();
 
@@ -123,7 +124,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			base.OnUpdate(msFrame);
 
 			foreach (Control c in this.children)
-			{ c.OnUpdate(msFrame); }
+				c.OnUpdate(msFrame);
 		}
 
 		public ControlsContainer Remove(Control child)

@@ -1,25 +1,18 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
-using Duality;
-using Duality.Drawing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
 	public sealed class DockPanel : ControlsContainer
 	{
-		public DockPanel(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
+		public DockPanel(Skin skin = null, string templateName = null, bool drawSelf = true)
+			: base(skin, templateName, drawSelf)
 		{ }
 
 		internal override void _LayoutControls()
 		{
 			Border centralArea = this.Margin;
 
-			foreach (Control c in this.children.Where(c => c.Docking != Dock.Center))
+			foreach (Control c in this.children)
 			{
 				switch (c.Docking)
 				{
@@ -73,20 +66,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				}
 			}
 
-			foreach (Control c in this.children.Where(c => c.Docking == Dock.Center))
+			foreach (Control c in this.children)
 			{
-				if (c.StretchToFill)
+				if (c.Docking == Dock.Center)
 				{
-					c.ActualSize.X = this.ActualSize.X - centralArea.Left - centralArea.Right;
-					c.ActualSize.Y = this.ActualSize.Y - centralArea.Top - centralArea.Bottom;
+					if (c.StretchToFill)
+					{
+						c.ActualSize.X = this.ActualSize.X - centralArea.Left - centralArea.Right;
+						c.ActualSize.Y = this.ActualSize.Y - centralArea.Top - centralArea.Bottom;
 
-					c.ActualPosition.X = centralArea.Left;
-					c.ActualPosition.Y = centralArea.Top;
-				}
-				else
-				{
-					c.ActualPosition.X = centralArea.Left + ((this.ActualSize.X - centralArea.Left - centralArea.Right - c.ActualSize.X) / 2);
-					c.ActualPosition.Y = centralArea.Top + ((this.ActualSize.Y - centralArea.Top - centralArea.Bottom - c.ActualSize.Y) / 2);
+						c.ActualPosition.X = centralArea.Left;
+						c.ActualPosition.Y = centralArea.Top;
+					}
+					else
+					{
+						c.ActualPosition.X = centralArea.Left + ((this.ActualSize.X - centralArea.Left - centralArea.Right - c.ActualSize.X) / 2);
+						c.ActualPosition.Y = centralArea.Top + ((this.ActualSize.Y - centralArea.Top - centralArea.Bottom - c.ActualSize.Y) / 2);
+					}
 				}
 			}
 		}

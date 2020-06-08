@@ -1,11 +1,8 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using Duality.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
@@ -58,8 +55,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			});
 		}
 
-		public GridPanel(Skin skin = null, string templateName = null)
-			: base(skin, templateName)
+		public GridPanel(Skin skin = null, string templateName = null, bool drawSelf = true)
+			: base(skin, templateName, drawSelf)
 		{ }
 
 		internal override void _LayoutControls()
@@ -70,7 +67,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			float variableRows = 0;
 			float variableColumns = 0;
 
-			foreach(Dimension row in this.rows)
+			foreach (Dimension row in this.rows)
 			{
 				if (row.IsVariable)
 					variableRows += row.Value;

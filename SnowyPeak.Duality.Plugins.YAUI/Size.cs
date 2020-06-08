@@ -1,10 +1,5 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
@@ -12,8 +7,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	{
 		public static readonly Size Zero = new Size(0);
 
-		public float X;
-		public float Y;
+		public float X { get; set; }
+		public float Y { get; set; }
 
 		public bool IsVisible => this.X > 0 && this.Y > 0;
 

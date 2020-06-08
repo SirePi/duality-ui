@@ -5,11 +5,6 @@ using Duality.Input;
 using Duality.Resources;
 using SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration;
 using SnowyPeak.Duality.Plugins.YAUI.Templates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 {
@@ -27,6 +22,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				this.isChecked = value;
 			}
 		}
+
+		public bool UseToggleStyle { get; set; }
 
 		public GlyphConfiguration GlyphConfiguration { get; set; }
 
@@ -68,11 +65,23 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			this.GlyphConfiguration = this.Template.GlyphConfiguration.Clone();
 		}
 
+		public override void OnUpdate(float msFrame)
+		{
+			base.OnUpdate(msFrame);
+
+			if (this.UseToggleStyle)
+			{
+				if (this.Checked) this.Status |= ControlStatus.Active;
+				else this.Status &= ~ControlStatus.Active;
+			}
+		}
+
 		protected override void _Draw(Canvas canvas, float zOffset)
 		{
 			base._Draw(canvas, zOffset);
 
-			if (this.GlyphConfiguration.Glyph.IsAvailable &&
+			if (!this.UseToggleStyle && 
+				this.GlyphConfiguration.Glyph.IsAvailable &&
 				this.GlyphConfiguration.Glyph.Res.MainTexture.IsAvailable &&
 				this.Checked)
 			{

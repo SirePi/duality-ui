@@ -1,10 +1,5 @@
 ﻿// This code is provided under the MIT license. Originally by Alessandro Pilati.
 using Duality;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI
 {
@@ -12,30 +7,15 @@ namespace SnowyPeak.Duality.Plugins.YAUI
 	{
 		public static readonly Border Zero = new Border(0);
 
-		public float Bottom;
-		public float Left;
-		public float Right;
-		public float Top;
+		public float Bottom { get; set; }
+		public float Left { get; set; }
+		public float Right { get; set; }
+		public float Top { get; set; }
 
-		public Vector2 BottomRight
-		{
-			get { return new Vector2(this.Right, this.Bottom); }
-		}
-
-		public Vector2 TopLeft
-		{
-			get { return new Vector2(this.Left, this.Top); }
-		}
-
-		public float Horizontal
-		{
-			get { return this.Left + this.Right; }
-		}
-
-		public float Vertical
-		{
-			get { return this.Top + this.Bottom; }
-		}
+		public Vector2 BottomRight => new Vector2(this.Right, this.Bottom);
+		public Vector2 TopLeft => new Vector2(this.Left, this.Top);
+		public float Horizontal => this.Left + this.Right;
+		public float Vertical => this.Top + this.Bottom;
 
 		public Border(float value)
 			: this(value, value, value, value)
