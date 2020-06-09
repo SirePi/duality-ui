@@ -54,36 +54,33 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					Border = new Border(5)
 				},
 				MinSize = new Size(32, 16),
-				TextConfiguration = new TextConfiguration
-				{
-					Font = fntFont,
-					Alignment = Alignment.Center,
-					Color = ColorRgba.White,
-					Margin = new Border(5)
-				}
+				TextConfiguration = new TextConfiguration(
+					font: fntFont,
+					color: ColorRgba.White,
+					alignment: Alignment.Center,
+					margin: new Border(5)
+				)
 			};
 			this.AddDefaultTemplate(typeof(Button), buttonTemplate);
 			this.AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
 
 			GlyphTemplate checkTemplate = new GlyphTemplate(buttonTemplate)
 			{
-				GlyphConfiguration = new GlyphConfiguration
-				{
-					Alignment = Alignment.Left,
-					Margin = new Border(5),
-					Glyph = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.glyph-check-active.png"))
-				}
+				GlyphConfiguration = new GlyphConfiguration(
+					glyph: ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.glyph-check-active.png")),
+					alignment: Alignment.Left,
+					margin: new Border(5)
+				)
 			};
 			this.AddDefaultTemplate(typeof(CheckButton), checkTemplate);
 
 			GlyphTemplate radioTemplate = new GlyphTemplate(buttonTemplate)
 			{
-				GlyphConfiguration = new GlyphConfiguration
-				{
-					Alignment = Alignment.Left,
-					Margin = new Border(5),
-					Glyph = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.glyph-radio-active.png"))
-				}
+				GlyphConfiguration = new GlyphConfiguration(
+					glyph: ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.glyph-radio-active.png")),
+					alignment: Alignment.Left,
+					margin: new Border(5)
+				)
 			};
 			this.AddDefaultTemplate(typeof(RadioButton), radioTemplate);
 
@@ -107,9 +104,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					Border = Border.Zero
 				},
 				MinSize = new Size(16),
-				ScrollBarConfiguration = new ScrollBarConfiguration
-				{
-					CursorAppearance = new Appearance
+				ScrollBarConfiguration = new ScrollBarConfiguration(
+					cursorAppearance: new Appearance
 					{
 						Normal = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-normal.png")),
 						Hover = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-hover.png")),
@@ -117,11 +113,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 						Disabled = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-disabled.png")),
 						Border = Border.Zero
 					},
-					ButtonDecreaseAppearance = null,
-					ButtonIncreaseAppearance = null,
-					ButtonsSize = Size.Zero,
-					CursorSize = new Size(16)
-				}
+					cursorSize: new Size(16)
+				)
 			};
 			this.AddDefaultTemplate(typeof(HorizontalScrollBar), scrollHTemplate);
 
@@ -136,9 +129,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 					Border = Border.Zero
 				},
 				MinSize = new Size(16),
-				ScrollBarConfiguration = new ScrollBarConfiguration
-				{
-					CursorAppearance = new Appearance
+				ScrollBarConfiguration = new ScrollBarConfiguration(
+					cursorAppearance: new Appearance
 					{
 						Normal = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-normal.png")),
 						Hover = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-hover.png")),
@@ -146,22 +138,18 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 						Disabled = ResourceHelper.GetMaterial(YAUICorePlugin.YAUIAssembly, Skin.Path("Figma.scrollbar-cursor-disabled.png")),
 						Border = Border.Zero
 					},
-					ButtonDecreaseAppearance = null,
-					ButtonIncreaseAppearance = null,
-					ButtonsSize = Size.Zero,
-					CursorSize = new Size(16)
-				}
+					cursorSize: new Size(16)
+				)
 			};
 			this.AddDefaultTemplate(typeof(VerticalScrollBar), scrollVTemplate);
 
 			ListBoxTemplate listTemplate = new ListBoxTemplate
 			{
 				Appearance = null,
-				ListBoxConfiguration = new ListBoxConfiguration
-				{
-					ItemAppearance = textTemplate.Appearance,
-					ItemsSize = new Size(20)
-				},
+				ListBoxConfiguration = new ListBoxConfiguration(
+					itemAppearance: textTemplate.Appearance,
+					itemsSize: new Size(20)
+				),
 				ListBoxMargin = new Border(5),
 				MinSize = new Size(20),
 				TextConfiguration = textTemplate.TextConfiguration

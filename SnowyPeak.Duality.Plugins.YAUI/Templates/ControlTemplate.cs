@@ -16,18 +16,21 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 		public Border Margin { get; set; }
 		public Size MinSize { get; set; }
 
-		public ControlTemplate()
-		{
-			this.Appearance = YAUI.Appearance.DEFAULT;
-			this.Margin = Border.Zero;
-			this.MinSize = Size.Zero;
-		}
-
+		public ControlTemplate() : this(null) { }
 		public ControlTemplate(ControlTemplate source)
 		{
-			this.Appearance = source.Appearance;
-			this.Margin = source.Margin;
-			this.MinSize = source.MinSize;
+			if (source == null)
+			{
+				this.Appearance = YAUI.Appearance.DEFAULT;
+				this.Margin = Border.Zero;
+				this.MinSize = Size.Zero;
+			}
+			else
+			{
+				this.Appearance = source.Appearance;
+				this.Margin = source.Margin;
+				this.MinSize = source.MinSize;
+			}
 		}
 	}
 }

@@ -116,7 +116,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			this.ScrollBarConfiguration = this.Template.ScrollBarConfiguration.Clone();
+			this.ScrollBarConfiguration = this.Template.ScrollBarConfiguration;
 			this.Margin = this.Template.ScrollBarMargin;
 		}
 

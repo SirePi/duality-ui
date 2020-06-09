@@ -48,7 +48,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 				foreach (ToggleButton tb in this.toggleButtons)
 				{
 					tb.ApplySkin(this.skin);
-					tb.TextConfiguration = this.textConfiguration.Clone();
+					tb.TextConfiguration = this.textConfiguration;
 				}
 			}
 		}
@@ -77,8 +77,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 			{
 				this.scrollBar.ApplySkin(this.skin);
 
-				this.ListBoxConfiguration = this.Template.ListBoxConfiguration.Clone();
-				this.TextConfiguration = this.Template.TextConfiguration.Clone();
+				this.ListBoxConfiguration = this.Template.ListBoxConfiguration;
+				this.TextConfiguration = this.Template.TextConfiguration;
 			}
 		}
 

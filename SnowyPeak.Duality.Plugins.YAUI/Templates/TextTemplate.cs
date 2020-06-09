@@ -13,18 +13,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 	{
 		public TextConfiguration TextConfiguration { get; set; }
 
-		public TextTemplate()
-			: base()
-		{
-			this.TextConfiguration = TextConfiguration.DEFAULT;
-		}
-
+		public TextTemplate() : this(null) { }
 		public TextTemplate(ControlTemplate source)
 			: base(source)
 		{
 			if (source is TextTemplate tt)
 			{
-				this.TextConfiguration = tt.TextConfiguration.Clone();
+				this.TextConfiguration = tt.TextConfiguration;
 			}
 		}
 	}

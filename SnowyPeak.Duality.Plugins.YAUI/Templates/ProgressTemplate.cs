@@ -13,18 +13,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Templates
 	{
 		public ProgressConfiguration ProgressConfiguration { get; set; }
 
-		public ProgressTemplate()
-			: base()
-		{
-			this.ProgressConfiguration = ProgressConfiguration.DEFAULT;
-		}
-
+		public ProgressTemplate() : this(null) { }
 		public ProgressTemplate(ControlTemplate source)
 			: base(source)
 		{
 			if (source is ProgressTemplate pt)
 			{
-				this.ProgressConfiguration = pt.ProgressConfiguration.Clone();
+				this.ProgressConfiguration = pt.ProgressConfiguration;
 			}
 		}
 	}

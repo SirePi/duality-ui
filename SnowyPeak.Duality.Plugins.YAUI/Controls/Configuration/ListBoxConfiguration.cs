@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 {
-	public sealed class ListBoxConfiguration
+	public struct ListBoxConfiguration
 	{
-		public static readonly ListBoxConfiguration DEFAULT = new ListBoxConfiguration();
 		public static readonly Size DEFAULT_ITEMS_SIZE = new Size(20);
 
 		public ContentRef<Appearance> ItemAppearance { get; set; }
@@ -22,13 +21,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 			this.ItemAppearance = itemAppearance ?? Appearance.DEFAULT;
 		}
 
-		public ListBoxConfiguration Clone()
-		{
-			return new ListBoxConfiguration()
-			{
-				ItemsSize = this.ItemsSize,
-				ItemAppearance = this.ItemAppearance
-			};
-		}
+		public void SetItemAppearance(ContentRef<Appearance> appearance) { this.ItemAppearance = appearance; }		
+		public void SetitemSize(Size size) { this.ItemsSize = size; }
 	}
 }

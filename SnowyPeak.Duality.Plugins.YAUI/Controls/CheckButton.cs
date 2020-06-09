@@ -62,7 +62,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		public override void ApplySkin(Skin skin)
 		{
 			base.ApplySkin(skin);
-			this.GlyphConfiguration = this.Template.GlyphConfiguration.Clone();
+			this.GlyphConfiguration = this.Template.GlyphConfiguration;
 		}
 
 		public override void OnUpdate(float msFrame)

@@ -92,13 +92,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = baseAppearance,
 				MinSize = new Size(20),
-				TextConfiguration = new TextConfiguration()
-				{
-					Alignment = Alignment.Left,
-					Color = ColorRgba.White,
-					Font = fntFont,
-					Margin = new Border(5)
-				}
+				TextConfiguration = new TextConfiguration(
+					font: fntFont,
+					color: ColorRgba.White,
+					alignment: Alignment.Left,
+					margin: new Border(5)
+				)
 			};
 			this.AddDefaultTemplate(typeof(TextBlock), baseTemplate);
 			this.AddDefaultTemplate(typeof(SpriteBox), baseTemplate);
@@ -107,13 +106,12 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = buttonAppearance,
 				MinSize = new Size(20),
-				TextConfiguration = new TextConfiguration()
-				{
-					Alignment = Alignment.Right,
-					Color = ColorRgba.White,
-					Font = fntFont,
-					Margin = new Border(5)
-				}
+				TextConfiguration = new TextConfiguration(
+					font: fntFont,
+					color: ColorRgba.White,
+					alignment: Alignment.Right,
+					margin: new Border(5)
+				)
 			};
 			this.AddDefaultTemplate(typeof(Button), buttonTemplate);
 			this.AddDefaultTemplate(typeof(ToggleButton), buttonTemplate);
@@ -123,12 +121,11 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = buttonAppearance,
 				MinSize = new Size(20),
-				GlyphConfiguration = new GlyphConfiguration()
-				{
-					Glyph = matRoundWhite,
-					Margin = new Border(5),
-					Alignment = Alignment.Right
-				},
+				GlyphConfiguration = new GlyphConfiguration(
+					glyph: matRoundWhite,
+					alignment: Alignment.Right,
+					margin: new Border(5)
+				),
 				TextConfiguration = buttonTemplate.TextConfiguration
 			};
 			this.AddDefaultTemplate(typeof(CheckButton), glyphTemplate);
@@ -139,14 +136,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				Appearance = backgroundAppearance,
 				MinSize = new Size(20),
 				ScrollBarMargin = new Border(2),
-				ScrollBarConfiguration = new ScrollBarConfiguration()
-				{
-					ButtonDecreaseAppearance = scrollBarAppearance,
-					ButtonIncreaseAppearance = scrollBarAppearance,
-					CursorAppearance = scrollBarAppearance,
-					ButtonsSize = new Size(16),
-					CursorSize = new Size(16, 36)
-				}
+				ScrollBarConfiguration = new ScrollBarConfiguration(
+					buttonIncreaseAppearance: scrollBarAppearance,
+					buttonDecreaseAppearance: scrollBarAppearance,
+					cursorAppearance: scrollBarAppearance,
+					buttonsSize: new Size(16),
+					cursorSize: new Size(16, 32)
+				)
 			};
 			this.AddDefaultTemplate(typeof(VerticalScrollBar), vScrollBarTemplate);
 
@@ -155,14 +151,13 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 				Appearance = backgroundAppearance,
 				MinSize = new Size(20),
 				ScrollBarMargin = new Border(2),
-				ScrollBarConfiguration = new ScrollBarConfiguration()
-				{
-					ButtonDecreaseAppearance = scrollBarAppearance,
-					ButtonIncreaseAppearance = scrollBarAppearance,
-					CursorAppearance = scrollBarAppearance,
-					ButtonsSize = new Size(16),
-					CursorSize = new Size(36, 16)
-				}
+				ScrollBarConfiguration = new ScrollBarConfiguration(
+					buttonIncreaseAppearance: scrollBarAppearance,
+					buttonDecreaseAppearance: scrollBarAppearance,
+					cursorAppearance: scrollBarAppearance,
+					buttonsSize: new Size(16),
+					cursorSize: new Size(32, 16)
+				)
 			};
 			this.AddDefaultTemplate(typeof(HorizontalScrollBar), hScrollBarTemplate);
 
@@ -170,11 +165,10 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = backgroundAppearance,
 				MinSize = new Size(4),
-				ListBoxConfiguration = new ListBoxConfiguration()
-				{
-					ItemAppearance = buttonAppearance,
-					ItemsSize = new Size(20)
-				},
+				ListBoxConfiguration = new ListBoxConfiguration(
+					itemAppearance: buttonAppearance,
+					itemsSize: new Size(20)
+				),
 				TextConfiguration = buttonTemplate.TextConfiguration,
 				ListBoxMargin = new Border(2)
 			};
@@ -184,19 +178,17 @@ namespace SnowyPeak.Duality.Plugins.YAUI.DefaultSkins
 			{
 				Appearance = backgroundAppearance,
 				MinSize = new Size(15),
-				ProgressConfiguration = new ProgressConfiguration()
-				{
-					BarAppearance = buttonAppearance,
-					BarStyle = ProgressBar.BarStyle.Cutoff,
-					Direction = Direction.LeftToRight,
-					Margin = new Border(5)
-				},
-				TextConfiguration = new TextConfiguration()
-				{
-					Alignment = Alignment.Center,
-					Color = ColorRgba.DarkGrey,
-					Font = fntFont
-				}
+				ProgressConfiguration = new ProgressConfiguration(
+					barAppearance: buttonAppearance,
+					direction: Direction.LeftToRight,
+					style: ProgressBar.BarStyle.Cutoff,
+					margin: new Border(5)
+				),
+				TextConfiguration = new TextConfiguration(
+					font: fntFont, 
+					color: ColorRgba.DarkGrey, 
+					alignment: Alignment.Center
+				)
 			};
 			this.AddDefaultTemplate(typeof(ProgressBar), progressTemplate);
 		}

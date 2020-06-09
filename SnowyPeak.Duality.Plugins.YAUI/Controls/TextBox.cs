@@ -62,7 +62,7 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 
-			this.TextConfiguration = this.Template.TextConfiguration.Clone();
+			this.TextConfiguration = this.Template.TextConfiguration;
 		}
 
 		protected override void _Draw(Canvas canvas, float zOffset)

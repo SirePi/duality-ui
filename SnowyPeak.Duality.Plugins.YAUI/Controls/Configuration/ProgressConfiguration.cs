@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 {
-	public sealed class ProgressConfiguration
+	public struct ProgressConfiguration
 	{
-		public static readonly ProgressConfiguration DEFAULT = new ProgressConfiguration();
-
 		public ContentRef<Appearance> BarAppearance { get; set; }
 
 		public ProgressBar.BarStyle BarStyle { get; set; }
@@ -28,15 +26,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 			this.Margin = margin ?? Border.Zero;
 		}
 
-		public ProgressConfiguration Clone()
-		{
-			return new ProgressConfiguration()
-			{
-				BarAppearance = this.BarAppearance,
-				Direction = this.Direction,
-				BarStyle = this.BarStyle,
-				Margin = this.Margin
-			};
-		}
+		public void SetBarAppearance(ContentRef<Appearance> appearance) { this.BarAppearance = appearance; }
+		public void SetBarStyle(ProgressBar.BarStyle style) { this.BarStyle = style; }
+		public void SetDirection(Direction direction) { this.Direction = direction; }
+		public void SetMargin(Border margin) { this.Margin = margin; }
 	}
 }

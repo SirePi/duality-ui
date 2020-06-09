@@ -36,8 +36,8 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls
 		{
 			base.ApplySkin(skin);
 			
-			this.ProgressConfiguration = this.Template.ProgressConfiguration.Clone();
-			this.TextConfiguration = this.Template.TextConfiguration.Clone();
+			this.ProgressConfiguration = this.Template.ProgressConfiguration;
+			this.TextConfiguration = this.Template.TextConfiguration;
 		}
 
 		protected override void _Draw(Canvas canvas, float zOffset)

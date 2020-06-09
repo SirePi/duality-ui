@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 {
-	public sealed class GlyphConfiguration
+	public struct GlyphConfiguration
 	{
-		public static readonly GlyphConfiguration DEFAULT = new GlyphConfiguration();
-
 		public Alignment Alignment { get; set; }
 		public ContentRef<Material> Glyph { get; set; }
 		public Border Margin { get; set; }
@@ -24,15 +22,9 @@ namespace SnowyPeak.Duality.Plugins.YAUI.Controls.Configuration
 			this.Alignment = alignment;
 			this.Margin = margin ?? Border.Zero;
 		}
-
-		public GlyphConfiguration Clone()
-		{
-			return new GlyphConfiguration()
-			{
-				Glyph = this.Glyph,
-				Alignment = this.Alignment,
-				Margin = this.Margin
-			};
-		}
+	
+		public void SetAlignment(Alignment alignment) { this.Alignment = alignment; }
+		public void SetGlyph(ContentRef<Material> glyph) { this.Glyph = glyph; }
+		public void SetMargin(Border margin) { this.Margin = margin; }
 	}
 }
